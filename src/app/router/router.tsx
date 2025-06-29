@@ -3,7 +3,7 @@ import { MainLayout } from "../layouts/mainLayout";
 import { lazy } from "react";
 
 
-const Home = lazy(() => import("@pages/Home/ui/HomePage"));
+const Home = lazy(() => import("../../pages/Home/HomePage"));
 
 const router = createBrowserRouter([
   {

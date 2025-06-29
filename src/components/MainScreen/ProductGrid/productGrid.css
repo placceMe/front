@@ -1,0 +1,33 @@
+.product-grid-section {
+  margin: 40px 0;
+  padding: 0 160px; /* уменьшено, чтобы прокрутка имела смысл */
+  overflow-x: hidden;
+}
+
+.section-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #1a1a1a;
+}
+
+.product-grid {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scroll-behavior: smooth;
+}
+
+.product-grid::-webkit-scrollbar {
+  height: 8px;
+}
+
+.product-grid::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
+
+.product-grid::-webkit-scrollbar-track {
+  background-color: transparent;
+}

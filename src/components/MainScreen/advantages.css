@@ -1,0 +1,37 @@
+.advantages-section {
+  text-align: center;
+  padding: 40px 160px;
+}
+
+.advantages-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.advantages-grid {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.advantage-card {
+  background-color: #efefe3;
+  padding: 20px;
+  border-radius: 8px;
+  width: 370px;
+  height: 143px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.advantage-icon {
+  color: #f0b429;
+  font-size: 28px;
+}
