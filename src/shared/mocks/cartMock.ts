@@ -1,0 +1,123 @@
+import type { CartItem } from '@shared/types/cart';
+
+export const cartMock: CartItem[] = [
+  {
+    product: {
+      id: '1',
+      title: 'Шапка Skif Tac Мечуля One size Multicam',
+      description: 'Тактична шапка для захисту від холоду',
+      price: 391,
+      categoryId: 'headwear',
+      sellerId: 'user1',
+      state: 'Active',
+      quantity: 5,
+      characteristics: [{ id: '1', value: 'One size', productId: '1', charesteristicDictId: 'size' }],
+      attachments: [{ id: 'img1', filePath: 'https://ukrarmor.com.ua/storage/products/images/medium/mZ1StMPxWT63Nmb5zoncirYXV8g9xc2pOkkxwg9E.jpg?v=1728550826', productId: '1', product: {} as any }],
+     //ADD
+     //  weight: 200,
+      category: {
+        id: 'headwear',
+        name: 'Головні убори',
+        parentCategoryId: null,
+        status: 'Active',
+        products: [],
+      },
+    },
+    quantity: 1,
+  },
+   {
+    product: {
+      id: '2',
+      title: 'Налобний ліхтар Petzl Tactikka+ RGB',
+      description: 'Ліхтар для нічних операцій з червоним світлом',
+      price: 3200,
+      categoryId: 'flashlights',
+      sellerId: 'user6',
+      state: 'Active',
+      quantity: 40,
+     // weight: 300,
+     attachments: [{ id: 'img2', filePath: 'https://storgom.ua/cache/i/products/91/121564/11576.970.970x970.jpg', productId: '2', product: {} as any }],
+      characteristics: [],
+      category: {
+        id: 'flashlights',
+        name: 'Ліхтарі',
+        parentCategoryId: null,
+        status: 'Active',
+        products: [],
+      },
+    },
+    quantity: 1,
+  },
+  {
+  product: {
+      id: '3',
+      title: 'Тактичні рукавиці Mechanix M-Pact',
+      description: 'Захисні рукавиці з амортизацією ударів',
+      price: 1200,
+      categoryId: 'gloves',
+      sellerId: 'user2',
+      state: 'Active',
+      quantity: 50,
+    //  weight: 300,
+      characteristics: [{ id: 'c1', value: 'L', productId: '3', charesteristicDictId: 'size' }],
+         attachments: [{ id: 'img3', filePath: 'https://content1.rozetka.com.ua/goods/images/big/423267156.jpg', productId: '3', product: {} as any }],
+      
+      category: {
+        id: 'gloves',
+        name: 'Рукавиці',
+        parentCategoryId: null,
+        status: 'Active',
+        products: [],
+      },
+    },
+    quantity: 1,
+  },
+  {
+    product: {
+      id: '4',
+      title: 'Розвантажувальний жилет Condor MCR5',
+      description: 'Тактичний жилет з модульною системою',
+      price: 2100,
+      categoryId: 'vests',
+      sellerId: 'user3',
+      state: 'Active',
+      quantity: 30,
+   //   weight: 900,
+      characteristics: [],
+      attachments: [{ id: 'img4', filePath: 'https://images.prom.ua/5104360441_rozvantazhuvalnij-taktichnij-poyas.jpg', productId: '4', product: {} as any }],
+      category: {
+        id: 'vests',
+        name: 'Жилети',
+        parentCategoryId: null,
+        status: 'Active',
+        products: [],
+      },
+    },
+    quantity: 2,
+  },
+  {
+    product: {
+      id: '5',
+      title: 'Тактичний рюкзак 5.11 Rush24',
+      description: 'Військовий рюкзак для щоденного використання',
+      price: 4700,
+      categoryId: 'backpacks',
+      sellerId: 'user4',
+      state: 'Active',
+      quantity: 20,
+     // weight: 1800,
+         attachments: [{ id: 'img4', filePath: 'https://ralf.in.ua/image/cache/catalog/Dronotorba%20/dron5/3-625x348.jpg', productId: '4', product: {} as any }],
+      characteristics: [],
+      category: {
+        id: 'backpacks',
+        name: 'Рюкзаки',
+        parentCategoryId: null,
+        status: 'Active',
+        products: [],
+      },
+    },
+    quantity: 1,
+  },
+  
+  // добавь остальные товары по аналогии
+];

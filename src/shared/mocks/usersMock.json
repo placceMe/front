@@ -1,0 +1,6 @@
+{
+  "id": "u123",
+  "name": "Hanna",
+  "roles": ["warrior", "supplier"],
+  "activeRole": "warrior"
+}

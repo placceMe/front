@@ -1,9 +1,20 @@
+import AboutUs from "../../../app/layouts/delete/MainScreen/AboutUs";
+import Advantages from "../../../app/layouts/delete/MainScreen/Advantages";
+import Banner from "../../../app/layouts/delete/MainScreen/banner";
+import ProductPage from "../../../app/layouts/delete/MainScreen/Product";
+import Protocols from "../../../app/layouts/delete/MainScreen/Protocols";
+import Slide from "../../../app/layouts/delete/MainScreen/slider";
+
 const HomePage = () => {
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-            <h1 className="text-4xl font-bold mb-4">Welcome to the Home Page</h1>
-            <p className="text-lg text-gray-700">This is a simple home page built with React and Tailwind CSS.</p>
-        </div>
+        <div>
+      <Slide />
+      <ProductPage />
+      <Banner />
+      <AboutUs />
+      <Advantages/>
+      <Protocols />
+    </div>
     );
 };
 
