@@ -66,8 +66,8 @@ const OrdersTab: React.FC = () => {
   const toggleExpand = (id: string) => setExpandedId(prev => (prev === id ? null : id));
 
   return (
-    <div className="space-y-4 px-40 m-20">
-      <h2 className="text-4xl font-semibold mb-4">Ваші замовлення</h2>
+    <div className="space-y-4 ">
+      <h2 className="text-3xl font-semibold mb-4 text-[#3E4826]">Ваші замовлення</h2>
       {orders.length === 0 && (
         <div className="text-gray-500 py-10">Немає замовлень</div>
       )}

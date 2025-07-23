@@ -61,7 +61,7 @@ interface BlurBlockProps {
   style?: React.CSSProperties;
   innerClassName?: string;
   innerStyle?: React.CSSProperties;
-  paper?: boolean;  // <---- новый проп!
+  paper?: boolean;  
 }
 
 export const BlurBlock: React.FC<BlurBlockProps> = ({
@@ -71,9 +71,9 @@ export const BlurBlock: React.FC<BlurBlockProps> = ({
   style = {},
   innerClassName = "",
   innerStyle = {},
-  paper = false,     // <---- новый проп!
+  paper = false,
 }) => {
-  // если paper === true, то НЕ показывать ни backgroundImage, ни blur
+  
   const isPaper = paper;
 
   return (
@@ -88,15 +88,16 @@ export const BlurBlock: React.FC<BlurBlockProps> = ({
     >
       <div
         className={
-          "max-w-[1400px] mx-auto gap-8 rounded-sm shadow-lg px-8 py-6 " +
+          "max-w-[1550px] mx-auto gap-8 rounded-sm shadow-lg px-8 py-6 " +
           innerClassName
         }
         style={{
-          // если paper — просто зелёный прозрачный фон, иначе blur
+         
           ...(isPaper
             ? {
-                background: "rgba(141, 184, 111, 0.22)", // любой твой полупрозрачный цвет!
-                border: "1px solid #3E4826",
+                  background: "rgba(229,229,216,0.7)",      
+                border: "1px solid #3E4826",               
+                backdropFilter: "blur(20px)",               
               }
             : {
                 background: "rgba(229,229,216,0.5)",

@@ -76,7 +76,7 @@ export const CabinetLayout = () => {
       backgroundImage={isMain ? HERO_IMAGES[role] : undefined}
       paper={!isMain}
     >
-      <div className="flex items-center justify-between mb-6 px-6 md:px-12">
+      <div className="flex items-center justify-between mb-6">
         <TabNavFrame tabs={TABS} value={tab} onChange={handleChangeTab} />
         <RoleSwitcher />
       </div>

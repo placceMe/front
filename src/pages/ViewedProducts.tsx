@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useUserProductIds } from "@shared/hooks/useUserProductIds";
 import { useProductsByIds } from "@shared/hooks/useProductsByIds";
@@ -11,15 +10,26 @@ export const ViewedProducts = () => {
   const { products, loading } = useProductsByIds(viewed);
 
   if (!viewed.length) return null;
-console.log("products from API:", products);
 
   return (
-    <div className="mx-40 my-5">
-      <h2 className="text-2xl font-semibold mb-6">Переглянуті товари</h2>
-      {loading && <div>Завантаження...</div>}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+    <div className="mx-auto max-w-[1440px] px-2 md:px-8 pb-10">
+      <h2 className="text-2xl md:text-3xl font-semibold mb-7 text-[#24290e]">
+        Переглянуті товари
+      </h2>
+      {loading && (
+        <div className="py-10 text-center text-gray-400 text-lg">
+          Завантаження...
+        </div>
+      )}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-20">
         {products.map((prod: any) => (
-           <ProductCard key={prod.id} {...prod} />
+          <div
+            key={prod.id}
+            
+            style={{ minHeight: 320 }}
+          >
+            <ProductCard {...prod} />
+          </div>
         ))}
       </div>
     </div>
@@ -27,3 +37,4 @@ console.log("products from API:", products);
 };
 
 export default ViewedProducts;
+
