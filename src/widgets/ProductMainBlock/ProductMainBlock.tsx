@@ -27,24 +27,7 @@ export const ProductMainBlock = ({ product }: Props) => {
 
         <ProductGuaranteeBlock />
       </div>
-   </div>
+    </div>
   );
 }
 
-  {/** 
-  <div
-    className="w-full bg-cover bg-center bg-no-repeat"
-    style={{
-      backgroundImage: "url('/src/assets/productCard/bg.png')",
-      paddingTop: '40px',
-      paddingBottom: '50px',
-    }}
-  >
-    <div className="max-w-[1400px] mx-auto px-6 flex flex-col md:flex-row gap-8 rounded-sm shadow-lg px-8 py-6"
-      style={{
-        background: 'rgba(229,229,216,0.5)',
-        backdropFilter: 'blur(8px)',
-        border: '1px solid #E5E5D8',
-      }}
-    >
-*/}

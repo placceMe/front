@@ -96,7 +96,7 @@ const router = createBrowserRouter([
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <MainLayout />,        // <-- Header/Footer
+    element: <MainLayout />,  
     children: [
       { index: true, element: <Home /> },
       { path: "cart", element: <CartPage /> },
@@ -104,11 +104,11 @@ const router = createBrowserRouter([
       { path: 'product/:id', element: <ProductPage /> },
       { path: 'order-success/:orderId', element: <OrderSuccessPage /> },
       { path: 'category/:categoryId', element: <CategoryProductsPage /> },
-  //    { path: 'wishlist', element: <Wishlist /> },
+      { path: 'wishlist', element: <Wishlist /> },
       // ...другие страницы...
       {
         path: "profile",
-        element: <CabinetLayout />, // <-- вложенный layout (кабинет)
+        element: <CabinetPage  />,
         children: [
           { index: true, element: <ProfilePage /> },
           { path: "orders", element: <OrdersTab /> },

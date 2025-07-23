@@ -24,13 +24,6 @@ const [categories, setCategories] = useState<Category[]>([]);
       .then(res => res.json())
       .then((data: Category[]) => setCategories(data.filter(cat => cat.status === "Active")));
   }, []);
-/*
-  const handleMainImageChange = (info: any) => {
-    if (info.file.status === "done" || info.file.status === "removed") {
-      setMainImage(info.file.originFileObj || null);
-    }
-  };
-*/
 
 const handleMainImageChange = (info: any) => {
   setMainImage(info.fileList[0]?.originFileObj || null);
@@ -56,7 +49,6 @@ const handleMainImageChange = (info: any) => {
       if (mainImage) formData.append("MainImage", mainImage);
       gallery.forEach((file, idx) => formData.append(`Gallery`, file));
 
-      // пример отправки (смените url)
       await fetch("http://localhost:5003/api/products/with-files", {
         method: "POST",
         body: formData,

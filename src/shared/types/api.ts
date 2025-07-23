@@ -98,7 +98,7 @@ export type Order = {
   createdAt: string;
   updatedAt?: string | null;
 
-  // вложенные объекты
+
   status?: Status;
   promoCode?: PromoCode | null;
   items: OrderItemResponse[];
@@ -106,10 +106,10 @@ export type Order = {
 
 export type OrderItemResponse = {
   id: number;
-  productId: string;        // UUID, если в БД uuid, иначе number
+  productId: string;       
   productName: string;
   quantity: number;
-  price: number;            // Decimal обычно приводится к number на фронте
+  price: number;            
   totalPrice: number;
 };
 
@@ -130,15 +130,15 @@ export type PromoCode = {
 
 export type OrderResponse = {
   id: number;
-  customerId: string;         // UUID или number, смотри свою модель User
+  customerId: string;         
   items: OrderItemResponse[];
   totalAmount: number;
   discountAmount: number;
   finalAmount: number;
-  status: string;             // или конкретный enum, если есть
+  status: string;             
   promoCode?: string | null;
   deliveryAddress: string;
   notes?: string | null;
-  createdAt: string;          // ISO date string
-  updatedAt: string;          // ISO date string
+  createdAt: string;          
+  updatedAt: string;          
 };

@@ -10,8 +10,6 @@ export interface CheckoutFormData {
   agree: boolean;
 }
 
-
-
 interface CheckoutState {
   form: CheckoutFormData;
 }
@@ -23,7 +21,7 @@ const initialState: CheckoutState = {
     address: '',
     deliveryMethod: 'np-branch',
     paymentMethod: 'cod',
-      agree: false
+    agree: false
   },
 };
 

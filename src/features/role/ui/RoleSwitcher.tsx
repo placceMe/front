@@ -5,7 +5,7 @@ import { setActiveRole } from "../../../entities/user/model/userSlice";
 const ROLE_LABELS: Record<string, string> = {
   Buyer: "Воїн",
   Saler: "Спорядник",
-  // Можно добавить ещё варианты, если будут новые роли
+  
 };
 
 export const RoleSwitcher = () => {

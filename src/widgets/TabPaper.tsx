@@ -4,7 +4,7 @@ import { BlurBlock } from "@shared/ui/BlurBlock";
 
 interface TabPaperProps {
   tabs: { key: string; label: string; icon?: React.ReactNode }[];
-  mainBg?: string;           // Картинка для 1го таба
+  mainBg?: string;           
   className?: string;
   children: (tab: string) => React.ReactNode;
 }
@@ -15,7 +15,7 @@ export const TabPaper: React.FC<TabPaperProps> = ({
   className = "",
   children
 }) => {
-  // Активный таб через hash
+
   const [tab, setTab] = React.useState(() => {
     const hash = window.location.hash.replace("#", "");
     return tabs.find(t => t.key === hash) ? hash : tabs[0].key;
@@ -42,7 +42,7 @@ export const TabPaper: React.FC<TabPaperProps> = ({
       <div className="flex justify-center items-center min-h-[500px]">
         <BlurBlock
           className={className}
-          paper={!isMain}  // если не главный таб — полупрозрачная карточка без фона!
+          paper={!isMain} 
         >
           <div className="mb-6">
             <TabNavFrame tabs={tabs} value={tab} onChange={handleChangeTab} />

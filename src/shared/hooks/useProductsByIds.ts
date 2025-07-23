@@ -10,7 +10,7 @@ export function useProductsByIds(ids: string[]) {
       return;
     }
     setLoading(true);
-    fetch("http://localhost:5003/api/products/many", { // именно .many!
+    fetch("http://localhost:5003/api/products/many", { 
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids })

@@ -29,7 +29,6 @@ export const ProductReviewsBlock = () => {
       </h2>
 
       <div className="grid md:grid-cols-[350px_1fr] gap-8">
-        {/* Левая колонка: рейтинг */}
         <div>
           <div className="mb-4">
             <div className="text-base flex font-semibold mb-3 gap-1">
@@ -48,10 +47,10 @@ export const ProductReviewsBlock = () => {
                   <div className="w-48 h-2 bg-[#7C7878] rounded-full overflow-hidden">
                     <div
                       className={`h-full transition-all duration-300 ${ratingCounts[index] > 0
-                          ? star === 5
-                            ? "bg-[#E4A800]"
-                            : "bg-[#7C7878]"
+                        ? star === 5
+                          ? "bg-[#E4A800]"
                           : "bg-[#7C7878]"
+                        : "bg-[#7C7878]"
                         }`}
                       style={{
                         width: percent ? `${percent}%` : "0%",
@@ -64,7 +63,6 @@ export const ProductReviewsBlock = () => {
               );
             })}
           </div>
-          {/* Кнопка снизу */}
           <Button
             style={{
               background: 'linear-gradient(to bottom, rgba(75, 90, 45, 0.3) 0%, rgba(40, 50, 25, 0.8) 100%), #4A5A2D', // background: 'linear-gradient(180deg, #3E4826 0%, #2D351A 100%)',
@@ -73,14 +71,14 @@ export const ProductReviewsBlock = () => {
               fontWeight: 'bold',
               width: '50%',
               padding: '20px',
-              fontSize: 16 ,
+              fontSize: 16,
               letterSpacing: '0.7px',
             }}>
             {tab === 'reviews' ? "Написати відгук" : "Задати питання"}
           </Button>
         </div>
 
-        {/* Правая колонка */}
+
         <div className="space-y-4">
           <div className="flex gap-4 mb-4">
             <Button
@@ -95,8 +93,8 @@ export const ProductReviewsBlock = () => {
               }}
               onClick={() => setTab("reviews")}
               className={`font-semibold ${tab !== "reviews"
-                  ? "hover:bg-[#454E30] hover:text-white"
-                  : ""
+                ? "hover:bg-[#454E30] hover:text-white"
+                : ""
                 }`}
             >
               Відгуки ({mockReviews.length})
@@ -113,8 +111,8 @@ export const ProductReviewsBlock = () => {
               }}
               onClick={() => setTab("questions")}
               className={`font-semibold ${tab !== "questions"
-                  ? "hover:bg-[#454E30] hover:text-white"
-                  : ""
+                ? "hover:bg-[#454E30] hover:text-white"
+                : ""
                 }`}
             >
               Питання ({mockQuestions.length})

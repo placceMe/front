@@ -1,21 +1,29 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Typography, Table, Descriptions, Spin } from "antd";
-import { useNavigate } from 'react-router-dom';
+
+interface ProductInfo {
+  id: string;
+  name?: string;
+  title: string;
+  price: number;
+}
 
 interface OrderItem {
   id: string;
-  product_id: string;
+  productId: string;
   quantity: number;
-  // остальные поля, если сервер возвращает
+  price?: number;
+  product?: ProductInfo;
 }
 
 interface OrderDetails {
   id: string;
-  created_at: string;
+  createdAt: string;
   items: OrderItem[];
-  delivery_address: string;
-  total_amount: number;
+  deliveryAddress: string;
+  totalAmount?: number;
+  notes?: string;
 }
 
 export const OrderSuccessPage = () => {
@@ -38,8 +46,18 @@ export const OrderSuccessPage = () => {
         Дякуємо! Ваше замовлення було отримано!
       </Typography.Title>
       <Descriptions bordered column={2} style={{ marginBottom: 24 }}>
-        <Descriptions.Item label="Номер замовлення">{order.id}</Descriptions.Item>
-        <Descriptions.Item label="Дата">{new Date(order.created_at).toLocaleDateString('uk-UA')}</Descriptions.Item>
+        <Descriptions.Item label="Номер замовлення">   {order.id.replace(/\D/g, "")}</Descriptions.Item>
+        <Descriptions.Item label="Дата">
+          {new Date(order.createdAt).toLocaleDateString('uk-UA')}
+        </Descriptions.Item>
+        <Descriptions.Item label="Адреса доставки" span={2}>
+          {order.deliveryAddress}
+        </Descriptions.Item>
+        {order.notes && (
+          <Descriptions.Item label="Коментар" span={2}>
+            {order.notes}
+          </Descriptions.Item>
+        )}
       </Descriptions>
       <Typography.Title className='py-8' level={4}>
         Оплата у відділенні Нової пошти після отримання доставки.
@@ -49,12 +67,38 @@ export const OrderSuccessPage = () => {
         pagination={false}
         rowKey="id"
         columns={[
-          { title: "ID Товару", dataIndex: "product_id", key: "product_id" },
-          { title: "Кількість", dataIndex: "quantity", key: "quantity" },
-          // остальные колонки если нужно
+         
+          {
+            title: "Назва",
+            dataIndex: "product",
+            key: "product",
+            render: (product?: ProductInfo) => product?.title ?? "-"
+          },
+          {
+            title: "Кількість",
+            dataIndex: "quantity",
+            key: "quantity"
+          },
+          {
+            title: "Ціна за одиницю",
+            dataIndex: "product",
+            key: "price",
+            render: (product?: ProductInfo) => product?.price ? `${product.price} грн` : "-"
+          },
+          {
+            title: "Сума",
+            key: "total",
+            render: (_: any, item: OrderItem) => {
+              const price = item.product?.price ?? item.price ?? 0;
+              return `${price * item.quantity} грн`;
+            }
+          }
         ]}
         style={{ marginBottom: 24 }}
       />
+      <div className="flex justify-end text-xl font-semibold mb-4">
+        {order.totalAmount && <>Разом: {order.totalAmount} грн.</>}
+      </div>
       <div style={{ textAlign: 'center', padding: 25 }}>
         <button
           onClick={() => navigate('/profile')}

@@ -23,7 +23,7 @@ export const CabinetLayout = () => {
   const role = (useAppSelector(state => state.user.activeRole) as "Buyer" | "Saler") || "Buyer";
   const TABS = role === "Saler" ? TABS_SUPPLIER : TABS_WARRIOR;
 
-  // Контент табов
+
   const TAB_CONTENT: Record<string, React.ReactNode> = role === "Saler"
     ? {
         home: user && <RegistrationForm user={user} />,
@@ -37,13 +37,13 @@ export const CabinetLayout = () => {
         viewed: <ViewedProducts />,
       };
 
-  // Активный таб через hash (#)
+
   const [tab, setTab] = React.useState(() => {
     const hash = window.location.hash.replace("#", "");
     return TABS.find(t => t.key === hash) ? hash : TABS[0].key;
   });
 
-  // Слушаем изменение hash
+
   React.useEffect(() => {
     const onHashChange = () => {
       const hash = window.location.hash.replace("#", "");
@@ -53,17 +53,17 @@ export const CabinetLayout = () => {
     return () => window.removeEventListener("hashchange", onHashChange);
   }, [TABS]);
 
-  // Сброс таба при смене роли, если hash невалиден
+ 
   React.useEffect(() => {
     const hash = window.location.hash.replace("#", "");
     if (!TABS.find(t => t.key === hash)) {
       setTab(TABS[0].key);
       window.location.hash = `#${TABS[0].key}`;
     }
-    // eslint-disable-next-line
+ 
   }, [role, TABS]);
 
-  // При клике на таб — меняем hash
+
   const handleChangeTab = (key: string) => {
     setTab(key);
     window.location.hash = `#${key}`;

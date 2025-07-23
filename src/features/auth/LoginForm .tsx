@@ -28,7 +28,6 @@ export const LoginForm = () => {
       if (user) {
         dispatch(setUser(user));
          localStorage.setItem("user", JSON.stringify(user)); 
-        // alert("Успешный вход!"); // Лучше всплывающее уведомление, но для теста сойдет
       } else {
         window.alert("Пользователь не найден или пароль неверный");
       }

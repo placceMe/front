@@ -1,25 +1,3 @@
-// pages/CheckoutPage/ui/CheckoutPage.tsx
-/*import { CheckoutForm } from '@features/checkout/ui/CheckoutForm';
-import { useCheckout } from '../../features/checkout/model/useCheckout';
-import { CheckoutCartList } from '@features/checkout/ui/CheckoutCartList';
-
- const CheckoutPage = () => {
-  const { handleCheckoutSubmit } = useCheckout();
-
-  return (
-    <div className="flex flex-col md:flex-row gap-6 p-6">
-      <div className="w-full md:w-2/3">
-        <CheckoutForm onSubmit={handleCheckoutSubmit} />
-      </div>
-      <div className="w-full md:w-1/3">
-        <CheckoutCartList />
-      </div>
-    </div>
-  );
-};
-
-export default CheckoutPage;
-*/
 
 import { CheckoutForm } from '@features/checkout/ui/CheckoutForm';
 import { useCheckout } from '../../features/checkout/model/useCheckout';

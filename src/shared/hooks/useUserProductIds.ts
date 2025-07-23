@@ -1,4 +1,4 @@
-// @shared/hooks/useUserProductIds.ts
+
 import { useState, useEffect } from "react";
 
 export function useUserProductIds(userId: string, storageKey: string) {
@@ -9,7 +9,7 @@ export function useUserProductIds(userId: string, storageKey: string) {
     setIds(data[userId] || []);
   }, [userId, storageKey]);
 
-  // Позволяет обновлять ids и localStorage синхронно
+
   const updateIds = (newIds: string[]) => {
     const data = JSON.parse(localStorage.getItem(storageKey) || "{}");
     data[userId] = newIds;

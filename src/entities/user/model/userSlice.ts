@@ -3,7 +3,7 @@ import type { User } from '@shared/types/api';
 
 interface UserSliceState {
   user: User | null;
-  activeRole: string | null; // только для фронта, НЕ в User!
+  activeRole: string | null; 
 }
 
 const initialState: UserSliceState = {
