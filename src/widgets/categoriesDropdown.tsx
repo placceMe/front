@@ -1,3 +1,4 @@
+import { API_PORTS, useRequest } from "@shared/request/useRequest";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -20,18 +21,23 @@ const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [categories, setCategories] = useState<Category[]>([]);
 
+  const { request, error, loading } = useRequest(API_PORTS.CATEGORIES);
+
+  const fetchCategories = async () => {
+    const response = await request<Category[]>("/api/category", {
+      method: "GET",
+    });
+
+    if (response) {
+      setCategories(response.filter((c: Category) => c.status === "Active"));
+    }
+  };
+
   useEffect(() => {
-    if (!isOpen) return;
-    fetch("http://localhost:5003/api/category")
-      .then(res => res.json())
-      .then(data => {
-        console.log('categories:', data);
-        setCategories(data.filter((c: Category) => c.status === "Active"));
-      })
-      .catch(err => {
-        console.error("Ошибка при загрузке категорий:", err);
-      });
-  }, [isOpen]);
+
+    fetchCategories();
+
+  }, []);
 
 
   useEffect(() => {

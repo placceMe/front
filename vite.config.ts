@@ -19,4 +19,7 @@ export default defineConfig({
       "@entities": path.resolve(__dirname, "src/entities"),
     },
   },
+  define: {
+    __BASE_URL__: JSON.stringify(process.env.BASE_URL ?? "http://localhost"),
+  }
 });

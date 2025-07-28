@@ -1,130 +1,55 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import { MainLayout } from "../layouts/mainLayout";
-import { lazy } from "react";
+import { lazy, useMemo } from "react";
 import { ProductPage } from "@pages/ProductPage";
-
 import { OrderSuccessPage } from "@pages/OrderSuccessPage/OrderSuccessPage";
 import { ProfilePage } from "@pages/ProfilePage/ui/ProfilePage";
 import CategoryProductsPage from "@pages/CategoryProductsPage";
-import { CabinetPage } from "@pages/CabinetPage";
 import { Wishlist } from "@pages/Wishlist";
 import { CabinetLayout } from "../../app/layouts/CabinetLayout";
 import OrdersTab from "../../widgets/OrdersTab";
 import ViewedProducts from "@pages/ViewedProducts";
-//import CabinetLayout from "../../app/layouts/CabinetLayout";
+import { useAppSelector } from "@store/hooks";
 
-
-
-<<<<<<< HEAD
-const Home = lazy(() => import("../../pages/Home/HomePage"));
-
-=======
 const Home = lazy(() => import("@pages/Home/ui/HomePage"));
 const CartPage = lazy(() => import("@pages/CartPage"));
 const CheckoutPage = lazy(() => import("@pages/CheckoutPage"));
-/*
->>>>>>> 18294dbcc8d9d971d16cbe6b436ac5a8ac1bd9b9
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <MainLayout />,
-    children: [
-      {
-        index: true,
-        element: <Home />,
-      },
-      {
-        path: "cart",
-        element: <CartPage />,
-      },
-      {
-        path: "checkout",
-        element: <CheckoutPage />,
-      },
-      {
-        path: 'product/:id',
-        element: <ProductPage />,
-      },
-      //TODO REname to Profile 
-      {
-        path: 'profile',
-        element: <CabinetPage />,
-      },
-      {
-      path: 'order-success/:orderId',
-      element: <OrderSuccessPage />,
-      },
-      {
-        path:'/category/:categoryId',
-       element:<CategoryProductsPage />,
-      },
-       {
-        path:'/wishlist',
-       element:<Wishlist />,
-      },
-    ],
-  },
-]);
-*/
-/*
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <MainLayout />,
-    children: [
-      { index: true, element: <Home /> },
-      { path: "cart", element: <CartPage /> },
-      { path: "checkout", element: <CheckoutPage /> },
-      { path: 'product/:id', element: <ProductPage /> },
-      { path: 'order-success/:orderId', element: <OrderSuccessPage /> },
-      { path: 'category/:categoryId', element: <CategoryProductsPage /> },
-  //    { path: 'wishlist', element: <Wishlist /> },
-      // ...все публичные
-    ],
-  },
-  // Кабинет — отдельный layout!
-  {
-    path: "/profile",
-    element: <CabinetLayout />,   // Кабинетный layout
-    children: [
-      { index: true, element: <CabinetPage /> }, // Главная кабинета
-      { path: "orders", element: <div>Мои заказы</div> }, // пример
-      { path: "wishlist", element: <Wishlist /> },
-      { path: "settings", element: <ProfilePage /> },
-      // другие табы кабинета
-    ],
-  },
-]);
 
+export const AppRouter = () => {
+  const user = useAppSelector(state => state.user.user);
 
-*/
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <MainLayout />,  
-    children: [
-      { index: true, element: <Home /> },
-      { path: "cart", element: <CartPage /> },
-      { path: "checkout", element: <CheckoutPage /> },
-      { path: 'product/:id', element: <ProductPage /> },
-      { path: 'order-success/:orderId', element: <OrderSuccessPage /> },
-      { path: 'category/:categoryId', element: <CategoryProductsPage /> },
-      { path: 'wishlist', element: <Wishlist /> },
-      // ...другие страницы...
+  const router = useMemo(() => {
+    return createBrowserRouter([
       {
-        path: "profile",
-        element: <CabinetPage  />,
+        path: "/",
+        element: <MainLayout />,
         children: [
-          { index: true, element: <ProfilePage /> },
-          { path: "orders", element: <OrdersTab /> },
-          { path: "favourite", element: <Wishlist /> },
-          { path: "viewed", element: <ViewedProducts /> },
+          { index: true, element: <Home /> },
+          { path: "cart", element: <CartPage /> },
+          { path: "checkout", element: <CheckoutPage /> },
+          { path: 'product/:id', element: <ProductPage /> },
+          { path: 'order-success/:orderId', element: <OrderSuccessPage /> },
+          { path: 'category/:categoryId', element: <CategoryProductsPage /> },
+          { path: 'wishlist', element: <Wishlist /> },
+          ...(user?.id ? [{
+            path: "/profile",
+            element: <CabinetLayout />,
+            children: [
+              { index: true, element: <ProfilePage /> },
+              { path: "orders", element: <OrdersTab /> },
+              { path: "favourite", element: <Wishlist /> },
+              { path: "viewed", element: <ViewedProducts /> },
+            ],
+          }] : []),
         ],
       },
-    ],
-  },
-]);
 
+      {
+        path: "*",
+        element: <Navigate to="/" replace />,
+      }
+    ]);
+  }, [user]);
 
-
-export const AppRouter = () => <RouterProvider router={router} />;
+  return <RouterProvider router={router} />;
+};
