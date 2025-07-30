@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 //import cartReducer from '@features/cart/model/cartSlice';
 import cartReducer from '../../features/cart/model/cartSlice';
 import languageReducer from "./reducres/language.reducer";
-import productReducer from '../../entities/product/model/productSlice';
+//import productReducer from '../../entities/product/model/productSlice';
 import userReducer from '../../entities/user/model/userSlice';
 
 
@@ -10,7 +10,7 @@ export const store = configureStore({
   reducer: {
     language: languageReducer,
     cart: cartReducer,
-    product: productReducer,
+//    product: productReducer,
     user: userReducer,
   },
 });

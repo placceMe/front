@@ -2,7 +2,7 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/store/hooks';
-import { fetchProduct } from '../../entities/product/model/fetchProduct';
+import { useProduct } from '../../entities/product/model/fetchProduct';
 import { Spin } from 'antd';
 import { ProductMainBlock } from '../../widgets/ProductMainBlock/ProductMainBlock';
 import { ProductDescriptionBlock } from '../../widgets/ProductDescriptionBlock/ProductDescriptionBlock';
@@ -65,12 +65,9 @@ export function addProductToWishlist(userId: string, productId: string) {
 export const ProductPage = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
-  const { product, loading } = useAppSelector(state => state.product);
+ // const { product, loading } = useAppSelector(state => state.product);
+    const { product, loading, error } = useProduct(id!);
   const userId = useAppSelector(state => state.user.user?.id) || "guest";
-
-  useEffect(() => {
-    if (id) dispatch(fetchProduct(id));
-  }, [id, dispatch]);
 
   const [tab, setTab] = useState(() => {
     const hash = window.location.hash.replace("#", "");

@@ -1,42 +1,17 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { useRequest } from "@shared/request/useRequest";
+import { useEffect, useState } from "react";
 import type { Product } from "@shared/types/api";
 
-interface ProductState {
-  product: Product | null;
-  loading: boolean;
+export function useProduct(id: string) {
+  const { request, loading, error } = useRequest();
+  const [product, setProduct] = useState<Product | null>(null);
+
+  useEffect(() => {
+    if (!id) return;
+    request<Product>(`/api/products/${id}`).then((data) => {
+      if (data) setProduct(data);
+    });
+  }, [id]);
+
+  return { product, loading, error };
 }
-
-const initialState: ProductState = {
-  product: null,
-  loading: false,
-};
-export const fetchProduct = createAsyncThunk(
-  "product/fetch",
-  async (id: string) => {
-    const res = await fetch(`http://localhost:5003/api/products/${id}`);
-    if (!res.ok) throw new Error("Product not found");
-    return await res.json();
-  }
-);
-
-
-const productSlice = createSlice({
-  name: "product",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchProduct.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(fetchProduct.fulfilled, (state, action) => {
-        state.loading = false;
-        state.product = action.payload;
-      })
-      .addCase(fetchProduct.rejected, (state) => {
-        state.loading = false;
-      });
-  },
-});
-
-export default productSlice.reducer;

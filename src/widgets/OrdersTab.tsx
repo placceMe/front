@@ -28,6 +28,8 @@ const OrdersTab: React.FC = () => {
   const { request } = useRequest();
 
 
+
+
   useEffect(() => {
     if (!customerId) return;
     let mounted = true;
@@ -48,29 +50,38 @@ const OrdersTab: React.FC = () => {
   }, [customerId]);
 
 
-  useEffect(() => {
-    const visibleOrders = orders.slice((currentPage - 1) * ORDERS_PER_PAGE, currentPage * ORDERS_PER_PAGE);
-    const productIds: string[] = [];
-    visibleOrders.forEach(order =>
-      (order.items || []).slice(0, 3).forEach((item: any) => {
-        if (item.productId && !(item.productId in productImages)) productIds.push(item.productId);
-      })
-    );
-    if (productIds.length === 0) return;
-    Promise.all(productIds.map(id =>
-      fetch(`${PRODUCTS_API_BASE_URL}${id}`)
-        .then(res => res.json())
-        .then(product => ({ id, mainImageUrl: product.mainImageUrl }))
-        .catch(() => ({ id, mainImageUrl: '' }))
-    )).then(results => {
-      const update: Record<string, string> = {};
-      results.forEach(({ id, mainImageUrl }) => {
-        update[id] = mainImageUrl || '';
-      });
-      setProductImages(prev => ({ ...prev, ...update }));
-    });
 
-  }, [orders, currentPage]);
+useEffect(() => {
+  const visibleOrders = orders.slice(
+    (currentPage - 1) * ORDERS_PER_PAGE,
+    currentPage * ORDERS_PER_PAGE
+  );
+
+  const productIds: string[] = [];
+  visibleOrders.forEach(order =>
+    (order.items || []).slice(0, 3).forEach((item: any) => {
+      if (item.productId && !(item.productId in productImages)) {
+        productIds.push(item.productId);
+      }
+    })
+  );
+
+  if (productIds.length === 0) return;
+
+  Promise.all(
+    productIds.map(async (id) => {
+      const product = await request(`/api/products/${id}`);
+      return { id, mainImageUrl: product?.mainImageUrl || '' };
+    })
+  ).then((results) => {
+    const update: Record<string, string> = {};
+    results.forEach(({ id, mainImageUrl }) => {
+      update[id] = mainImageUrl;
+    });
+    setProductImages((prev) => ({ ...prev, ...update }));
+  });
+}, [orders, currentPage]);
+
 
   const totalPages = Math.ceil(orders.length / ORDERS_PER_PAGE);
   const startIndex = (currentPage - 1) * ORDERS_PER_PAGE;
