@@ -9,7 +9,7 @@ const FILES_BASE_URL = 'http://localhost:5001/api/files/file/';
 const PRODUCTS_API_BASE_URL = 'http://localhost:5003/api/products/';
 const ORDERS_PER_PAGE = 5;
 
-const ORDER_STATUS_MAP: Record<number, { label: string; color: string }> = {
+const ORDER_STATUS_MAP: Record<number, { label: string; color: string; }> = {
   0: { label: "Нове", color: "text-yellow-600" },
   1: { label: "Підтверджено", color: "text-green-600" },
   2: { label: "Відправлено", color: "text-blue-600" },
@@ -24,28 +24,28 @@ const OrdersTab: React.FC = () => {
   const [productImages, setProductImages] = useState<Record<string, string>>({});
 
   const user = useAppSelector(state => state.user.user);
-const customerId = user?.id;
-  const { request, error, loading } = useRequest(API_PORTS.ORDERS);
+  const customerId = user?.id;
+  const { request, error, loading } = useRequest();
 
 
-useEffect(() => {
-  if (!customerId) return;
-  let mounted = true;
+  useEffect(() => {
+    if (!customerId) return;
+    let mounted = true;
 
-  request<OrderResponse[]>(`/api/orders/user/${customerId}`)
-    .then((data) => {
-      if (data && mounted) {
-        setOrders(data.reverse());
-      } else {
-        setOrders([]);
-      }
-    })
-    .catch(() => setOrders([]));
+    request<OrderResponse[]>(`/api/orders/user/${customerId}`)
+      .then((data) => {
+        if (data && mounted) {
+          setOrders(data.reverse());
+        } else {
+          setOrders([]);
+        }
+      })
+      .catch(() => setOrders([]));
 
-  return () => {
-    mounted = false;
-  };
-}, [customerId]);
+    return () => {
+      mounted = false;
+    };
+  }, [customerId]);
 
 
   useEffect(() => {

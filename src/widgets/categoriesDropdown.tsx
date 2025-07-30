@@ -21,7 +21,7 @@ const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [categories, setCategories] = useState<Category[]>([]);
 
-  const { request, error, loading } = useRequest(API_PORTS.CATEGORIES);
+  const { request, error, loading } = useRequest();
 
   const fetchCategories = async () => {
     const response = await request<Category[]>("/api/category", {

@@ -17,9 +17,9 @@ interface LoginFormProps {
   onSuccess?: () => void;
 }
 
-export const LoginForm:React.FC<LoginFormProps> = ({ onSuccess }) => {
+export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
   const [loading, setLoading] = useState(false);
-  const { request, error, loading: requestLoading } = useRequest(API_PORTS.USERS);
+  const { request, error, loading: requestLoading } = useRequest();
   const dispatch = useAppDispatch();
 
   const onFinish = async (values: { email: string; password: string; }) => {
@@ -35,7 +35,7 @@ export const LoginForm:React.FC<LoginFormProps> = ({ onSuccess }) => {
 
       if (resp.success) {
         await fetchUser();
-           onSuccess?.();
+        onSuccess?.();
       }
 
 

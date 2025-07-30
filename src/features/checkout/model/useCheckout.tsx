@@ -16,8 +16,8 @@ export async function createOrder(orderPayload: OrderPayload): Promise<OrderResp
     body: JSON.stringify(orderPayload)
   });
   if (!res.ok) throw new Error("Ошибка при создании заказа");
-   const text = await res.text(); // 👈 получи текст ошибки от бэка
-    console.error("Order creation failed:", text);
+  const text = await res.text(); // 👈 получи текст ошибки от бэка
+  console.error("Order creation failed:", text);
   return await res.json();
 }
 
@@ -25,7 +25,7 @@ export async function createOrder(orderPayload: OrderPayload): Promise<OrderResp
 export function useCheckout() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { request, error } = useRequest(API_PORTS.ORDERS);
+  const { request, error } = useRequest();
 
   const handleCheckoutSubmit = async (order: OrderPayload) => {
     const response = await request<OrderResponse>('/api/orders/', {
@@ -39,10 +39,10 @@ export function useCheckout() {
       navigate(`/order-success/${response.id}`);
 
       setTimeout(() => {
-      dispatch(setCart([]));
-      dispatch(resetForm());
-      localStorage.removeItem('cart');
-       }, 300);
+        dispatch(setCart([]));
+        dispatch(resetForm());
+        localStorage.removeItem('cart');
+      }, 300);
     } else {
       alert("Помилка при створенні замовлення: " + error);
     }

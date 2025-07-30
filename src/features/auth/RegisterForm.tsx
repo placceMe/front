@@ -18,7 +18,7 @@ interface RegisterFormProps {
 
 export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
   const dispatch = useAppDispatch();
-  const { request } = useRequest(API_PORTS.USERS);
+  const { request } = useRequest();
   const navigate = useNavigate();
 
   const onFinish = async (values: any) => {
@@ -36,12 +36,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
     });
 
     if (resp?.success && resp?.user?.id) {
-  dispatch(setUser(resp.user));
-  onSuccess?.();
-   navigate("/profile#info");
-} else {
-  window.alert("Помилка під час реєстрації");
-}
+      dispatch(setUser(resp.user));
+      onSuccess?.();
+      navigate("/profile#info");
+    } else {
+      window.alert("Помилка під час реєстрації");
+    }
   };
 
   return (

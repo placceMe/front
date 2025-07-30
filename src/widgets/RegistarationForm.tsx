@@ -21,7 +21,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ user }) => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
 
-  const { request, error, loading } = useRequest(API_PORTS.USERS);
+  const { request, error, loading } = useRequest();
 
   useEffect(() => {
     if (user) {

@@ -20,8 +20,8 @@ export const MainLayout = () => {
     const currentLang = useSelector((state: RootState) => state.language);
 
 
-    const { request, error, loading: requestLoading } = useRequest(API_PORTS.USERS);
-    const { request: productRequest } = useRequest(API_PORTS.PRODUCTS);
+    const { request, error, loading: requestLoading } = useRequest();
+    const { request: productRequest } = useRequest();
 
 
     const dispatch = useAppDispatch();
@@ -34,9 +34,9 @@ export const MainLayout = () => {
             const localCart = localStorage.getItem("cart");
             if (localCart) {
                 try {
-                    const parsed: { id: string; quantity: number }[] = JSON.parse(localCart);
+                    const parsed: { id: string; quantity: number; }[] = JSON.parse(localCart);
 
-                    const { request: productRequest } = useRequest(API_PORTS.PRODUCTS);
+                    const { request: productRequest } = useRequest();
 
                     const products = await Promise.all(
                         parsed.map(async ({ id }) => {
