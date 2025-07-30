@@ -1,50 +1,22 @@
-/*
-import React from "react";
-import { useUserProductIds } from "@shared/hooks/useUserProductIds";
-import { useProductsByIds } from "@shared/hooks/useProductsByIds";
-import ProductCard from "../app/layouts/delete/ProductCard/ProductCard";
-
-const userId = JSON.parse(localStorage.getItem("user") || "{}").id || "guest";
-
-export const Wishlist = () => {
-  const [wishlist, setWishlist] = useUserProductIds(userId, "userWishlist");
-  const { products, loading } = useProductsByIds(wishlist);
-
-  if (!wishlist.length) return null;
-
-  return (
-    <div className="mx-40 my-5">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-        {products.map(prod => (
-
-          <ProductCard key={prod.id} {...prod} />
-
-        ))}</div>
-    </div>
-  );
-};
-*/
-import React from "react";
 import { useUserProductIds } from "@shared/hooks/useUserProductIds";
 import { useProductsByIds } from "@shared/hooks/useProductsByIds";
 import ProductCard from "../app/layouts/delete/ProductCard/ProductCard";
 import { useAppSelector } from "@store/hooks";
-import { BlurBlock } from "@shared/ui/BlurBlock";
 import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
-import wishlistEmptyImg from '../assets/pages/favourite.png'
+import wishlistEmptyImg from '../assets/pages/favourite.png';
 
 
 
 export const Wishlist = () => {
   const userId = useAppSelector(state => state.user.user?.id) || "guest";
   const [wishlist] = useUserProductIds(userId, "userWishlist");
-  const { products, loading } = useProductsByIds(wishlist);
+  const { products } = useProductsByIds(wishlist);
   const navigate = useNavigate();
 
   if (!wishlist.length) {
     return (
-   
+
       <div className="text-center text-[#1f2614] px-4 mt-[50px]">
         <img
           src={wishlistEmptyImg}
@@ -65,7 +37,7 @@ export const Wishlist = () => {
           Продовжити
         </Button>
       </div>
-    
+
     );
   }
 
@@ -73,8 +45,8 @@ export const Wishlist = () => {
     <div className="mx-auto max-w-[1440px] px-2 md:px-8 pb-10">
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2 mb-6">
         <div>
-          
-             <h2 className="text-3xl font-semibold mb-1 text-[#3E4826]">
+
+          <h2 className="text-3xl font-semibold mb-1 text-[#3E4826]">
             Список бажань
           </h2>
           <div className="text-[#000000]-500 text-sm font-medium">
@@ -88,7 +60,7 @@ export const Wishlist = () => {
         {products.map(prod => (
           <div
             key={prod.id}
-            
+
             style={{ minHeight: 320 }}
           >
             <ProductCard {...prod} />

@@ -1,8 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { Product } from "@shared/types/api";
-import { allProductsMock } from "../../../shared/mocks/allProductsMock";
-import { mockProducts } from "../../../shared/mocks/productMock"
-
 
 interface ProductState {
   product: Product | null;

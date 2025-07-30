@@ -340,11 +340,11 @@ export const ProductInfo = ({ product }: Props) => {
 */
 /////////////////////////////
 import { useState } from 'react';
-import { 
-  Card, Typography, Rate, Space, Descriptions, Flex, Button, InputNumber, theme 
+import {
+  Card, Typography, Rate, Space, Descriptions, Flex, Button, InputNumber
 } from 'antd';
-import { 
-  MinusOutlined, PlusOutlined, HeartOutlined, HeartFilled, SwapOutlined 
+import {
+  MinusOutlined, PlusOutlined, HeartOutlined, HeartFilled, SwapOutlined
 } from '@ant-design/icons';
 import { GlassCard } from '@shared/ui/GlassCard/GlassCard';
 import { TagBlock } from './TagBlock';
@@ -355,7 +355,6 @@ import { BuyOnCreditButton } from '@features/buyOnCredit/ui/BuyOnCreditButton';
 import { ProductSellerBlock } from '../../../widgets/ProductSellerBlock/ProductSellerBlock';
 import StarOrangeIcon from '@assets/icons/star_yellow.svg?react';
 import type { Product } from '@shared/types/api';
-import { useLocalStorageArray } from '@shared/useLocalStorageArray';
 import { useUserProductIds } from '@shared/hooks/useUserProductIds';
 import { useAppSelector } from '@store/hooks';
 
@@ -366,7 +365,7 @@ interface Props {
 }
 
 export const ProductInfo = ({ product }: Props) => {
-  const { token } = theme.useToken();
+
   const [quantity, setQuantity] = useState(1);
   //const [isFavorite, setIsFavorite] = useState(false);
   const [isCompared, setIsCompared] = useState(false);
@@ -379,8 +378,8 @@ export const ProductInfo = ({ product }: Props) => {
 
   const incrementQuantity = () => setQuantity(prev => prev + 1);
   const decrementQuantity = () => { if (quantity > 1) setQuantity(prev => prev - 1); };
-const userId = useAppSelector(state => state.user.user?.id) || "guest";
-const [wishlist, setWishlist] = useUserProductIds(userId, "userWishlist"); // массив id-шек!
+  const userId = useAppSelector(state => state.user.user?.id) || "guest";
+  const [wishlist, setWishlist] = useUserProductIds(userId, "userWishlist"); // массив id-шек!
 
   /*
 const toggleFavorite = (prod: any) => {
@@ -389,48 +388,48 @@ const toggleFavorite = (prod: any) => {
   else setWishlist([prod, ...wishlist]);
 };*/
 
-const isFavorite = wishlist.includes(product.id);
+  const isFavorite = wishlist.includes(product.id);
 
-const toggleFavorite = () => {
-  if (isFavorite) {
-    setWishlist(wishlist.filter((id) => id !== product.id));
-  } else {
-    setWishlist([product.id, ...wishlist]);
-  }
-};
+  const toggleFavorite = () => {
+    if (isFavorite) {
+      setWishlist(wishlist.filter((id) => id !== product.id));
+    } else {
+      setWishlist([product.id, ...wishlist]);
+    }
+  };
   const toggleCompare = () => setIsCompared(prev => !prev);
 
   // oldPrice: если не указан, считаем price * 2
-  const displayOldPrice =  product.price * 2;
+  const displayOldPrice = product.price * 2;
 
   return (
     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
       {/* Product Header Card */}
       <GlassCard>
         <Flex justify="space-between" align="flex-start" className="mb-4">
-          <Title 
-            level={2} 
+          <Title
+            level={2}
             className="font-montserrat font-semibold text-h1 text-color_gradient flex-1"
             style={{ marginBottom: 0 }}
           >
             {product.title}
           </Title>
           <div className="hidden sm:flex gap-2 ml-4">
-          {/**  <Button
+            {/**  <Button
               type="text"
               icon={<SwapOutlined />}
               onClick={toggleCompare}
               className={`text-gray-600 hover:text-blue-600 ${isCompared ? 'text-blue-600' : ''}`}
               size="large"
-            />*/} 
-            
-<Button
-  type="text"
-  icon={isFavorite ? <HeartFilled /> : <HeartOutlined />}
-  onClick={toggleFavorite}
-  className={`text-gray-600 hover:text-red-500 ${isFavorite ? 'text-red-500' : ''}`}
-  size="large"
-/>
+            />*/}
+
+            <Button
+              type="text"
+              icon={isFavorite ? <HeartFilled /> : <HeartOutlined />}
+              onClick={toggleFavorite}
+              className={`text-gray-600 hover:text-red-500 ${isFavorite ? 'text-red-500' : ''}`}
+              size="large"
+            />
 
           </div>
         </Flex>
@@ -438,26 +437,26 @@ const toggleFavorite = () => {
           <Flex align="center" gap="small">
             <Rate
               disabled
-              defaultValue={ 4.8}
+              defaultValue={4.8}
               count={5}
               character={<StarOrangeIcon width={22} height={22} />}
               style={{ fontSize: 22 }}
               allowHalf
             />
             <Text className="font-montserrat font-normal text-[15px] text-color05">
-              ({ 3} відгуки)
+              ({3} відгуки)
             </Text>
           </Flex>
-          <Descriptions 
-            column={1} 
+          <Descriptions
+            column={1}
             size="small"
             items={[
               {
                 label: <Text strong className="font-montserrat text-color05">Код товару</Text>,
-              children: <Text className="font-montserrat text-color05">
- {product.id?.match(/\d/g)?.join('') || '—'}
+                children: <Text className="font-montserrat text-color05">
+                  {product.id?.match(/\d/g)?.join('') || '—'}
 
-</Text>
+                </Text>
               },
               {
                 label: <Text strong className="font-montserrat text-color05">Виробник</Text>,
@@ -482,7 +481,7 @@ const toggleFavorite = () => {
           <TagBlock
             inStock={true}
             isTop={true}
-            discount={ 10}
+            discount={10}
           />
           <ProductPriceBlock
             price={product.price}

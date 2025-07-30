@@ -1,6 +1,6 @@
 
 import { useParams } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/store/hooks';
 import { fetchProduct } from '../../entities/product/model/fetchProduct';
 import { Spin } from 'antd';
@@ -22,17 +22,17 @@ export const TABS = [
   {
     key: "main",
     label: "Все про товар",
-    icon: (active: boolean) => <InfoIcon fill={active ? "#fff" : "#3E4826"} width={18} height={18}/>
+    icon: (active: boolean) => <InfoIcon fill={active ? "#fff" : "#3E4826"} width={18} height={18} />
   },
   {
     key: "specs",
     label: "Характеристики",
-    icon: (active: boolean) => <SpecsIcon fill={active ? "#fff" : "#3E4826"} width={18} height={18}/>
+    icon: (active: boolean) => <SpecsIcon fill={active ? "#fff" : "#3E4826"} width={18} height={18} />
   },
   {
     key: "reviews",
     label: "Відгуки",
-    icon: (active: boolean) => <ReviewsIcon fill={active ? "#fff" : "#3E4826"} width={18} height={18}/>
+    icon: (active: boolean) => <ReviewsIcon fill={active ? "#fff" : "#3E4826"} width={18} height={18} />
   },
 ];
 export function addProductToLocalList(userId: string, productId: string) {
@@ -91,17 +91,17 @@ export const ProductPage = () => {
     window.location.hash = `#${key}`;
   };
 
-   useEffect(() => {
-  if (product?.id && userId) {
-    addProductToLocalList(userId, product.id);
-  }
-}, [product?.id, userId]);
+  useEffect(() => {
+    if (product?.id && userId) {
+      addProductToLocalList(userId, product.id);
+    }
+  }, [product?.id, userId]);
 
   if (loading || !product) return <Spin size="large" className="mt-10" />;
 
 
   return (
-      <div className="py-8">
+    <div className="py-8">
       <div className="">
         <BlurBlock
           backgroundImage={tab === "main" ? productBg : undefined}

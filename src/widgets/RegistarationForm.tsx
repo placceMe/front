@@ -5,7 +5,7 @@ import { useAppDispatch } from "@store/hooks";
 import { logout, setUser } from "../entities/user/model/userSlice";
 import { UserOutlined, LockOutlined, IdcardOutlined, PhoneOutlined, CalendarOutlined } from "@ant-design/icons";
 import type { User } from "@shared/types/api";
-import { API_PORTS, useRequest } from "@shared/request/useRequest";
+import { useRequest } from "@shared/request/useRequest";
 
 const BLUR_STYLE = {
   background: "rgba(229,229,216,0.7)",
@@ -21,7 +21,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ user }) => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
 
-  const { request, error, loading } = useRequest();
+  const { request } = useRequest();
 
   useEffect(() => {
     if (user) {

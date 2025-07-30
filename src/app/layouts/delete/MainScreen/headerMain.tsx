@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  FaBalanceScale,
   FaHeart,
   FaUser,
   FaShoppingCart,
@@ -46,12 +45,12 @@ const Header: React.FC = () => {
         </div>
 
         <div className="header-right">
-        <div className="icons">
-        {  /*<FaBalanceScale />*/}
-          <FaHeart />
-          <FaUser />
-          <FaShoppingCart />
-        </div>
+          <div className="icons">
+            {  /*<FaBalanceScale />*/}
+            <FaHeart />
+            <FaUser />
+            <FaShoppingCart />
+          </div>
         </div>
       </div>
     </header>

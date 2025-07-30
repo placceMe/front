@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, Input, InputNumber, Button, Upload, Row, Col, Select, message } from "antd";
 import { PlusOutlined, InboxOutlined } from "@ant-design/icons";
 import type { Category } from "@shared/types/api";
@@ -10,13 +10,13 @@ const BLUR_STYLE = {
   border: "1px solid #3E4826",
 };
 
-type AddProductCardProps = { sellerId: string };
+type AddProductCardProps = { sellerId: string; };
 
-export const AddProductCard =  ({ sellerId }: AddProductCardProps) => {
+export const AddProductCard = ({ sellerId }: AddProductCardProps) => {
   const [mainImage, setMainImage] = useState<any>(null);
   const [gallery, setGallery] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -25,9 +25,9 @@ const [categories, setCategories] = useState<Category[]>([]);
       .then((data: Category[]) => setCategories(data.filter(cat => cat.status === "Active")));
   }, []);
 
-const handleMainImageChange = (info: any) => {
-  setMainImage(info.fileList[0]?.originFileObj || null);
-};
+  const handleMainImageChange = (info: any) => {
+    setMainImage(info.fileList[0]?.originFileObj || null);
+  };
 
   const handleGalleryChange = (info: any) => {
     setGallery(info.fileList.map((file: any) => file.originFileObj).filter(Boolean));
@@ -35,19 +35,19 @@ const handleMainImageChange = (info: any) => {
 
   const onFinish = async (values: any) => {
     setLoading(true);
-     console.log('Form values:', values);
+    console.log('Form values:', values);
     console.log('Main image:', mainImage);
     console.log('Gallery:', gallery);
     try {
       // Подготовка данных
       const formData = new FormData();
       Object.entries(values).forEach(([k, v]) => {
-  formData.append(k, String(v ?? ""));
-});
+        formData.append(k, String(v ?? ""));
+      });
       formData.append("SellerId", sellerId);
 
       if (mainImage) formData.append("MainImage", mainImage);
-      gallery.forEach((file, idx) => formData.append(`Gallery`, file));
+      gallery.forEach((file) => formData.append(`Gallery`, file));
 
       await fetch("http://localhost:5003/api/products/with-files", {
         method: "POST",
@@ -96,7 +96,7 @@ const handleMainImageChange = (info: any) => {
                 style={{
                   ...BLUR_STYLE,
                   //background: 'transparent',
-                 // border: '1px solid rgba(255, 255, 255, 0.3)',
+                  // border: '1px solid rgba(255, 255, 255, 0.3)',
                 }}
                 className="rounded-xl font-semibold h-10"
                 placeholder="Оберіть категорію"

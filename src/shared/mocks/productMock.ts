@@ -1,7 +1,7 @@
 import type { Product } from "@shared/types/api";
 import { mockCategories } from "./categoryMock";
 
-export const mockProducts: Product[] = [
+export const mockProducts: any[] = [
   {
     id: "p1",
     title: "Тактичний шолом EmberCore Shield M1",

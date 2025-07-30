@@ -266,11 +266,10 @@ export const ProductGallery = ({ images }: { images: string[] }) => {
 
 import { Button, Image } from "antd";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
-import  RightIcon from '../../assets/icons/arrow.svg?react';
-import  LeftIcon from '../../assets/icons/arrow.svg?react';
+import RightIcon from '../../assets/icons/arrow.svg?react';
+import LeftIcon from '../../assets/icons/arrow.svg?react';
 
-export const ProductGallery = ({ images }: { images: string[] }) => {
+export const ProductGallery = ({ images }: { images: string[]; }) => {
   const [current, setCurrent] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const thumbRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -303,74 +302,74 @@ export const ProductGallery = ({ images }: { images: string[] }) => {
   const fullImages = images.map(img => FILES_BASE_URL + img);
 
   return (<>
- <div className="relative w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center">
-  {/* Левая стрелка */}
-  <Button
-    type="text"
-    onClick={prev}
-    className="absolute left-0 top-0 -translate-y-1/2 z-10"
-    style={{ background: "none", boxShadow: "none", border: "none", padding: 0 }}
-    aria-label="Назад"
-  >
-    <LeftIcon width={28} height={28} fill="#5a6b3b" style={{ transform: "rotate(180deg)" }} />
-  </Button>
-
-  {/* Картинка */}
-  <Image
-    src={fullImages[current]}
-    alt=""
-    className="object-contain w-full h-full"
-    preview={false}
-  />
-
-  {/* Правая стрелка */}
-  <Button
-    type="text"
-    onClick={next}
-    className="absolute right-0 top-0 -translate-y-1/2 z-10"
-    style={{ background: "none", boxShadow: "none", border: "none", padding: 0 }}
-    aria-label="Вперед"
-  >
-    <RightIcon width={28} height={28} fill="#5a6b3b" />
-  </Button>
-</div>
-
-
- {/* Миниатюры, максимум 4 — max-w фиксирует скролл */}
-      <div
-        ref={containerRef}
-        className="flex gap-2 mt-2 overflow-x-auto max-w-[510px] custom-scrollbar "
-        style={{ paddingBottom: 4 }}
+    <div className="relative w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center">
+      {/* Левая стрелка */}
+      <Button
+        type="text"
+        onClick={prev}
+        className="absolute left-0 top-0 -translate-y-1/2 z-10"
+        style={{ background: "none", boxShadow: "none", border: "none", padding: 0 }}
+        aria-label="Назад"
       >
-        {fullImages.map((img, idx) => (
-          <div
-            key={idx}
-            ref={el => setThumbRef(el, idx)}
-            onClick={() => setCurrent(idx)}
-            className={
-              "flex items-center justify-center h-30 w-30 min-w-[120px] rounded-lg cursor-pointer transition-all duration-200 " +
-              (current === idx
-                ? "ring-2 ring-[#5a6b3b] bg-[#E5E5D8]"
-                : "border border-[#E5E5D8] bg-transparent")
-            }
-            tabIndex={0}
-          >
-            <Image
-              width={120}
-              src={img}
-              className="object-contain rounded"
-              preview={false}
-              style={{
-                opacity: current === idx ? 1 : 0.7,
-                transition: 'opacity 0.2s'
-              }}
-            />
-          </div>
-        ))}
-      </div>
+        <LeftIcon width={28} height={28} fill="#5a6b3b" style={{ transform: "rotate(180deg)" }} />
+      </Button>
 
-      {/* Стили скролла */}
-      <style>{`
+      {/* Картинка */}
+      <Image
+        src={fullImages[current]}
+        alt=""
+        className="object-contain w-full h-full"
+        preview={false}
+      />
+
+      {/* Правая стрелка */}
+      <Button
+        type="text"
+        onClick={next}
+        className="absolute right-0 top-0 -translate-y-1/2 z-10"
+        style={{ background: "none", boxShadow: "none", border: "none", padding: 0 }}
+        aria-label="Вперед"
+      >
+        <RightIcon width={28} height={28} fill="#5a6b3b" />
+      </Button>
+    </div>
+
+
+    {/* Миниатюры, максимум 4 — max-w фиксирует скролл */}
+    <div
+      ref={containerRef}
+      className="flex gap-2 mt-2 overflow-x-auto max-w-[510px] custom-scrollbar "
+      style={{ paddingBottom: 4 }}
+    >
+      {fullImages.map((img, idx) => (
+        <div
+          key={idx}
+          ref={el => setThumbRef(el, idx)}
+          onClick={() => setCurrent(idx)}
+          className={
+            "flex items-center justify-center h-30 w-30 min-w-[120px] rounded-lg cursor-pointer transition-all duration-200 " +
+            (current === idx
+              ? "ring-2 ring-[#5a6b3b] bg-[#E5E5D8]"
+              : "border border-[#E5E5D8] bg-transparent")
+          }
+          tabIndex={0}
+        >
+          <Image
+            width={120}
+            src={img}
+            className="object-contain rounded"
+            preview={false}
+            style={{
+              opacity: current === idx ? 1 : 0.7,
+              transition: 'opacity 0.2s'
+            }}
+          />
+        </div>
+      ))}
+    </div>
+
+    {/* Стили скролла */}
+    <style>{`
         .custom-scrollbar {
           scrollbar-width: thin;
           scrollbar-color: #7F7A77 transparent;
@@ -386,6 +385,6 @@ export const ProductGallery = ({ images }: { images: string[] }) => {
           background: transparent;
         }
       `}</style>
-</>
+  </>
   );
 };

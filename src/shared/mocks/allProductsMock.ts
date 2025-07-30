@@ -1,7 +1,6 @@
 import type { Product } from '@shared/types/api';
-import img from '../../../public/mock/mock1.png'
 
-export const allProductsMock: Product[] = [
+export const allProductsMock: any[] = [
   {
     id: '1',
     title: 'Тактичний шолом EmberCore Shield M1',

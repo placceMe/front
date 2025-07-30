@@ -1,4 +1,4 @@
-import { API_PORTS, useRequest } from "@shared/request/useRequest";
+import { useRequest } from "@shared/request/useRequest";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -21,7 +21,7 @@ const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [categories, setCategories] = useState<Category[]>([]);
 
-  const { request, error, loading } = useRequest();
+  const { request } = useRequest();
 
   const fetchCategories = async () => {
     const response = await request<Category[]>("/api/category", {

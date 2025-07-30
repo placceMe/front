@@ -1,5 +1,4 @@
 // shared/ui/PaymentIcons.tsx
-import React from 'react';
 import master from '../../assets/productCard/payment/mastercard.png';
 import privat from '../../assets/productCard/payment/privatbank.png';
 import visa from '../../assets/productCard/payment/visa.png';

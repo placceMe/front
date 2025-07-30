@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Form, Input, Button, Card } from "antd";
+import { Form, Input, Button } from "antd";
 import { useAppDispatch } from "@store/hooks";
 import { setUser } from "../../entities/user/model/userSlice";
-import type { User } from "@shared/types/api";
 import { EyeOutlined, EyeInvisibleOutlined, UserOutlined, LockOutlined } from "@ant-design/icons";
-import { API_PORTS, useRequest } from "@shared/request/useRequest";
+import { useRequest } from "@shared/request/useRequest";
 
 // Пример для обертывания с эффектом блюра
 const BLUR_STYLE = {
@@ -19,7 +18,7 @@ interface LoginFormProps {
 
 export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
   const [loading, setLoading] = useState(false);
-  const { request, error, loading: requestLoading } = useRequest();
+  const { request } = useRequest();
   const dispatch = useAppDispatch();
 
   const onFinish = async (values: { email: string; password: string; }) => {

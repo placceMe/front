@@ -1,5 +1,4 @@
 
-import { Tabs } from 'antd';
 import React from 'react';
 
 interface Tab {

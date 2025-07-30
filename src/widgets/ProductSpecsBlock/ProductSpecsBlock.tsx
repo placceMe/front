@@ -1,8 +1,7 @@
 import { FaCog } from "react-icons/fa";
-import type { Product } from "@shared/types/api";
 
 
-export const product= {
+export const product = {
   id: "1",
   description: "Найвищий захист і комфорт у кожній деталі...",
   material: "Арамідне волокно / Кевлар",
@@ -17,7 +16,7 @@ export const product= {
 
 
 
-export const ProductSpecsBlock = ()  => (
+export const ProductSpecsBlock = () => (
   <div >
     <h2 className="text-[1.8rem] font-bold flex items-center mb-2 text-[#0E120A]">
       <FaCog className="mr-2 text-[#454E30]" /> Характеристики

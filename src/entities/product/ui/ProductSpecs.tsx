@@ -5,7 +5,9 @@ interface Props {
   product: Product;
 }
 
-export const ProductSpecs = ({ product }: Props) => {
+export const ProductSpecs = ({
+  // product 
+}: Props) => {
   return (
     <Descriptions bordered column={1} size="middle" title="Характеристики">
       <Descriptions.Item label="Матеріал">Арамідне волокно / Кевлар</Descriptions.Item>

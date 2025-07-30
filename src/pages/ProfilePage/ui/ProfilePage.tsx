@@ -14,13 +14,6 @@ import { ViewedProducts } from '@pages/ViewedProducts';
 import { Wishlist } from '@pages/Wishlist';
 
 
-interface Tab {
-  key: string;
-  label: string;
-  icon?: React.ReactNode;
-}
-
-
 export const ProfilePage = () => {
   const user = useAppSelector(state => state.user.user);
 

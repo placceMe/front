@@ -60,7 +60,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 export default ProductCard;
 */
 import React, { useState } from 'react';
-import { FaHeart, FaBalanceScale, FaCartPlus } from 'react-icons/fa';
+import { FaHeart, FaCartPlus } from 'react-icons/fa';
 import './productCard.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -72,39 +72,38 @@ interface ProductCardProps {
   isAvailable?: boolean;
 }
 const FILES_BASE_URL = 'http://localhost:5001/api/files/file/';
-const BASE_URL = 'http://localhost:5003/'; // твой backend url
 
 const ProductCard: React.FC<ProductCardProps> = ({
   id,
   title,
-   mainImageUrl,
+  mainImageUrl,
   price,
   isAvailable = true,
 }) => {
   const [quantity, setQuantity] = useState(1);
   const navigate = useNavigate();
 
-/*const imageUrl = image ? FILES_BASE_URL + image : '/placeholder.png';*/
-const imageUrl =
-  !mainImageUrl
-    ? '/placeholder.png'
-    : mainImageUrl.startsWith('http')
-      ? mainImageUrl
-      : FILES_BASE_URL + mainImageUrl;
+  /*const imageUrl = image ? FILES_BASE_URL + image : '/placeholder.png';*/
+  const imageUrl =
+    !mainImageUrl
+      ? '/placeholder.png'
+      : mainImageUrl.startsWith('http')
+        ? mainImageUrl
+        : FILES_BASE_URL + mainImageUrl;
 
 
   // Артикул = первые 1/4 id (по символам, округляем вверх)
-const article = id.replace(/\D/g, '');
+  const article = id.replace(/\D/g, '');
 
 
   const increase = () => setQuantity((q) => q + 1);
   const decrease = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
-console.log("ProductCard image:", mainImageUrl);
+  console.log("ProductCard image:", mainImageUrl);
 
   return (
     <div className="product-card">
       <div className="card-icons">
-         {  /*  <button className="icon-btn"><FaBalanceScale /></button>  <FaBalanceScale />*/}
+        {  /*  <button className="icon-btn"><FaBalanceScale /></button>  <FaBalanceScale />*/}
         <button className="icon-btn"><FaHeart /></button>
       </div>
 

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaChevronUp, FaChevronDown, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import type { OrderResponse, OrderItemResponse } from '@shared/types/api';
-import { API_PORTS, useRequest } from '@shared/request/useRequest';
+import { useRequest } from '@shared/request/useRequest';
 import { useAppSelector } from '@store/hooks';
 
 const FILES_BASE_URL = 'http://localhost:5001/api/files/file/';
@@ -25,7 +25,7 @@ const OrdersTab: React.FC = () => {
 
   const user = useAppSelector(state => state.user.user);
   const customerId = user?.id;
-  const { request, error, loading } = useRequest();
+  const { request } = useRequest();
 
 
   useEffect(() => {

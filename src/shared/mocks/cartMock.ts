@@ -1,6 +1,5 @@
-import type { CartItem } from '@shared/types/cart';
 
-export const cartMock: CartItem[] = [
+export const cartMock: any[] = [
   {
     product: {
       id: '1',

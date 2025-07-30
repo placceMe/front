@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import type { OrderPayload } from '@shared/types/order';
 
 import type { OrderResponse } from '@shared/types/api';
-import { API_PORTS, useRequest } from '@shared/request/useRequest';
+import { useRequest } from '@shared/request/useRequest';
 
 
 export async function createOrder(orderPayload: OrderPayload): Promise<OrderResponse> {

@@ -1,4 +1,4 @@
-import { List, Typography } from 'antd';
+import { List } from 'antd';
 import { useAppSelector } from '../../../app/store/hooks';
 import { CartItemCard } from '@features/cart/ui/CartItemCard';
 import type { RootState } from '../../../app/store/store';
@@ -18,8 +18,8 @@ export const CheckoutCartList = () => {
         renderItem={(item: CartItem) => (
           <CartItemCard
             item={item}
-            onChangeQuantity={() => {}}
-            onRemove={() => {}}
+            onChangeQuantity={() => { }}
+            onRemove={() => { }}
           />
         )}
       />

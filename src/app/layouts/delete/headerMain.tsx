@@ -1,6 +1,5 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import {
-  FaBalanceScale,
   FaHeart,
   FaUser,
   FaShoppingCart,
@@ -10,24 +9,23 @@ import Logo from "./Logo.png";
 import CategoriesDropdown from "../../../widgets/categoriesDropdown"; // проверь путь!
 import "./headerMain.css";
 import { useAppSelector } from "@store/hooks";
-import { LoginForm } from "@features/auth/LoginForm ";
 import { Modal } from "antd";
 import { AuthTabs } from "..//..//../widgets/AuthTabs";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const [showCategories, setShowCategories] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  //  const [searchTerm, setSearchTerm] = useState('');
   const user = useAppSelector(state => state.user.user);
-const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-const handleUserClick = () => {
-  if (user?.id) {
-    navigate('/profile');
-  } else {
-    setIsModalOpen(true);
-  }
-};
+  const handleUserClick = () => {
+    if (user?.id) {
+      navigate('/profile');
+    } else {
+      setIsModalOpen(true);
+    }
+  };
 
 
   return (
@@ -57,19 +55,19 @@ const handleUserClick = () => {
         <div className="header-center relative">
           <div
             className="relative inline-block"
-        >
-             <button
-            className="category-button flex items-center gap-2 bg-yellow-700 text-white px-4 py-2 rounded-md"
-            type="button"
-            onClick={() => setShowCategories(v => !v)}
           >
-            ☰ Категорії
-          </button>
-          <CategoriesDropdown
-            isOpen={showCategories}
-            onClose={() => setShowCategories(false)}
-          />
-        </div>
+            <button
+              className="category-button flex items-center gap-2 bg-yellow-700 text-white px-4 py-2 rounded-md"
+              type="button"
+              onClick={() => setShowCategories(v => !v)}
+            >
+              ☰ Категорії
+            </button>
+            <CategoriesDropdown
+              isOpen={showCategories}
+              onClose={() => setShowCategories(false)}
+            />
+          </div>
           <input
             type="text"
             placeholder="Пошук"
@@ -80,14 +78,14 @@ const handleUserClick = () => {
         <div className="header-right">
           <div className="icons flex gap-4 items-center">
             {/*<FaBalanceScale />*/}
-           <FaHeart onClick={() => navigate('/Wishlist')} className="cursor-pointer" />
-           <button
-  onClick={handleUserClick}
-  className="hover:text-[#5a6b3b] focus:outline-none"
-  title="Особистий кабінет"
->
-  <FaUser />
-</button>
+            <FaHeart onClick={() => navigate('/Wishlist')} className="cursor-pointer" />
+            <button
+              onClick={handleUserClick}
+              className="hover:text-[#5a6b3b] focus:outline-none"
+              title="Особистий кабінет"
+            >
+              <FaUser />
+            </button>
 
             <button
               onClick={() => navigate('/cart')}
@@ -97,14 +95,14 @@ const handleUserClick = () => {
               <FaShoppingCart />
             </button>
 
-          <Modal
-  open={isModalOpen}
-  onCancel={() => setIsModalOpen(false)}
-  footer={null}
-  destroyOnHidden
->
-  <AuthTabs onSuccess={() => setIsModalOpen(false)}/>
-</Modal>
+            <Modal
+              open={isModalOpen}
+              onCancel={() => setIsModalOpen(false)}
+              footer={null}
+              destroyOnHidden
+            >
+              <AuthTabs onSuccess={() => setIsModalOpen(false)} />
+            </Modal>
           </div>
         </div>
       </div>

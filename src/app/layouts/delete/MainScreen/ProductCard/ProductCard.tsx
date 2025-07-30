@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaHeart, FaBalanceScale, FaCartPlus } from 'react-icons/fa';
+import { FaHeart, FaCartPlus } from 'react-icons/fa';
 import './productCard.css';
 
 interface ProductCardProps {
@@ -33,7 +33,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <button className="icon-btn"><FaHeart /></button>
       </div>
 
-      <img src={image} alt={title} className="product-image"  onError={(e) => (e.currentTarget.src = '/placeholder.png')}/>
+      <img src={image} alt={title} className="product-image" onError={(e) => (e.currentTarget.src = '/placeholder.png')} />
       <h3 className="product-title">{title}</h3>
       <p className="product-price" style={{ fontWeight: 500 }}>{price} ₴</p>
       <p className="product-price">Артикул: {articul}</p>

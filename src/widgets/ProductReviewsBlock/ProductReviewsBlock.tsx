@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaStar } from "react-icons/fa";
-import { Button, Space, Typography } from "antd";
-import StarIcon from '../../assets/icons/star_yellow.svg?react'
+import { Button, Typography } from "antd";
+import StarIcon from '../../assets/icons/star_yellow.svg?react';
 
 const mockReviews = [
   { name: "Сергій", rating: 5, date: "20 червня 2025", comment: "Чудовий продукт!" },

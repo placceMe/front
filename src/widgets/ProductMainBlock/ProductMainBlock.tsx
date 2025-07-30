@@ -1,11 +1,8 @@
-import { AddToCartButton } from '@features/addToCart/ui/AddToCartButton';
 import type { Product } from '@shared/types/api';
-import { Tag } from 'antd';
 import { ProductGallery } from '../ProductGallery/ProductGallery';
 import { ProductInfo } from '../../entities/product/ui/ProductInfo';
 import { ProductDeliveryBlock } from '../../widgets/ProductDeliveryBlock/ProductDeliveryBlock';
 import { ProductGuaranteeBlock } from '../../widgets/ProductGuaranteeBlock/ProductGuaranteeBlock';
-import { BlurBlock } from '@shared/ui/BlurBlock';
 
 interface Props {
   product: Product;

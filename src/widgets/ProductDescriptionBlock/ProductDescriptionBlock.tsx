@@ -1,6 +1,5 @@
-import { FaCheckCircle } from 'react-icons/fa';
 import type { Product } from "@shared/types/api";
-import InfoIcon from '../../assets/icons/info.svg?react'
+import InfoIcon from '../../assets/icons/info.svg?react';
 
 interface Props {
   product: Product;

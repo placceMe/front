@@ -54,16 +54,16 @@ import type { Product } from '@shared/types/api';
 
 const helmets: Product[] = allProductsMock.filter(p => p.categoryId === 'clothes');
 const plates: Product[] = allProductsMock.filter(p => p.categoryId === 'equipment');
-const headsets: Product[] = allProductsMock.filter(p => p.categoryId === 'equipment');
+//const headsets: Product[] = allProductsMock.filter(p => p.categoryId === 'equipment');
 //const headsets: Product[] = allProductsMock.filter(p => p.categoryId === 'headsets');
 
 const ProductPage: React.FC = () => {
   return (
     <>
-    <ProductGrid title="Популярні товари" products={helmets} />
-    <ProductGrid title="Тактичне спорядження" products={plates} />
-    <ProductGrid title="Тактичний одяг" products={helmets} />
-    <ProductGrid title="Нещодавно переглянуті" products={plates} />
+      <ProductGrid title="Популярні товари" products={helmets} />
+      <ProductGrid title="Тактичне спорядження" products={plates} />
+      <ProductGrid title="Тактичний одяг" products={helmets} />
+      <ProductGrid title="Нещодавно переглянуті" products={plates} />
     </>
   );
 };
