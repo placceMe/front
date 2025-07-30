@@ -1,7 +1,6 @@
-
-import { createSlice } from '@reduxjs/toolkit';
-import type { Product } from '../../../shared/types/api';
-import { fetchProduct } from './fetchProduct';
+/*import { createSlice } from "@reduxjs/toolkit";
+import { fetchProduct } from "./fetchProduct";
+import type { Product } from "@shared/types/api";
 
 interface ProductState {
   product: Product | null;
@@ -15,7 +14,7 @@ const initialState: ProductState = {
 };
 
 const productSlice = createSlice({
-  name: 'product',
+  name: "product",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -36,3 +35,4 @@ const productSlice = createSlice({
 });
 
 export default productSlice.reducer;
+*/

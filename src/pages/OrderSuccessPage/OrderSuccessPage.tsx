@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Typography, Table, Descriptions, Spin } from "antd";
+import { useRequest } from "@shared/request/useRequest";
 
 interface ProductInfo {
   id: string;
@@ -26,17 +27,21 @@ interface OrderDetails {
   notes?: string;
 }
 
+
+
 export const OrderSuccessPage = () => {
   const { orderId } = useParams();
   const [order, setOrder] = useState<OrderDetails | null>(null);
   const navigate = useNavigate();
+ const { request } = useRequest();
 
-  useEffect(() => {
-    fetch(`http://localhost:5004/api/orders/${orderId}`)
-      .then(res => res.json())
-      .then(setOrder)
-      .catch(() => setOrder(null));
-  }, [orderId]);
+useEffect(() => {
+  if (!orderId) return;
+  request<OrderDetails>(`/api/orders/${orderId}`)
+    .then(setOrder)
+    .catch(() => setOrder(null));
+}, [orderId]);
+
 
   if (!order) return <Spin size="large" className="mt-10" />;
 

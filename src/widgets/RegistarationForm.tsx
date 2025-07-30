@@ -37,24 +37,25 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ user }) => {
   }, [user, form]);
 
   const onFinish = async (values: any) => {
-    const resp = await fetch(`http://localhost:5002/api/Users/${user.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...user,
-        ...values,
-        birthDate: values.birthDate ? values.birthDate.toISOString() : null,
-      }),
-    });
-    if (resp.ok) {
-      const updatedUser = await resp.json();
-      dispatch(setUser(updatedUser));
-      window.alert("Дані оновлено!");
-    } else {
-      window.alert("Помилка оновлення!");
-    }
-  };
+  const updatedUser = await request(`/api/Users/${user.id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      ...user,
+      ...values,
+      birthDate: values.birthDate ? values.birthDate.toISOString() : null,
+    }),
+  });
 
+  if (updatedUser) {
+    dispatch(setUser(updatedUser));
+    window.alert("Дані оновлено!");
+  } else {
+    window.alert("Помилка оновлення!");
+  }
+};
   if (!user) return null;
 
 
