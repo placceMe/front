@@ -1,7 +1,7 @@
 
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../app/store/hooks';
+import { useAppSelector } from '../../app/store/hooks';
 import { useProduct } from '../../entities/product/model/fetchProduct';
 import { Spin } from 'antd';
 import { ProductMainBlock } from '../../widgets/ProductMainBlock/ProductMainBlock';
@@ -64,9 +64,8 @@ export function addProductToWishlist(userId: string, productId: string) {
 
 export const ProductPage = () => {
   const { id } = useParams();
-  const dispatch = useAppDispatch();
- // const { product, loading } = useAppSelector(state => state.product);
-    const { product, loading, error } = useProduct(id!);
+  // const { product, loading } = useAppSelector(state => state.product);
+  const { product, loading } = useProduct(id!);
   const userId = useAppSelector(state => state.user.user?.id) || "guest";
 
   const [tab, setTab] = useState(() => {

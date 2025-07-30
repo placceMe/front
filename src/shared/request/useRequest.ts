@@ -7,7 +7,7 @@ export const API_PORTS = {
   PRODUCTS: "5003",
   ORDERS: "5004",
   USERS: "5002",
-  BASE:"80"
+  BASE:"8080"
 } as const;
 
 export type API_PORTS = typeof API_PORTS[keyof typeof API_PORTS];

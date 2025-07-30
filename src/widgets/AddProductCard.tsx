@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { Form, Input, InputNumber, Button, Upload, Row, Col, Select, message } from "antd";
-import { PlusOutlined, InboxOutlined } from "@ant-design/icons";
 import type { Category } from "@shared/types/api";
- import { useRequest } from '@shared/request/useRequest';
- import type { UploadFile } from 'antd/es/upload/interface';
+import { useRequest } from '@shared/request/useRequest';
+import type { UploadFile } from 'antd/es/upload/interface';
 
 
 
@@ -23,61 +22,61 @@ export const AddProductCard = ({ sellerId }: AddProductCardProps) => {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [form] = Form.useForm();
-const { request } = useRequest();
-const handleMainImageChange = (info: any) => {
-  const file = info.fileList[0]?.originFileObj;
-  setMainImage(file || null);
-};
+  const { request } = useRequest();
+  const handleMainImageChange = (info: any) => {
+    const file = info.fileList[0]?.originFileObj;
+    setMainImage(file || null);
+  };
 
 
 
-useEffect(() => {
-  request<Category[]>('/api/category')
-    .then((data) => {
-      if (data) {
-        setCategories(data.filter(cat => cat.status === "Active"));
+  useEffect(() => {
+    request<Category[]>('/api/category')
+      .then((data) => {
+        if (data) {
+          setCategories(data.filter(cat => cat.status === "Active"));
+        }
+      });
+  }, []);
+
+
+  const handleGalleryChange = (info: any) => {
+    const files = info.fileList
+      .map((file: any) => file.originFileObj)
+      .filter(Boolean); // Убираем undefined
+    setGallery(files);
+  };
+
+
+  const onFinish = async (values: any) => {
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      Object.entries(values).forEach(([k, v]) => {
+        formData.append(k, String(v ?? ""));
+      });
+      formData.append("SellerId", sellerId);
+      if (mainImage) formData.append("MainImage", mainImage);
+      gallery.forEach((file) => formData.append("Gallery", file));
+
+      const response = await request("/api/products/with-files", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response) {
+        message.success("Товар успішно додано");
+        form.resetFields();
+        setMainImage(null);
+        setGallery([]);
+      } else {
+        message.error("Помилка при додаванні товару");
       }
-    });
-}, []);
-
-
-const handleGalleryChange = (info: any) => {
-  const files = info.fileList
-    .map((file: any) => file.originFileObj)
-    .filter(Boolean); // Убираем undefined
-  setGallery(files);
-};
-
-
-const onFinish = async (values: any) => {
-  setLoading(true);
-  try {
-    const formData = new FormData();
-    Object.entries(values).forEach(([k, v]) => {
-      formData.append(k, String(v ?? ""));
-    });
-    formData.append("SellerId", sellerId);
-    if (mainImage) formData.append("MainImage", mainImage);
-    gallery.forEach((file) => formData.append("Gallery", file));
-
-    const response = await request("/api/products/with-files", {
-      method: "POST",
-      body: formData,
-    });
-
-    if (response) {
-      message.success("Товар успішно додано");
-      form.resetFields();
-      setMainImage(null);
-      setGallery([]);
-    } else {
+    } catch {
       message.error("Помилка при додаванні товару");
     }
-  } catch {
-    message.error("Помилка при додаванні товару");
-  }
-  setLoading(false);
-};
+    setLoading(false);
+  };
 
   return (
     <div
@@ -167,44 +166,44 @@ const onFinish = async (values: any) => {
               valuePropName="file"
               rules={[{ required: true, message: "Завантажте основне зображення" }]}
             >
-           <Upload.Dragger
-  name="main"
-  accept="image/*"
-  beforeUpload={() => false}
-  onChange={handleMainImageChange}
-  showUploadList={true}
-  maxCount={1}
-  fileList={
-    mainImage
-      ? [{ uid: '-1', name: mainImage.name, status: 'done' } as UploadFile]
-      : []
-  }
-  style={BLUR_STYLE}
->
-  <p className="ant-upload-drag-icon">🖼️</p>
-  <p className="ant-upload-text">Завантажити головне зображення</p>
-</Upload.Dragger>
+              <Upload.Dragger
+                name="main"
+                accept="image/*"
+                beforeUpload={() => false}
+                onChange={handleMainImageChange}
+                showUploadList={true}
+                maxCount={1}
+                fileList={
+                  mainImage
+                    ? [{ uid: '-1', name: mainImage.name, status: 'done' } as UploadFile]
+                    : []
+                }
+                style={BLUR_STYLE}
+              >
+                <p className="ant-upload-drag-icon">🖼️</p>
+                <p className="ant-upload-text">Завантажити головне зображення</p>
+              </Upload.Dragger>
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item label="Галерея (додаткові фото)">
               <Upload.Dragger
-  name="gallery"
-  accept="image/*"
-  multiple
-  beforeUpload={() => false}
-  onChange={handleGalleryChange}
-  showUploadList={true}
-  fileList={gallery.map((file, index) => ({
-    uid: String(index),
-    name: file.name,
-    status: 'done',
-  })) as UploadFile[]}
-  style={BLUR_STYLE}
->
-  <p className="ant-upload-drag-icon">📸</p>
-  <p className="ant-upload-text">Завантажити галерею зображень</p>
-</Upload.Dragger>
+                name="gallery"
+                accept="image/*"
+                multiple
+                beforeUpload={() => false}
+                onChange={handleGalleryChange}
+                showUploadList={true}
+                fileList={gallery.map((file, index) => ({
+                  uid: String(index),
+                  name: file.name,
+                  status: 'done',
+                })) as UploadFile[]}
+                style={BLUR_STYLE}
+              >
+                <p className="ant-upload-drag-icon">📸</p>
+                <p className="ant-upload-text">Завантажити галерею зображень</p>
+              </Upload.Dragger>
             </Form.Item>
           </Col>
         </Row>

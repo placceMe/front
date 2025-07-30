@@ -6,7 +6,6 @@ import { useRequest } from '@shared/request/useRequest';
 import { useAppSelector } from '@store/hooks';
 
 const FILES_BASE_URL = 'http://localhost:5001/api/files/file/';
-const PRODUCTS_API_BASE_URL = 'http://localhost:5003/api/products/';
 const ORDERS_PER_PAGE = 5;
 
 const ORDER_STATUS_MAP: Record<number, { label: string; color: string; }> = {
@@ -51,36 +50,36 @@ const OrdersTab: React.FC = () => {
 
 
 
-useEffect(() => {
-  const visibleOrders = orders.slice(
-    (currentPage - 1) * ORDERS_PER_PAGE,
-    currentPage * ORDERS_PER_PAGE
-  );
+  useEffect(() => {
+    const visibleOrders = orders.slice(
+      (currentPage - 1) * ORDERS_PER_PAGE,
+      currentPage * ORDERS_PER_PAGE
+    );
 
-  const productIds: string[] = [];
-  visibleOrders.forEach(order =>
-    (order.items || []).slice(0, 3).forEach((item: any) => {
-      if (item.productId && !(item.productId in productImages)) {
-        productIds.push(item.productId);
-      }
-    })
-  );
+    const productIds: string[] = [];
+    visibleOrders.forEach(order =>
+      (order.items || []).slice(0, 3).forEach((item: any) => {
+        if (item.productId && !(item.productId in productImages)) {
+          productIds.push(item.productId);
+        }
+      })
+    );
 
-  if (productIds.length === 0) return;
+    if (productIds.length === 0) return;
 
-  Promise.all(
-    productIds.map(async (id) => {
-      const product = await request(`/api/products/${id}`);
-      return { id, mainImageUrl: product?.mainImageUrl || '' };
-    })
-  ).then((results) => {
-    const update: Record<string, string> = {};
-    results.forEach(({ id, mainImageUrl }) => {
-      update[id] = mainImageUrl;
+    Promise.all(
+      productIds.map(async (id) => {
+        const product = await request(`/api/products/${id}`);
+        return { id, mainImageUrl: product?.mainImageUrl || '' };
+      })
+    ).then((results) => {
+      const update: Record<string, string> = {};
+      results.forEach(({ id, mainImageUrl }) => {
+        update[id] = mainImageUrl;
+      });
+      setProductImages((prev) => ({ ...prev, ...update }));
     });
-    setProductImages((prev) => ({ ...prev, ...update }));
-  });
-}, [orders, currentPage]);
+  }, [orders, currentPage]);
 
 
   const totalPages = Math.ceil(orders.length / ORDERS_PER_PAGE);
