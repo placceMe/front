@@ -10,6 +10,7 @@ import { CabinetLayout } from "../../app/layouts/CabinetLayout";
 import OrdersTab from "../../widgets/OrdersTab";
 import ViewedProducts from "@pages/ViewedProducts";
 import { useAppSelector } from "@store/hooks";
+import { AboutSeller } from "@pages/AboutSeller.tsx";
 
 const Home = lazy(() => import("@pages/Home/ui/HomePage"));
 const CartPage = lazy(() => import("@pages/CartPage"));
@@ -31,6 +32,8 @@ export const AppRouter = () => {
           { path: 'order-success/:orderId', element: <OrderSuccessPage /> },
           { path: 'category/:categoryId', element: <CategoryProductsPage /> },
           { path: 'wishlist', element: <Wishlist /> },
+           { path: 'seller/:sellerId', element: <AboutSeller /> },
+
           ...(user?.id ? [{
             path: "/profile",
             element: <CabinetLayout />,

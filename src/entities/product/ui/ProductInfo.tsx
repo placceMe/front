@@ -357,6 +357,7 @@ import StarOrangeIcon from '@assets/icons/star_yellow.svg?react';
 import type { Product } from '@shared/types/api';
 import { useLocalStorageArray } from '@shared/useLocalStorageArray';
 import { useUserProductIds } from '@shared/hooks/useUserProductIds';
+import { useAppSelector } from '@store/hooks';
 
 const { Title, Text } = Typography;
 
@@ -378,7 +379,7 @@ export const ProductInfo = ({ product }: Props) => {
 
   const incrementQuantity = () => setQuantity(prev => prev + 1);
   const decrementQuantity = () => { if (quantity > 1) setQuantity(prev => prev - 1); };
-const userId = JSON.parse(localStorage.getItem("user") || "{}").id || "guest";
+const userId = useAppSelector(state => state.user.user?.id) || "guest";
 const [wishlist, setWishlist] = useUserProductIds(userId, "userWishlist"); // массив id-шек!
 
   /*

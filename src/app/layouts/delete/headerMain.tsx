@@ -9,11 +9,26 @@ import { useNavigate } from "react-router-dom";
 import Logo from "./Logo.png";
 import CategoriesDropdown from "../../../widgets/categoriesDropdown"; // проверь путь!
 import "./headerMain.css";
+import { useAppSelector } from "@store/hooks";
+import { LoginForm } from "@features/auth/LoginForm ";
+import { Modal } from "antd";
+import { AuthTabs } from "..//..//../widgets/AuthTabs";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const [showCategories, setShowCategories] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const user = useAppSelector(state => state.user.user);
+const [isModalOpen, setIsModalOpen] = useState(false);
+
+const handleUserClick = () => {
+  if (user?.id) {
+    navigate('/profile');
+  } else {
+    setIsModalOpen(true);
+  }
+};
+
 
   return (
     <header className="header">
@@ -66,13 +81,14 @@ const Header: React.FC = () => {
           <div className="icons flex gap-4 items-center">
             {/*<FaBalanceScale />*/}
            <FaHeart onClick={() => navigate('/Wishlist')} className="cursor-pointer" />
-            <button
-              onClick={() => navigate('/profile')}
-              className="hover:text-[#5a6b3b] focus:outline-none"
-              title="Особистий кабінет"
-            >
-              <FaUser />
-            </button>
+           <button
+  onClick={handleUserClick}
+  className="hover:text-[#5a6b3b] focus:outline-none"
+  title="Особистий кабінет"
+>
+  <FaUser />
+</button>
+
             <button
               onClick={() => navigate('/cart')}
               className="hover:text-[#5a6b3b] focus:outline-none"
@@ -80,6 +96,15 @@ const Header: React.FC = () => {
             >
               <FaShoppingCart />
             </button>
+
+          <Modal
+  open={isModalOpen}
+  onCancel={() => setIsModalOpen(false)}
+  footer={null}
+  destroyOnHidden
+>
+  <AuthTabs onSuccess={() => setIsModalOpen(false)}/>
+</Modal>
           </div>
         </div>
       </div>

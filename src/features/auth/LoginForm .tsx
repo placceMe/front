@@ -13,7 +13,11 @@ const BLUR_STYLE = {
   border: "1px solid #3E4826",
 };
 
-export const LoginForm = () => {
+interface LoginFormProps {
+  onSuccess?: () => void;
+}
+
+export const LoginForm:React.FC<LoginFormProps> = ({ onSuccess }) => {
   const [loading, setLoading] = useState(false);
   const { request, error, loading: requestLoading } = useRequest(API_PORTS.USERS);
   const dispatch = useAppDispatch();
@@ -31,6 +35,7 @@ export const LoginForm = () => {
 
       if (resp.success) {
         await fetchUser();
+           onSuccess?.();
       }
 
 

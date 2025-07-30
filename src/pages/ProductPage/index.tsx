@@ -35,11 +35,38 @@ export const TABS = [
     icon: (active: boolean) => <ReviewsIcon fill={active ? "#fff" : "#3E4826"} width={18} height={18}/>
   },
 ];
+export function addProductToLocalList(userId: string, productId: string) {
+  const storageKey = "userViewed";
+  const existingMap = JSON.parse(localStorage.getItem(storageKey) || "{}");
+
+  const userList = existingMap[userId] || [];
+
+  if (!userList.includes(productId)) {
+    const updatedList = [productId, ...userList].slice(0, 30); // максимум 30 товаров
+    const updatedMap = { ...existingMap, [userId]: updatedList };
+    localStorage.setItem(storageKey, JSON.stringify(updatedMap));
+  }
+}
+
+export function addProductToWishlist(userId: string, productId: string) {
+  const storageKey = "userWishlist";
+  const existingMap = JSON.parse(localStorage.getItem(storageKey) || "{}");
+
+  const userList = existingMap[userId] || [];
+
+  if (!userList.includes(productId)) {
+    const updatedList = [productId, ...userList].slice(0, 30);
+    const updatedMap = { ...existingMap, [userId]: updatedList };
+    localStorage.setItem(storageKey, JSON.stringify(updatedMap));
+  }
+}
+
 
 export const ProductPage = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
   const { product, loading } = useAppSelector(state => state.product);
+  const userId = useAppSelector(state => state.user.user?.id) || "guest";
 
   useEffect(() => {
     if (id) dispatch(fetchProduct(id));
@@ -63,6 +90,12 @@ export const ProductPage = () => {
     setTab(key);
     window.location.hash = `#${key}`;
   };
+
+   useEffect(() => {
+  if (product?.id && userId) {
+    addProductToLocalList(userId, product.id);
+  }
+}, [product?.id, userId]);
 
   if (loading || !product) return <Spin size="large" className="mt-10" />;
 

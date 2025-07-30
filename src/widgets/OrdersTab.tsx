@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { FaChevronUp, FaChevronDown, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import type { OrderResponse, OrderItemResponse } from '@shared/types/api';
+import { API_PORTS, useRequest } from '@shared/request/useRequest';
+import { useAppSelector } from '@store/hooks';
 
 const FILES_BASE_URL = 'http://localhost:5001/api/files/file/';
 const PRODUCTS_API_BASE_URL = 'http://localhost:5003/api/products/';
@@ -21,18 +23,29 @@ const OrdersTab: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [productImages, setProductImages] = useState<Record<string, string>>({});
 
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
-  const customerId = user?.id;
+  const user = useAppSelector(state => state.user.user);
+const customerId = user?.id;
+  const { request, error, loading } = useRequest(API_PORTS.ORDERS);
 
-  useEffect(() => {
-    if (!customerId) return;
-    let mounted = true;
-    fetch(`http://localhost:5004/api/orders/user/${customerId}`)
-      .then(res => res.json())
-      .then((data: OrderResponse[]) => { if (mounted) setOrders(data.reverse()); })
-      .catch(() => setOrders([]));
-    return () => { mounted = false; };
-  }, [customerId]);
+
+useEffect(() => {
+  if (!customerId) return;
+  let mounted = true;
+
+  request<OrderResponse[]>(`/api/orders/user/${customerId}`)
+    .then((data) => {
+      if (data && mounted) {
+        setOrders(data.reverse());
+      } else {
+        setOrders([]);
+      }
+    })
+    .catch(() => setOrders([]));
+
+  return () => {
+    mounted = false;
+  };
+}, [customerId]);
 
 
   useEffect(() => {

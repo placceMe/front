@@ -11,6 +11,9 @@ export const API_PORTS = {
 
 export type API_PORTS = typeof API_PORTS[keyof typeof API_PORTS];
 
+
+
+
 export const useRequest = (port: API_PORTS) => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -39,3 +42,46 @@ export const useRequest = (port: API_PORTS) => {
 
   return { request, error, loading };
 };
+
+
+/*
+export const useRequest = (port: API_PORTS) => {
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false); // <- лучше false по умолчанию
+
+  async function request<T = any>(url: string, params: RequestInit = {}): Promise<T | null> {
+    setLoading(true);
+    try {
+      const reqUrl = new URL(__BASE_URL__ + ":" + port + url);
+
+      const response = await fetch(reqUrl.href, {
+        ...params,
+        credentials: "include",
+      });
+
+      const isJson = response.headers
+        .get("content-type")
+        ?.includes("application/json");
+
+      if (!response.ok) {
+        if (isJson) {
+          const errorBody = await response.json();
+          setError(errorBody?.message || "Unknown error");
+        } else {
+          setError(`HTTP error ${response.status}`);
+        }
+        return null;
+      }
+
+      return isJson ? await response.json() : null;
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "An error occurred");
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return { request, error, loading };
+};
+*/

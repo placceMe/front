@@ -59,9 +59,7 @@ export const OrderSuccessPage = () => {
           </Descriptions.Item>
         )}
       </Descriptions>
-      <Typography.Title className='py-8' level={4}>
-        Оплата у відділенні Нової пошти після отримання доставки.
-      </Typography.Title>
+   
       <Table
         dataSource={order.items}
         pagination={false}

@@ -28,18 +28,44 @@ import React from "react";
 import { useUserProductIds } from "@shared/hooks/useUserProductIds";
 import { useProductsByIds } from "@shared/hooks/useProductsByIds";
 import ProductCard from "../app/layouts/delete/ProductCard/ProductCard";
+import { useAppSelector } from "@store/hooks";
+import { BlurBlock } from "@shared/ui/BlurBlock";
+import { Button } from "antd";
+import { useNavigate } from "react-router-dom";
+import wishlistEmptyImg from '../assets/pages/favourite.png'
 
-const userId = JSON.parse(localStorage.getItem("user") || "{}").id || "guest";
+
 
 export const Wishlist = () => {
+  const userId = useAppSelector(state => state.user.user?.id) || "guest";
   const [wishlist] = useUserProductIds(userId, "userWishlist");
   const { products, loading } = useProductsByIds(wishlist);
+  const navigate = useNavigate();
 
   if (!wishlist.length) {
     return (
-      <div className="mx-auto max-w-3xl py-20 text-center text-gray-400 text-lg">
-        Список бажаних товарів порожній.
+   
+      <div className="text-center text-[#1f2614] px-4 mt-[50px]">
+        <img
+          src={wishlistEmptyImg}
+          alt="Обране порожнє"
+          className="mx-auto mb-6 max-w-[200px]"
+        />
+        <h2 className="text-[36px] font-semibold font-montserrat mb-[15px]">
+          Обране
+        </h2>
+        <p className="text-[15px] font-semibold font-montserrat mb-[20px]  mx-auto">
+          Зберігайте спорядження, яке Вас зацікавило і повертайтесь до нього, коли будете готові до дії.
+        </p>
+        <Button
+          type="primary"
+          className="bg-[#3E4826] hover:bg-[#2f361f] text-white font-semibold mb-[40px]"
+          onClick={() => navigate("/")}
+        >
+          Продовжити
+        </Button>
       </div>
+    
     );
   }
 

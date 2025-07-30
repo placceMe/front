@@ -14,13 +14,13 @@ import RegistrationForm from "../../widgets/RegistarationForm";
 import OrdersTab from "../../widgets/OrdersTab";
 
 const HERO_IMAGES = {
-  Buyer: warriorBg,
+  User: warriorBg,
   Saler: supplierBg,
 };
 
 export const CabinetLayout = () => {
   const user = useAppSelector(state => state.user.user);
-  const role = (useAppSelector(state => state.user.activeRole) as "Buyer" | "Saler") || "Buyer";
+  const role = (useAppSelector(state => state.user.activeRole) as "User" | "Saler") || "User";
   const TABS = role === "Saler" ? TABS_SUPPLIER : TABS_WARRIOR;
 
 

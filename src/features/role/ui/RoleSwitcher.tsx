@@ -3,7 +3,7 @@ import { Select } from "antd";
 import { setActiveRole } from "../../../entities/user/model/userSlice";
 
 const ROLE_LABELS: Record<string, string> = {
-  Buyer: "Воїн",
+  User: "Воїн",
   Saler: "Спорядник",
   
 };

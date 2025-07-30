@@ -1,7 +1,10 @@
 
-import { Button, Checkbox, Form, Input, Radio, Typography } from 'antd';
+import { Button, Checkbox, Form, Input, Modal, Radio, Typography } from 'antd';
 import { useAppSelector } from '../../../app/store/hooks';
 import type { OrderPayload } from '@shared/types/order';
+import { useEffect, useState } from 'react';
+import { AuthTabs } from '../../../widgets/AuthTabs';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   onSubmit: (order: OrderPayload) => void;
@@ -10,23 +13,38 @@ interface Props {
 export const CheckoutForm = ({ onSubmit }: Props) => {
   const [form] = Form.useForm();
   const items = useAppSelector(state => state.cart.items);
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const user = useAppSelector(state => state.user.user);
 
   const handleFinish = (values: any) => {
-  const payload: OrderPayload = {
-  UserId: user.id,
-  Notes: values.notes,
-  DeliveryAddress: `${values.city}, ${values.address}`,
-  Items: items.map((item: any) => ({
-    ProductId: item.product.id,
-    Quantity: item.quantity,
-  })),
-};
+    if (!user) {
+      setShowAuthModal(true);
+      return;
+    }
+
+    const payload: OrderPayload = {
+      UserId: user.id,
+      Notes: values.notes,
+      DeliveryAddress: `${values.city}, ${values.address}`,
+      Items: items.map((item: any) => ({
+        ProductId: item.product.id,
+        Quantity: item.quantity,
+      })),
+    };
 
     onSubmit(payload);
   };
 
-  return (
+  const navigate = useNavigate();
+
+useEffect(() => {
+  if (items.length === 0) {
+    navigate('/cart'); 
+  }
+}, [items, navigate]);
+
+
+  return (<>
     <Form form={form} layout="vertical" onFinish={handleFinish}>
       <div>
         <Typography.Title level={4}>Спосіб доставки</Typography.Title>
@@ -78,6 +96,17 @@ export const CheckoutForm = ({ onSubmit }: Props) => {
           Оформити замовлення
         </Button>
       </Form.Item>
-    </Form>
+    </Form><Modal
+      open={showAuthModal}
+      onCancel={() => setShowAuthModal(false)}
+      footer={null}
+      centered
+      width={450}
+      destroyOnClose
+    >
+      <h3 className=''>Ви не авторизовані! Будь ласка авторизуйтесь</h3>
+      <AuthTabs onSuccess={() => setShowAuthModal(false)} />
+    </Modal>
+  </>
   );
 };
