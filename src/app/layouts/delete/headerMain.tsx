@@ -4,7 +4,7 @@ import {
   FaUser,
   FaShoppingCart,
 } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Logo from "./Logo.png";
 import CategoriesDropdown from "../../../widgets/categoriesDropdown"; // проверь путь!
 import "./headerMain.css";
@@ -32,13 +32,13 @@ const Header: React.FC = () => {
     <header className="header">
       {/* Top Row: Navigation */}
       <div className="header-top">
-        <div className="logo">
-          <img src={Logo} alt="NORSEN Logo" />
-        </div>
+        <NavLink to="/" className="logo">
+          <img src={Logo} alt="Logo" className="logo-image" />
+        </NavLink>
         <nav className="nav-links">
-          <a href="#">Доставка та оплата</a>
-          <a href="#">Про нас</a>
-          <a href="#">Питання й відповіді</a>
+          <NavLink to="/delivery" className="nav-link">Доставка та оплата</NavLink>
+          <NavLink to="/about" className="nav-link">Про нас</NavLink>
+          <NavLink to="/faq" className="nav-link">Питання й відповіді</NavLink>
         </nav>
         <div className="lang-login">
           <div className="contact">

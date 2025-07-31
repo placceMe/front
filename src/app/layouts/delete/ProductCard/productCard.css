@@ -43,6 +43,7 @@
   height: 250px;
   object-fit: contain;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 .card-icons {
   position: absolute;

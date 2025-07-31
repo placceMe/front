@@ -108,7 +108,7 @@ export const ProductPage = () => {
             <TabNavFrame tabs={TABS} value={tab} onChange={handleChangeTab} />
           </div>
           {tab === "main" && <ProductMainBlock product={product} />}
-          {tab === "specs" && <ProductSpecsBlock />}
+          {tab === "specs" && <ProductSpecsBlock product={product} />}
           {tab === "reviews" && <ProductReviewsBlock />}
         </BlurBlock>
 
@@ -116,7 +116,7 @@ export const ProductPage = () => {
           <div className="bg-white w-full py-6 ">
             <div className="max-w-[1100px] mx-auto px-4 space-y-8">
               <ProductDescriptionBlock product={product} />
-              <ProductSpecsBlock />
+              <ProductSpecsBlock product={product} />
               <ProductReviewsBlock />
             </div>
           </div>

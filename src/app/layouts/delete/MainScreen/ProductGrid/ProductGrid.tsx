@@ -1,8 +1,8 @@
 import React from 'react';
 
-import "./productGrid.css"
+import "./productGrid.css";
 import type { Product } from '@shared/types/api';
-import ProductCard from '../ProductCard/ProductCard';
+import ProductCard from '../../ProductCard/ProductCard';
 
 
 
@@ -19,13 +19,14 @@ const ProductGrid: React.FC<ProductGridProps> = ({ title, products }) => {
       <div className="product-grid">
         {products.map((product) => (
           <ProductCard
-  key={product.id}
-  title={product.title}
-  image={product.attachments[0]?.filePath ?? ''}
-  price={product.price}
- // articul={product.id} // или другое поле для артикула
-  isAvailable={product.quantity > 0}
-/>
+            key={product.id}
+            id={product.id}
+            title={product.title}
+            mainImageUrl={product.mainImageUrl ? `http://31.42.190.94:8080/api/files/${product.mainImageUrl}` : ''}
+            price={product.price}
+            // articul={product.id} // или другое поле для артикула
+            isAvailable={product.quantity > 0}
+          />
 
         ))}
       </div>

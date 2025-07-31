@@ -8,32 +8,32 @@ import { useRequest } from '@shared/request/useRequest';
 
 
 const CategoryProductsPage: React.FC = () => {
-  const { categoryId } = useParams<{ categoryId: string }>();
+  const { categoryId } = useParams<{ categoryId: string; }>();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [categoryName, setCategoryName] = useState<string>('');
   const { request } = useRequest();
   // Загружаем товары
 
-useEffect(() => {
-  setLoading(true);
-  request<Product[]>("/api/products")
-    .then(data => {
-      if (data) setProducts(data);
-    })
-    .finally(() => setLoading(false));
-}, []);
+  useEffect(() => {
+    setLoading(true);
+    request<Product[]>("/api/products/category/" + categoryId)
+      .then(data => {
+        if (data) setProducts(data);
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
-useEffect(() => {
-  if (!categoryId) return;
+  useEffect(() => {
+    if (!categoryId) return;
 
-  request<{ name: string }>(`/api/category/${categoryId}`)
-    .then(category => {
-      if (category) setCategoryName(category.name);
-      else setCategoryName('');
-    })
-    .catch(() => setCategoryName(''));
-}, [categoryId]);
+    request<{ name: string; }>(`/api/category/${categoryId}`)
+      .then(category => {
+        if (category) setCategoryName(category.name);
+        else setCategoryName('');
+      })
+      .catch(() => setCategoryName(''));
+  }, [categoryId]);
 
   // Фильтруем товары по категории
   const filteredProducts = products.filter(

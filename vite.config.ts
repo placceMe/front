@@ -20,6 +20,8 @@ export default defineConfig({
     },
   },
   define: {
-    __BASE_URL__: JSON.stringify(process.env.BASE_URL ?? "http://localhost:8080" ?? "http://31.42.190.94:8080"),
+    __BASE_URL__: JSON.stringify(process.env.BASE_URL ??  "http://31.42.190.94:8080"),
+    //    __BASE_URL__: JSON.stringify(process.env.BASE_URL ??  "http://localhost:8080" ),
+
   }
 });

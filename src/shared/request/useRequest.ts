@@ -1,6 +1,5 @@
 import {  useState } from "react";
 
-declare const __BASE_URL__: string;
 
 export const API_PORTS = {
   CATEGORIES: "5003",

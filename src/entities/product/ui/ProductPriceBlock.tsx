@@ -22,7 +22,7 @@ export const ProductPriceBlock: React.FC<ProductPriceBlockProps> = ({
           color: COLORS.color05,
         }}
       >
-        {oldPrice.toLocaleString()} грн
+        {oldPrice?.toLocaleString()} грн
       </span>
     )}
     <span
@@ -34,7 +34,7 @@ export const ProductPriceBlock: React.FC<ProductPriceBlockProps> = ({
         fontSize: FONTS.size.h3,
       }}
     >
-      {price.toLocaleString()} грн
+      {price?.toLocaleString()} грн
     </span>
   </div>
 );

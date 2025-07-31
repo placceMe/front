@@ -1,5 +1,7 @@
 # Use official Node.js image for build
 FROM node:20 AS build
+ARG BASE_URL
+ENV BASE_URL=http://31.42.190.94:8080
 WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm install
