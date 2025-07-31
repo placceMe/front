@@ -22,7 +22,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
   const navigate = useNavigate();
 
   const onFinish = async (values: any) => {
-    const resp = await request("/api/Auth/register", {
+    const resp = await request("/api/auth/register", {
       method: "POST",
       body: JSON.stringify({
         ...values,

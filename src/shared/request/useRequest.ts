@@ -24,6 +24,8 @@ export const useRequest = () => {
     try {
 
       
+console.log("Requesting URL:", __BASE_URL__ + url);
+
       const reqUrl = new URL(__BASE_URL__  + url);
 
       const response = await fetch(reqUrl.href, {
