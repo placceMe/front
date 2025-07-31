@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Form, Input, Button } from "antd";
-import { useAppDispatch } from "@store/hooks";
-import { setUser } from "../../entities/user/model/userSlice";
 import { EyeOutlined, EyeInvisibleOutlined, UserOutlined, LockOutlined } from "@ant-design/icons";
-import { useRequest } from "@shared/request/useRequest";
+import { useAuth } from "@shared/hooks/useAuth";
 
 // Пример для обертывания с эффектом блюра
 const BLUR_STYLE = {
@@ -16,48 +14,22 @@ interface LoginFormProps {
   onSuccess?: () => void;
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
-  const [loading, setLoading] = useState(false);
-  const { request } = useRequest();
-  const dispatch = useAppDispatch();
+export const LoginForm: React.FC<LoginFormProps> = () => {
 
-  const onFinish = async (values: { email: string; password: string; }) => {
-    setLoading(true);
-    try {
-      const resp = await request("/api/auth/login", {
-        method: "POST",
-        body: JSON.stringify(values),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (resp.success) {
-        await fetchUser();
-        onSuccess?.();
-      }
-
-
-
-    } finally {
-      setLoading(false);
-    }
-  };
-
-
-  async function fetchUser() {
-    const user = await request("/api/auth/me");
-    if (user) {
-      dispatch(setUser(user));
-    } else {
-    }
-  }
+  const { fetchUser, login, loading } = useAuth();
 
   useEffect(() => {
     fetchUser();
   }, []);
 
 
+  const onFinish = async (values: { email: string; password: string; }) => {
+    try {
+      await login(values);
+    } catch (error) {
+      console.error("Login error:", error);
+    }
+  };
 
   return (
     <div className="flex justify-center items-center min-h-[300px]">

@@ -9,7 +9,7 @@ import { useProducts } from '../../../../components/MainScreen/api/useProducts';
 const ProductPage: React.FC = () => {
 
 
-  const { products, loading, error, loadProducts } = useProducts();
+  const { products, loading, loadProducts } = useProducts();
 
   useEffect(() => {
     loadProducts();

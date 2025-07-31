@@ -70,10 +70,9 @@ const CategoryProductsPage: React.FC = () => {
           {filteredProducts.map((product) => (
             <div key={product.id} style={{ padding: 12 }}>
               <ProductCard
-                id={product.id}
-                title={product.title}
+                {...product}
                 mainImageUrl={product.mainImageUrl}
-                price={product.price}
+
                 isAvailable={product.quantity > 0}
               />
             </div>

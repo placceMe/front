@@ -20,12 +20,9 @@ const ProductGrid: React.FC<ProductGridProps> = ({ title, products }) => {
         {products.map((product) => (
           <ProductCard
             key={product.id}
-            id={product.id}
-            title={product.title}
+            {...product}
             mainImageUrl={product.mainImageUrl ? `http://31.42.190.94:8080/api/files/${product.mainImageUrl}` : ''}
-            price={product.price}
-            // articul={product.id} // или другое поле для артикула
-            isAvailable={product.quantity > 0}
+
           />
 
         ))}

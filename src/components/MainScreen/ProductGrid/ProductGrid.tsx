@@ -1,14 +1,10 @@
 import React from 'react';
-import ProductCard from '../ProductCard/ProductCard';
-import "./productGrid.css"
+import "./productGrid.css";
+import ProductCard from 'app/layouts/delete/ProductCard/ProductCard';
+import type { Product } from '@shared/types/api';
 
-export interface Product {
-  id: number;
-  title: string;
-  image: string;
-  price: number;
-  articul: number;
-  isTop?: boolean;
+export interface IProduct extends Product {
+
   isAvailable?: boolean;
 }
 

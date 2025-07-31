@@ -1,10 +1,7 @@
 import React from "react";
 import { Form, Input, Button } from "antd";
-import { useAppDispatch } from "@store/hooks";
-import { setUser } from "../../entities/user/model/userSlice";
 import { UserOutlined, LockOutlined, IdcardOutlined } from "@ant-design/icons";
-import { useRequest } from "@shared/request/useRequest";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "@shared/hooks/useAuth";
 
 const BLUR_STYLE = {
   background: "rgba(229,229,216,0.7)",
@@ -16,37 +13,16 @@ interface RegisterFormProps {
   onSuccess?: () => void;
 }
 
-export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
-  const dispatch = useAppDispatch();
-  const { request } = useRequest();
-  const navigate = useNavigate();
+export const RegisterForm: React.FC<RegisterFormProps> = () => {
+  const { register, loading } = useAuth();
 
   const onFinish = async (values: any) => {
-    const resp = await request("/api/auth/register", {
-      method: "POST",
-      body: JSON.stringify({
-        ...values,
-        roles: ["User"], // или "Saler"
-        state: "Active",
-        createdAt: new Date().toISOString(),
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (resp?.success && resp?.user?.id) {
-      dispatch(setUser(resp.user));
-      onSuccess?.();
-      navigate("/profile#info");
-    } else {
-      window.alert("Помилка під час реєстрації");
-    }
+    await register(values);
   };
 
   return (
     <div className="flex justify-center items-center min-h-[300px] mt-10">
-      <Form layout="vertical" onFinish={onFinish}>
+      <Form layout="vertical" onFinish={onFinish} disabled={loading}>
         <Form.Item
           name="email"
           label="Email"
@@ -98,6 +74,22 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
             size="large"
             prefix={<IdcardOutlined />}
             placeholder="Ваше прізвище"
+            className="rounded-xl"
+            style={BLUR_STYLE}
+          />
+        </Form.Item>
+        <Form.Item
+          name="phone"
+          label="Телефон"
+          rules={[
+            { required: true, message: "Введіть номер телефону" },
+            { pattern: /^\+?\d{10,15}$/, message: "Невірний формат телефону" },
+          ]}
+        >
+          <Input
+            size="large"
+            prefix={<UserOutlined />}
+            placeholder="Ваш номер телефону"
             className="rounded-xl"
             style={BLUR_STYLE}
           />

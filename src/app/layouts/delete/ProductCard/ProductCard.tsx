@@ -3,12 +3,9 @@ import React, { useState } from 'react';
 import { FaHeart, FaCartPlus } from 'react-icons/fa';
 import './productCard.css';
 import { NavLink, useNavigate } from 'react-router-dom';
+import type { Product } from '@shared/types/api';
 
-interface ProductCardProps {
-  id: string;
-  title: string;
-  mainImageUrl: string;
-  price: number;
+interface ProductCardProps extends Product {
   isAvailable?: boolean;
 }
 const FILES_BASE_URL = `${__BASE_URL__}/api/files/`;

@@ -1,5 +1,6 @@
-import type { Product } from "@components/MainScreen/ProductGrid/ProductGrid";
-import { ProductSpecs } from "@entities/product/ui/ProductSpecs";
+// import { ProductSpecs } from "@entities/product/ui/ProductSpecs";
+import type { Product } from "@shared/types/api";
+import { ProductSpecs } from "../../entities/product/ui/ProductSpecs";
 import { FaCog } from "react-icons/fa";
 
 

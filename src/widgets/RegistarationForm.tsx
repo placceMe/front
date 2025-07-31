@@ -2,10 +2,11 @@
 import React, { useEffect } from "react";
 import { Form, Input, Button, DatePicker, Row, Col } from "antd";
 import { useAppDispatch } from "@store/hooks";
-import { logout, setUser } from "../entities/user/model/userSlice";
+import { setUser } from "../entities/user/model/userSlice";
 import { UserOutlined, LockOutlined, IdcardOutlined, PhoneOutlined, CalendarOutlined } from "@ant-design/icons";
 import type { User } from "@shared/types/api";
 import { useRequest } from "@shared/request/useRequest";
+import { useAuth } from "@shared/hooks/useAuth";
 
 const BLUR_STYLE = {
   background: "rgba(229,229,216,0.7)",
@@ -20,6 +21,8 @@ interface RegistrationFormProps {
 const RegistrationForm: React.FC<RegistrationFormProps> = ({ user }) => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
+
+  const { logout, loading } = useAuth();
 
   const { request } = useRequest();
 
@@ -37,32 +40,31 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ user }) => {
   }, [user, form]);
 
   const onFinish = async (values: any) => {
-  const updatedUser = await request(`/api/Users/${user.id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      ...user,
-      ...values,
-      birthDate: values.birthDate ? values.birthDate.toISOString() : null,
-    }),
-  });
+    const updatedUser = await request(`/api/Users/${user.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        ...user,
+        ...values,
+        birthDate: values.birthDate ? values.birthDate.toISOString() : null,
+      }),
+    });
 
-  if (updatedUser) {
-    dispatch(setUser(updatedUser));
-    window.alert("Дані оновлено!");
-  } else {
-    window.alert("Помилка оновлення!");
-  }
-};
+    if (updatedUser) {
+      dispatch(setUser(updatedUser));
+      window.alert("Дані оновлено!");
+    } else {
+      window.alert("Помилка оновлення!");
+    }
+  };
   if (!user) return null;
 
 
 
   async function signOut() {
-    await request("/api/auth/logout", { method: "POST" });
-    dispatch(logout());
+    await logout();
   }
 
   return (<div>
@@ -71,7 +73,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ user }) => {
     <h2 className="text-2xl font-bold text-gray-800 mb-6">
       Контактна інформація
     </h2>
-    <Form form={form} layout="vertical" onFinish={onFinish}>
+    <Form form={form} layout="vertical" onFinish={onFinish} disabled={loading}>
       <Row gutter={19} className="mb-2">
         <Col span={5}>
           <Form.Item
