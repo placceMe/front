@@ -18,6 +18,7 @@ const CheckoutPage = lazy(() => import("@pages/CheckoutPage"));
 const AdminPage = lazy(() => import("@pages/Admin/ui/Admin"));
 
 const CategoryAdmin = lazy(() => import("@features/admin/Category/ui/CategoryAdmin"));
+const CharacteristicAdmin = lazy(() => import("@features/admin/Characteristic/ui/CharacteristicAdmin"));
 
 export const AppRouter = () => {
   const user = useAppSelector(state => state.user.user);
@@ -55,6 +56,7 @@ export const AppRouter = () => {
         element: <AdminPage />,
         children: [
           { path: "categories", element: <CategoryAdmin /> },
+          { path: "characteristics", element: <CharacteristicAdmin /> }
         ]
       },
       {

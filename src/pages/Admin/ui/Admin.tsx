@@ -35,6 +35,7 @@ const Admin: React.FC = () => {
 
                     items={[
                         { key: 'categogories', label: <NavLink to="/admin/categories">Категории</NavLink>, icon: <MdHeight /> },
+                        { key: 'characteristics', label: <NavLink to="/admin/characteristics">Характеристики</NavLink>, icon: <MdHeight /> },
 
                     ]}
 
