@@ -32,6 +32,7 @@
   },
   "include": [
     "src",
+    "vite-env.d.ts",
     "src/shared/types/**/*.d.ts" 
   ],
    

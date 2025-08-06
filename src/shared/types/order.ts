@@ -1,4 +1,4 @@
-export type OrderPayload = {
+export interface OrderPayload {
   UserId: string;
   Notes?: string;
   DeliveryAddress: string;
@@ -6,4 +6,8 @@ export type OrderPayload = {
     ProductId: string;
     Quantity: number;
   }[];
-};
+  Delivery?: string; // если используешь
+  Payment?: string; // это нужно добавить
+  CityRef?: string;
+  WarehouseRef?: string;
+}

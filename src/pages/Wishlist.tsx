@@ -63,7 +63,8 @@ export const Wishlist = () => {
 
             style={{ minHeight: 320 }}
           >
-            <ProductCard {...prod} />
+           <ProductCard product={prod} />
+
           </div>
         ))}
       </div>

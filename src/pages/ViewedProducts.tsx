@@ -2,6 +2,7 @@ import { useUserProductIds } from "@shared/hooks/useUserProductIds";
 import { useProductsByIds } from "@shared/hooks/useProductsByIds";
 import ProductCard from "../app/layouts/delete/ProductCard/ProductCard";
 import { useAppSelector } from "@store/hooks";
+import type { Product } from "@shared/types/api";
 
 
 
@@ -40,9 +41,9 @@ export const ViewedProducts = () => {
       )}
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-20">
-        {products.map((prod: any) => (
+        {products.map((prod: Product) => (
           <div key={prod.id} style={{ minHeight: 320 }}>
-            <ProductCard {...prod} />
+            <ProductCard product={prod} />
           </div>
         ))}
       </div>

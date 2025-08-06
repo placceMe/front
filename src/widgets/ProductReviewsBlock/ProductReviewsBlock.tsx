@@ -1,26 +1,78 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
-import { Button, Typography } from "antd";
+import { Button, Typography, Spin } from "antd";
 import StarIcon from '../../assets/icons/star_yellow.svg?react';
 
-const mockReviews = [
-  { name: "Сергій", rating: 5, date: "20 червня 2025", comment: "Чудовий продукт!" },
-  { name: "Андрій", rating: 5, date: "07 червня 2025", comment: "Рекомендую!" },
-  { name: "Максим", rating: 5, date: "20 травня 2025", comment: "Якість топ!" },
-];
+interface Review {
+  id: string;
+  userName: string;
+  rating: number;
+  date: string;
+  comment: string;
+  content?:string;
 
-const mockQuestions = [
-  { name: "Олег М.", question: "Чи є інші розміри?" },
-  { name: "Ірина Л.", question: "Яка гарантія на товар?" },
-];
+}
+interface Feedback {
+  id: string;
+  userName: string;
+  rating?: number;
+  comment?: string;
+  content?: string;
+  question?: string;
+  date: string;
+}
 
-export const ProductReviewsBlock = () => {
+{/**
+interface Question {
+  id: string;
+  userName: string;
+  question: string;
+  date: string;
+}
+ */}
+type Props = {
+  productId: string;
+};
+
+export const ProductReviewsBlock: React.FC<Props> = ({ productId }) => {
   const [tab, setTab] = useState<"reviews" | "questions">("reviews");
+  const [reviews, setReviews] = useState<Review[]>([]);
+  //const [questions, setQuestions] = useState<Question[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const totalReviews = mockReviews.length;
+  useEffect(() => {
+    const fetchFeedback = async () => {
+      try {
+        
+        const res = await fetch(`http://localhost:8080/api/feedback/product/${productId}`);
+        const data = await res.json();
+  
+console.log("feedback from API:", data);
+
+        // Предположим, что backend возвращает массив объектов с типом: { rating?, comment?, question?, userName }
+       const reviewsData: Review[] = (data as Feedback[])
+  .filter((item): item is Review => typeof item.rating === 'number');
+setReviews(reviewsData);
+
+      //  const questionsData = data.filter((item: any) => item.question);
+        setReviews(reviewsData);
+      //  setQuestions(questionsData);
+      } catch (err) {
+        console.error("Error fetching feedback", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeedback();
+  }, [productId]);
+
+  const totalReviews = reviews.length;
   const ratingCounts = [5, 4, 3, 2, 1].map(
-    (star) => mockReviews.filter((r) => r.rating === star).length
+    (star) => reviews.filter((r) => r.rating === star).length
   );
+
+  if (loading) return <Spin />;
 
   return (
     <div>
@@ -32,7 +84,7 @@ export const ProductReviewsBlock = () => {
         <div>
           <div className="mb-4">
             <div className="text-base flex font-semibold mb-3 gap-1">
-              Оцінка користувачів 5/5 <StarIcon />
+              Оцінка користувачів {totalReviews > 0 ? "5/5" : "—"} <StarIcon />
             </div>
             <div className="text-base text-gray-600">на основі {totalReviews} відгуків</div>
           </div>
@@ -63,9 +115,10 @@ export const ProductReviewsBlock = () => {
               );
             })}
           </div>
-          <Button
+
+         {/**  <Button
             style={{
-              background: 'linear-gradient(to bottom, rgba(75, 90, 45, 0.3) 0%, rgba(40, 50, 25, 0.8) 100%), #4A5A2D', // background: 'linear-gradient(180deg, #3E4826 0%, #2D351A 100%)',
+              background: 'linear-gradient(to bottom, rgba(75, 90, 45, 0.3) 0%, rgba(40, 50, 25, 0.8) 100%), #4A5A2D',
               color: 'white',
               fontFamily: 'Montserrat, sans-serif',
               fontWeight: 'bold',
@@ -75,58 +128,47 @@ export const ProductReviewsBlock = () => {
               letterSpacing: '0.7px',
             }}>
             {tab === 'reviews' ? "Написати відгук" : "Задати питання"}
-          </Button>
+          </Button>*/}
         </div>
-
 
         <div className="space-y-4">
           <div className="flex gap-4 mb-4">
             <Button
+              onClick={() => setTab("reviews")}
               style={{
                 background: tab === "reviews"
                   ? 'linear-gradient(to bottom, rgba(75, 90, 45, 0.3) 0%, rgba(40, 50, 25, 0.8) 100%), #4A5A2D'
                   : 'linear-gradient( rgba(229, 229, 216, 0.8) )',
                 color: tab === "reviews" ? 'white' : '#454E30',
-                fontFamily: 'Montserrat, sans-serif',
                 fontWeight: 'bold',
                 border: tab === "reviews" ? 'none' : '1px solid #454E30',
               }}
-              onClick={() => setTab("reviews")}
-              className={`font-semibold ${tab !== "reviews"
-                ? "hover:bg-[#454E30] hover:text-white"
-                : ""
-                }`}
             >
-              Відгуки ({mockReviews.length})
+              Відгуки ({reviews.length})
             </Button>
+
+            {/** 
             <Button
+              onClick={() => setTab("questions")}
               style={{
                 background: tab === "questions"
                   ? 'linear-gradient(to bottom, rgba(75, 90, 45, 0.3) 0%, rgba(40, 50, 25, 0.8) 100%), #4A5A2D'
                   : 'linear-gradient( rgba(229, 229, 216, 0.8) )',
                 color: tab === "questions" ? 'white' : '#454E30',
-                fontFamily: 'Montserrat, sans-serif',
                 fontWeight: 'bold',
                 border: tab === "questions" ? 'none' : '1px solid #454E30',
               }}
-              onClick={() => setTab("questions")}
-              className={`font-semibold ${tab !== "questions"
-                ? "hover:bg-[#454E30] hover:text-white"
-                : ""
-                }`}
             >
-              Питання ({mockQuestions.length})
-            </Button>
+              Питання ({questions.length})
+            </Button>*/}
           </div>
 
           {tab === "reviews" ? (
-            mockReviews.map((review, i) => (
-              <div key={i} className="border border-[#3E4826] rounded-lg p-4" style={{
-                background: 'linear-gradient( rgba(229, 229, 216, 0.8) )'
-              }}>
+            reviews.map((review, i) => (
+              <div key={i} className="border border-[#3E4826] rounded-lg p-4" style={{ background: 'rgba(229, 229, 216, 0.8)' }}>
                 <div className="flex justify-between items-start mb-2">
                   <div className="flex items-center font-semibold mb-2 text-[#3E4826] font-montserrat">
-                    <span className="mr-5">{review.name}</span>
+                    <span className="mr-5">{review.userName}</span>
                     <div className="flex gap-0.5">
                       {[...Array(review.rating)].map((_, idx) => (
                         <StarIcon key={idx} />
@@ -134,29 +176,29 @@ export const ProductReviewsBlock = () => {
                     </div>
                   </div>
                   <div className="text-xs text-[#3E4826]">{review.date}</div>
-
                 </div>
-
-                <Typography.Paragraph className="text-[#0E120A]">
-                  {review.comment}
-                </Typography.Paragraph>
+               <div className="text-xs text-[#3E4826]">
+ 
+</div>
+<Typography.Paragraph>{review.content || "Без коментаря"}</Typography.Paragraph>
 
               </div>
             ))
-          ) : (
-            mockQuestions.map((q, i) => (
-              <div key={i} className="border border-[#3E4826] rounded-lg p-4 bg-gray-50" style={{
-                background: 'linear-gradient( rgba(229, 229, 216, 0.8) )'
-              }}>
-                <div className="font-semibold mb-2 text-[#3E4826] font-montserrat">{q.name}</div>
+          ) 
+            :('')}
+              
+         {/** (
+            questions.map((q, i) => (
+              <div key={i} className="border border-[#3E4826] rounded-lg p-4" style={{ background: 'rgba(229, 229, 216, 0.8)' }}>
+                <div className="font-semibold mb-2 text-[#3E4826] font-montserrat">{q.userName}</div>
                 <div className="text-[#0E120A]">{q.question}</div>
               </div>
             ))
-          )}
-
-
+          ) */}
+          
+       
+         
         </div>
-
       </div>
     </div>
   );

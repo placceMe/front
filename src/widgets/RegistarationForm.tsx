@@ -7,6 +7,8 @@ import { UserOutlined, LockOutlined, IdcardOutlined, PhoneOutlined, CalendarOutl
 import type { User } from "@shared/types/api";
 import { useRequest } from "@shared/request/useRequest";
 import { useAuth } from "@shared/hooks/useAuth";
+import type dayjs from 'dayjs';
+
 
 const BLUR_STYLE = {
   background: "rgba(229,229,216,0.7)",
@@ -17,6 +19,18 @@ const BLUR_STYLE = {
 interface RegistrationFormProps {
   user: User;
 }
+
+interface UpdateUserFormValues {
+  name: string;
+  surname: string;
+  email: string;
+  phone?: string;
+  birthDate?: dayjs.Dayjs; // т.к. используется DatePicker из antd
+  oldPassword?: string;
+  newPassword?: string;
+  confirmPassword?: string;
+}
+
 
 const RegistrationForm: React.FC<RegistrationFormProps> = ({ user }) => {
   const [form] = Form.useForm();
@@ -39,8 +53,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ user }) => {
     }
   }, [user, form]);
 
-  const onFinish = async (values: any) => {
-    const updatedUser = await request(`/api/Users/${user.id}`, {
+  const onFinish = async (values: UpdateUserFormValues) => {
+    const updatedUser = await request<User>(`/api/users/${user.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"

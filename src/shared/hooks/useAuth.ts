@@ -2,6 +2,22 @@ import { useRequest } from "@shared/request/useRequest";
 import { useAppDispatch } from "@store/hooks";
 import { setUser } from "../../entities/user/model/userSlice";
 import { useNavigate } from "react-router-dom";
+import type { User } from "@shared/types/api";
+
+interface RegisterValues {
+  email: string;
+  password: string;
+  name: string;
+  phone?: string;
+}
+interface RegisterResponse {
+  success: boolean;
+  user: User;
+}
+
+interface LoginResponse {
+  success: boolean;
+}
 
 export const useAuth = () => {
 
@@ -10,8 +26,8 @@ const dispatch = useAppDispatch();
 const navigate = useNavigate();
 
 
- const register = async (values: any) => {
-    const resp = await request("/api/auth/register", {
+ const register = async (values: RegisterValues) => {
+    const resp = await request<RegisterResponse>("/api/auth/register", {
       method: "POST",
       body: JSON.stringify({
         ...values,
@@ -35,7 +51,7 @@ const navigate = useNavigate();
     const login = async (values: { email: string; password: string; }) => {
 
         try {
-      const resp = await request("/api/auth/login", {
+      const resp = await request<LoginResponse>("/api/auth/login", {
         method: "POST",
         body: JSON.stringify(values),
         headers: {
@@ -43,7 +59,7 @@ const navigate = useNavigate();
         },
       });
 
-      if (resp.success) {
+      if (resp && resp.success) {
         await fetchUser();
       }
     } catch (error) {
@@ -61,10 +77,11 @@ const navigate = useNavigate();
     }
 
    async function fetchUser() {
-      const user = await request("/api/auth/me");
+      const user = await request<User>("/api/auth/me");
       if (user) {
         dispatch(setUser(user));
       } else {
+        console.log("Користувач не авторизований")
       }
     }
 

@@ -8,7 +8,7 @@ import FeedbackIcon from '../../assets/icons/star.svg?react';
 
 
 const SELLER_TABS = [
-  { key: 'about', label: 'Про продавця', icon: <UserIcon className="w-3 h-3" /> },
+  { key: 'about', label: 'Контакна інформація', icon: <UserIcon className="w-3 h-3" /> },
   { key: 'reviews', label: 'Відгуки про продавця', icon: <FeedbackIcon className="w-4 h-4" /> },
   { key: 'products', label: 'Товари продавця', icon: '📦' },
 ];

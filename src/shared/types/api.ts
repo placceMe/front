@@ -34,6 +34,7 @@ export type Product = {
     attachments: Attachment[];
     color: string;
     weight: number,
+    additionalImageUrls?: Attachment[];
 };
 
 export type ProductState = "Active" | "Blocked" | "Moderation" | "Archived" | "Deleted";
@@ -50,9 +51,10 @@ export type CategoryState = "Active" | "Hidden" | "Archived" | "Deleted";
 
 export type Attachment = {
     id: string;
-    filePath: string;
+    filePath?: string;
     productId: string;
     product: Product;
+     url?: string;
 };
 
 export type Characteristic = {
@@ -60,6 +62,8 @@ export type Characteristic = {
     value: string;
     productId: string;
     charesteristicDictId: string;
+    characteristicDictId?: string;
+      name?: string; 
 };
 
 export type CharacteristicDict = {

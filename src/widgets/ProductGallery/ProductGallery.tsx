@@ -274,6 +274,9 @@ export const ProductGallery = ({ images }: { images: string[]; }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const thumbRefs = useRef<(HTMLDivElement | null)[]>([]);
 
+
+
+
   const prev = () => setCurrent(c => (c - 1 + images.length) % images.length);
   const next = () => setCurrent(c => (c + 1) % images.length);
 
@@ -298,8 +301,14 @@ export const ProductGallery = ({ images }: { images: string[]; }) => {
   const setThumbRef = useCallback((el: HTMLDivElement | null, index: number) => {
     thumbRefs.current[index] = el;
   }, []);
-  const FILES_BASE_URL = "http://31.42.190.94:8080/api/files/";
-  const fullImages = images.map(img => FILES_BASE_URL + img);
+    const FILES_BASE_URL = 'http://localhost:5001/api/files/file/';
+//  const FILES_BASE_URL = "http://31.42.190.94:8080/api/files/";
+
+const fullImages = images.map(img => {
+  // если img — это уже полный путь, не добавляем BASE
+  return img.startsWith('http') ? img : FILES_BASE_URL + img;
+});
+
 
   return (<>
     <div className="relative w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center">

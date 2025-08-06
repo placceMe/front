@@ -9,6 +9,8 @@ interface Props {
 }
 
 const FILES_BASE_URL = 'http://localhost:5001/api/files/';
+// __BASE_URL__ const FILES_BASE_URL = "http://31.42.190.94:8080/api/files/";
+// TODO useRerequest 
 
 export const CartItemCard = ({ item, onChangeQuantity, onRemove }: Props) => {
   const { product, quantity } = item;

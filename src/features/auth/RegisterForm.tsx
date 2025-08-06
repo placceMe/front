@@ -9,6 +9,14 @@ const BLUR_STYLE = {
   border: "1px solid #3E4826",
 };
 
+interface RegisterFormValues {
+  email: string;
+  password: string;
+  name: string;
+  phone?: string;
+}
+
+
 interface RegisterFormProps {
   onSuccess?: () => void;
 }
@@ -16,7 +24,7 @@ interface RegisterFormProps {
 export const RegisterForm: React.FC<RegisterFormProps> = () => {
   const { register, loading } = useAuth();
 
-  const onFinish = async (values: any) => {
+  const onFinish = async (values: RegisterFormValues) => {
     await register(values);
   };
 

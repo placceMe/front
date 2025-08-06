@@ -9,9 +9,11 @@ import { Wishlist } from "@pages/Wishlist";
 import { BlurBlock } from "@shared/ui/BlurBlock";
 import { TABS_SUPPLIER } from "../../widgets/SupplierTabs/ui/SupplierTabs";
 import { TABS_WARRIOR } from "../../widgets/WariorTabs/ui/WariorTabs";
-import AddProductCard from "../../widgets/AddProductCard";
+
 import RegistrationForm from "../../widgets/RegistarationForm";
 import OrdersTab from "../../widgets/OrdersTab";
+import { BecomeSellerButton } from "@features/role/ui/BecomeSellerButton";
+import { AddProductCard } from "../../widgets/AddProductCard";
 
 const HERO_IMAGES = {
   User: warriorBg,
@@ -79,6 +81,7 @@ export const CabinetLayout = () => {
       <div className="flex items-center justify-between mb-6">
         <TabNavFrame tabs={TABS} value={tab} onChange={handleChangeTab} />
         <RoleSwitcher />
+        {!user?.roles.includes("Saler") && <BecomeSellerButton />}
       </div>
       <div>
         {TAB_CONTENT[tab]}

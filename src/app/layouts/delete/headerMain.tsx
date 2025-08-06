@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   FaHeart,
   FaUser,
-  FaShoppingCart,
 } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import Logo from "./Logo.png";
@@ -11,6 +10,7 @@ import "./headerMain.css";
 import { useAppSelector } from "@store/hooks";
 import { Modal } from "antd";
 import { AuthTabs } from "..//..//../widgets/AuthTabs";
+import { CartIcon } from "@features/cart/ui/CartIcon";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -92,7 +92,8 @@ const Header: React.FC = () => {
               className="hover:text-[#5a6b3b] focus:outline-none"
               title="Кошик"
             >
-              <FaShoppingCart />
+              <CartIcon/>
+             
             </button>
 
             <Modal

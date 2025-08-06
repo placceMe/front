@@ -152,3 +152,11 @@
   background-color: #ccc;
   cursor: not-allowed;
 }
+.product-actions-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  gap: 4px;
+}

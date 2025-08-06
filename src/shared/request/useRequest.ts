@@ -18,7 +18,7 @@ export const useRequest = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  async function request<T = any>(url: string, params: RequestInit = {}): Promise<T | null> {
+  async function request<T = unknown>(url: string, params: RequestInit = {}): Promise<T | null> {
     setLoading(true);
     try {
 
@@ -34,8 +34,8 @@ console.log("Requesting URL:", __BASE_URL__ + url);
 
       const data = await response.json();
       return data;
-    } catch (error) {
-      setError(error instanceof Error ? error.message : "An error occurred");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "An error occurred");
       return null;
     } finally {
       setLoading(false);

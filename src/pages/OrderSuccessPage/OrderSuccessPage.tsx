@@ -91,7 +91,7 @@ useEffect(() => {
           {
             title: "Сума",
             key: "total",
-            render: (_: any, item: OrderItem) => {
+            render: (_: unknown, item: OrderItem) => {
               const price = item.product?.price ?? item.price ?? 0;
               return `${price * item.quantity} грн`;
             }

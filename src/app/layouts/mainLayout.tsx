@@ -7,51 +7,50 @@ import { useAppDispatch } from "@store/hooks";
 // Update the import path below to the correct relative path where userSlice actually exists.
 // For example, if userSlice.ts is in src/entities/user/model/userSlice.ts, use:
 import { logout, setUser } from "../../entities/user/model/userSlice";
-import { setCart } from "@features/cart/model/cartSlice";
+import { setCart, setUserId } from "@features/cart/model/cartSlice";
+import type { Product, User } from "@shared/types/api";
 
 // import Footer from "../../components/good/footer";
 // import Header from "../../components/MainScreen/headerMain";
 
 export const MainLayout = () => {
 
-
-
-
     const { request } = useRequest();
-
-
     const dispatch = useAppDispatch();
 
     async function fetchUser() {
-        const user = await request("/api/auth/me");
+        const user = await request<User>("/auth/me");
         if (user) {
             dispatch(setUser(user));
+            dispatch(setUserId(user.id));
 
-            const localCart = localStorage.getItem("cart");
+            const cartKey = `cart_${user.id}`;
+            const localCart = localStorage.getItem(cartKey);
             if (localCart) {
                 try {
-                    const parsed: { id: string; quantity: number; }[] = JSON.parse(localCart);
-
-                    const { request: productRequest } = useRequest();
+                    const parsed: { id: string; quantity: number }[] = JSON.parse(localCart);
 
                     const products = await Promise.all(
-                        parsed.map(async ({ id }) => {
-                            const res = await productRequest(`/api/products/${id}`);
-                            return res;
-                        })
+                        parsed.map(async ({ id }) => await request<Product>(`/api/products/${id}`))
                     );
 
-                    const fullCart = products.map((product, index) => ({
-                        product,
-                        quantity: parsed[index].quantity,
-                    }));
-
+                    const fullCart = parsed
+                        .map((item, index) => {
+                            const product = products[index];
+                            if (!product) return null;
+                            return {
+                                product,
+                                quantity: item.quantity,
+                            };
+                        })
+                        .filter((item): item is { product: Product; quantity: number } => item !== null);
                     dispatch(setCart(fullCart));
                 } catch {
                     console.warn("Cart recovery failed");
                 }
             }
         } else {
+            dispatch(setUserId("guest"));
             dispatch(logout());
         }
     }

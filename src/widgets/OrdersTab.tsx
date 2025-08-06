@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { FaChevronUp, FaChevronDown, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import type { OrderResponse, OrderItemResponse } from '@shared/types/api';
+import type { OrderResponse, OrderItemResponse, Product } from '@shared/types/api';
 import { useRequest } from '@shared/request/useRequest';
 import { useAppSelector } from '@store/hooks';
 
@@ -58,7 +58,7 @@ const OrdersTab: React.FC = () => {
 
     const productIds: string[] = [];
     visibleOrders.forEach(order =>
-      (order.items || []).slice(0, 3).forEach((item: any) => {
+      (order.items || []).slice(0, 3).forEach((item: OrderItemResponse) => {
         if (item.productId && !(item.productId in productImages)) {
           productIds.push(item.productId);
         }
@@ -69,7 +69,7 @@ const OrdersTab: React.FC = () => {
 
     Promise.all(
       productIds.map(async (id) => {
-        const product = await request(`/api/products/${id}`);
+        const product = await await request<Product>(`/api/products/${id}`);
         return { id, mainImageUrl: product?.mainImageUrl || '' };
       })
     ).then((results) => {

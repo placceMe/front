@@ -11,10 +11,21 @@ interface Props {
 export const ProductMainBlock = ({ product }: Props) => {
   console.log("ProductMainBlock props product:", product);
 
+ const images = [
+    product.mainImageUrl,
+    ...(product.additionalImageUrls?.map(att => att.url || att.filePath || '') ?? [])
+  ].filter(Boolean); 
+
+
   return (
     <div className='flex'>
       <div className="md:w-[44%] w-full flex flex-col justify-between">
-        <ProductGallery images={product.mainImageUrl ? [product.mainImageUrl] : []} />
+     {/**  <ProductGallery images={product.mainImageUrl ? [product.mainImageUrl] : []} /> */} 
+
+ <ProductGallery images={images} />
+
+
+
 
       </div>
       <div className="md:w-[56%] w-full flex flex-col gap-4">
@@ -28,3 +39,4 @@ export const ProductMainBlock = ({ product }: Props) => {
   );
 }
 
+//get - additionalImageUrls

@@ -109,7 +109,7 @@ export const ProductPage = () => {
           </div>
           {tab === "main" && <ProductMainBlock product={product} />}
           {tab === "specs" && <ProductSpecsBlock product={product} />}
-          {tab === "reviews" && <ProductReviewsBlock />}
+          {tab === "reviews" && <ProductReviewsBlock   productId={product.id}/>}
         </BlurBlock>
 
         {tab === "main" && (
@@ -117,7 +117,7 @@ export const ProductPage = () => {
             <div className="max-w-[1100px] mx-auto px-4 space-y-8">
               <ProductDescriptionBlock product={product} />
               <ProductSpecsBlock product={product} />
-              <ProductReviewsBlock />
+              <ProductReviewsBlock productId={product.id} />
             </div>
           </div>
         )}

@@ -1,4 +1,4 @@
-import { Button } from "antd";
+/*import { Button } from "antd";
 import React from "react";
 import { FONTS } from "@shared/constants/fonts";
 import { COLORS } from "@shared/constants/colors";
@@ -32,3 +32,4 @@ export const BuyOnCreditButton: React.FC<Props> = ({
     {children}
   </Button>
 );
+*/

@@ -48,46 +48,92 @@ interface CartItem {
 
 interface CartState {
   items: CartItem[];
+  userId: string;
 }
 
 const initialState: CartState = {
   items: [],
+  userId: "guest",
+};
+
+const getCartKey = (userId: string) => `cart_${userId}`;
+
+const syncLocalStorage = (items: CartItem[], userId: string) => {
+  const filtered = items
+    .filter(item => item.quantity >= 2)
+    .map(({ product, quantity }) => ({
+      id: product.id,
+      quantity
+    }));
+  localStorage.setItem(getCartKey(userId), JSON.stringify(filtered));
 };
 
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    // Для полной замены корзины (опционально)
+    // Установка ID пользователя (нужно вызывать после авторизации)
+    setUserId: (state, action: PayloadAction<string>) => {
+      state.userId = action.payload;
+    },
+
+    // Полная замена корзины (например, после загрузки из localStorage)
     setCart: (state, action: PayloadAction<CartItem[]>) => {
       state.items = action.payload;
+      syncLocalStorage(state.items, state.userId);
     },
+
     // Обновление количества
     updateQuantity: (state, action: PayloadAction<{ productId: string; quantity: number }>) => {
-      const item = state.items.find(i => i.product.id === action.payload.productId);
-      if (item) item.quantity = action.payload.quantity;
+      const { productId, quantity } = action.payload;
+      const item = state.items.find(i => i.product.id === productId);
+      if (item) {
+  item.quantity = quantity;
+}
+
+      syncLocalStorage(state.items, state.userId);
     },
-    // Удаление товара из корзины
+
+    // Удаление товара
     removeItem: (state, action: PayloadAction<string>) => {
       state.items = state.items.filter(i => i.product.id !== action.payload);
+      syncLocalStorage(state.items, state.userId);
     },
-    // Добавление товара в корзину
+
+    // Добавление товара
     addToCart: (state, action: PayloadAction<{ product: Product; quantity: number }>) => {
       const { product, quantity } = action.payload;
       const existing = state.items.find(i => i.product.id === product.id);
-      if (existing) {
-        existing.quantity += quantity;
-      } else {
-        state.items.push({ product, quantity });
-      }
-    },
-    // Очистить корзину
-    
+
+       if (existing) {
+    existing.quantity += quantity;
+    if (existing.quantity < 1) {
+      state.items = state.items.filter(i => i.product.id !== product.id);
+    }
+  } else {
+    if (quantity >= 1) {
+      state.items.push({ product, quantity });
+    }
+  }
+
+  syncLocalStorage(state.items, state.userId);
+},
+
+    // Очистка корзины
     clearCart: (state) => {
       state.items = [];
+      localStorage.removeItem(getCartKey(state.userId));
     },
   },
 });
 
-export const { setCart, updateQuantity, removeItem, addToCart, clearCart } = cartSlice.actions;
+export const {
+  setUserId,
+  setCart,
+  updateQuantity,
+  removeItem,
+  addToCart,
+  clearCart
+} = cartSlice.actions;
+
 export default cartSlice.reducer;

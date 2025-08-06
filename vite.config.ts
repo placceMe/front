@@ -4,6 +4,9 @@ import tailwindcss from "@tailwindcss/vite";
 import svgr from 'vite-plugin-svgr';
 
 import path from "node:path";
+/// <reference types="vite/client" />
+
+
 
 export default defineConfig({
   plugins: [react(), tailwindcss(), svgr()],
@@ -20,7 +23,11 @@ export default defineConfig({
     },
   },
   define: {
-    __BASE_URL__: JSON.stringify(process.env.BASE_URL ??  "http://31.42.190.94:8080"),
+   // __BASE_URL__: JSON.stringify(process.env.BASE_URL ??  "http://31.42.190.94:8080"),
+   
+  __BASE_URL__: JSON.stringify("http://localhost:8080"),
+ __NP_API_KEY__: JSON.stringify("7dfd5d6f925fb348715f4ae2c97b7949"),
+   
     //    __BASE_URL__: JSON.stringify(process.env.BASE_URL ??  "http://localhost:8080" ),
 
   }
