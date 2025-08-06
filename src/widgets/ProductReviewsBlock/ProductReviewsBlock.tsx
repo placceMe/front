@@ -44,7 +44,9 @@ export const ProductReviewsBlock: React.FC<Props> = ({ productId }) => {
     const fetchFeedback = async () => {
       try {
         
-        const res = await fetch(`http://localhost:8080/api/feedback/product/${productId}`);
+       // const res = await fetch(`http://localhost:8080/api/feedback/product/${productId}`);
+ const res = await fetch(`http://31.42.190.94:8080/api/feedback/product/${productId}`);
+ 
         const data = await res.json();
   
 console.log("feedback from API:", data);

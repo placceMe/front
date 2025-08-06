@@ -301,8 +301,8 @@ export const ProductGallery = ({ images }: { images: string[]; }) => {
   const setThumbRef = useCallback((el: HTMLDivElement | null, index: number) => {
     thumbRefs.current[index] = el;
   }, []);
-    const FILES_BASE_URL = 'http://localhost:5001/api/files/file/';
-//  const FILES_BASE_URL = "http://31.42.190.94:8080/api/files/";
+  //  const FILES_BASE_URL = 'http://localhost:5001/api/files/file/';
+  const FILES_BASE_URL = "http://31.42.190.94:8080/api/files/file";
 
 const fullImages = images.map(img => {
   // если img — это уже полный путь, не добавляем BASE

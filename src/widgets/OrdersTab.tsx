@@ -5,7 +5,8 @@ import type { OrderResponse, OrderItemResponse, Product } from '@shared/types/ap
 import { useRequest } from '@shared/request/useRequest';
 import { useAppSelector } from '@store/hooks';
 
-const FILES_BASE_URL = 'http://localhost:5001/api/files/file/';
+//const FILES_BASE_URL = 'http://localhost:5001/api/files/file/';
+const FILES_BASE_URL = "http://31.42.190.94:8080/api/files/";
 const ORDERS_PER_PAGE = 5;
 
 const ORDER_STATUS_MAP: Record<number, { label: string; color: string; }> = {
