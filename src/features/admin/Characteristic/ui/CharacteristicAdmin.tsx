@@ -13,7 +13,7 @@ type Characteristic = {
 
 const CharacteristicAdmin: FC = () => {
 
-    const { fetchCategories, addCharacteristic, loading, error, fetchCharacteristics } = useCharacteristicAdmin();
+    const { fetchCategories, addCharacteristic, loading, fetchCharacteristics } = useCharacteristicAdmin();
 
     const [categories, setCategories] = useState<any[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);

@@ -5,7 +5,7 @@ import { Button, Form, Input, Table } from "antd";
 const CategoryAdmin: React.FC = () => {
 
     const [categories, setCategories] = useState<any[]>([]);
-    const { fetchCategories, addCategory, loading, error } = useCategoryAdminApi();
+    const { fetchCategories, addCategory, loading } = useCategoryAdminApi();
 
     const loadCategories = async () => {
         const data = await fetchCategories();
