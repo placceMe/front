@@ -19,7 +19,23 @@ const ProductGrid: React.FC<ProductGridProps> = ({ title, products }) => {
       <h2 className="section-title">{title}</h2>
       <div className="product-grid">
         {products.map((product) => (
-          <ProductCard key={product.id} {...product} />
+          <ProductCard product={{
+            id: '',
+            title: '',
+            description: '',
+            price: 0,
+            categoryId: '',
+            sellerId: '',
+            state: 'Active',
+            category: undefined,
+            quantity: 0,
+            characteristics: [],
+            mainImageUrl: '',
+            attachments: [],
+            color: '',
+            weight: 0,
+            additionalImageUrls: undefined
+          }} key={product.id} />
         ))}
       </div>
     </section>

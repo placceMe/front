@@ -22,7 +22,7 @@ const {request, loading, error} = useRequest();
     const loadProducts = async () => {
         const data = await fetchProducts();
         if (data) {
-          setProducts(data);
+          setProducts(data as any);
         }
       };
 
