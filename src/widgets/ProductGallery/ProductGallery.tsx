@@ -302,12 +302,12 @@ export const ProductGallery = ({ images }: { images: string[]; }) => {
     thumbRefs.current[index] = el;
   }, []);
   //  const FILES_BASE_URL = 'http://localhost:5001/api/files/file/';
-  const FILES_BASE_URL = "http://31.42.190.94:8080/api/files/file";
+  const FILES_BASE_URL = "http://31.42.190.94:8080/api/files/file/";
 
-const fullImages = images.map(img => {
-  // если img — это уже полный путь, не добавляем BASE
-  return img.startsWith('http') ? img : FILES_BASE_URL + img;
-});
+  const fullImages = images.map(img => {
+    // если img — это уже полный путь, не добавляем BASE
+    return img.startsWith('http') ? img : FILES_BASE_URL + img;
+  });
 
 
   return (<>

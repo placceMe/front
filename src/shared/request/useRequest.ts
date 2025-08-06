@@ -23,13 +23,16 @@ export const useRequest = () => {
     try {
 
       
-console.log("Requesting URL:", __BASE_URL__ + url);
 
       const reqUrl = new URL(__BASE_URL__  + url);
 
       const response = await fetch(reqUrl.href, {
         ...params,
+        body: params.body ? JSON.stringify(params.body) : undefined,
         credentials: "include",
+        headers:{
+          "Content-Type": "application/json",
+        }
       });
 
       const data = await response.json();

@@ -15,6 +15,9 @@ import { AboutSeller } from "@pages/AboutSeller.tsx";
 const Home = lazy(() => import("@pages/Home/ui/HomePage"));
 const CartPage = lazy(() => import("@pages/CartPage"));
 const CheckoutPage = lazy(() => import("@pages/CheckoutPage"));
+const AdminPage = lazy(() => import("@pages/Admin/ui/Admin"));
+
+const CategoryAdmin = lazy(() => import("@features/admin/Category/ui/CategoryAdmin"));
 
 export const AppRouter = () => {
   const user = useAppSelector(state => state.user.user);
@@ -32,7 +35,7 @@ export const AppRouter = () => {
           { path: 'order-success/:orderId', element: <OrderSuccessPage /> },
           { path: 'category/:categoryId', element: <CategoryProductsPage /> },
           { path: 'wishlist', element: <Wishlist /> },
-           { path: 'seller/:sellerId', element: <AboutSeller /> },
+          { path: 'seller/:sellerId', element: <AboutSeller /> },
 
           ...(user?.id ? [{
             path: "/profile",
@@ -45,8 +48,15 @@ export const AppRouter = () => {
             ],
           }] : []),
         ],
-      },
 
+      },
+      {
+        path: "admin",
+        element: <AdminPage />,
+        children: [
+          { path: "categories", element: <CategoryAdmin /> },
+        ]
+      },
       {
         path: "*",
         element: <Navigate to="/" replace />,
