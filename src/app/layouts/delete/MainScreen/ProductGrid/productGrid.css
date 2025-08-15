@@ -1,33 +1,37 @@
-.product-grid-section {
-  margin: 40px 0;
-  padding: 0 160px; /* уменьшено, чтобы прокрутка имела смысл */
-  overflow-x: hidden;
+
+.category-grid {
+  display: grid;
+  gap: 20px;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+
 }
 
-.section-title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  color: #1a1a1a;
+/* Desktop ≥1200px: 4 колонки */
+@media (min-width: 1200px) {
+  .category-grid { grid-template-columns: repeat(4, 1fr); }
 }
 
-.product-grid {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  padding-bottom: 10px;
-  scroll-behavior: smooth;
+/* Tablet 601–1199px: 3 колонки, чуть меньше gap */
+@media (min-width: 601px) and (max-width: 1199px) {
+  .category-grid { grid-template-columns: repeat(3, 1fr); gap: 15px;}
 }
 
-.product-grid::-webkit-scrollbar {
-  height: 8px;
+/* Mobile ≤600px: 2 колонки, разрешаем детям сжиматься */
+@media (max-width: 600px) {
+  .category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .category-grid > * { min-width: 0; }
 }
 
-.product-grid::-webkit-scrollbar-thumb {
-  background-color: #ccc;
-  border-radius: 4px;
-}
-
-.product-grid::-webkit-scrollbar-track {
-  background-color: transparent;
+/* Mobile: две колонки */
+@media (max-width: 600px){
+  .category-grid{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+   /* padding: 0 8px;*/
+    width: 100%;
+  }
+  .category-grid > * { min-width: 0; }
 }

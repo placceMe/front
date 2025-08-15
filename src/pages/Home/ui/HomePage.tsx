@@ -6,16 +6,16 @@ import Protocols from "../../../app/layouts/delete/MainScreen/Protocols";
 import Slide from "../../../app/layouts/delete/MainScreen/slider";
 
 const HomePage = () => {
-    return (
-        <div>
-      <Slide />
-      <ProductPage />
-      <Banner />
-      <AboutUs />
-      <Advantages/>
-      <Protocols />
+  return (
+  <div>
+      <div className="container section"><Slide /></div>
+      <div className="container section"><ProductPage /></div>
+      <div className="container section"><Banner /></div>
+      <div className="container section"><AboutUs /></div>
+      <div className="container section"><Advantages /></div>
+      <div className="container section"><Protocols /></div>
     </div>
-    );
+  );
 };
 
 export default HomePage;

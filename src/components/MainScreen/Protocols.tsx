@@ -1,4 +1,4 @@
-import React from "react";
+/*import React from "react";
 import "./protocols.css";
 
 const protocols = [
@@ -41,3 +41,4 @@ const Protocols: React.FC = () => {
 };
 
 export default Protocols;
+*/

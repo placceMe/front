@@ -18,7 +18,7 @@ export const ProductMainBlock = ({ product }: Props) => {
 
 
   return (
-    <div className='flex'>
+      <div className="flex flex-col md:flex-row gap-4 md:gap-6">
       <div className="md:w-[44%] w-full flex flex-col justify-between">
      {/**  <ProductGallery images={product.mainImageUrl ? [product.mainImageUrl] : []} /> */} 
 

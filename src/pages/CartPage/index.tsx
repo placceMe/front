@@ -47,7 +47,7 @@ useEffect(() => {
 
 
   return (
-    <div className=" mx-auto py-8">
+    <div className=" mx-auto py-8 container">
       {items.length === 0 ? (
         <div className="text-center py-10 px-4 text-[#1f2614]">
           <img

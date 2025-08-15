@@ -1,14 +1,19 @@
 .banner {
   width: 100%;
-  max-width: 1600px; /* можно адаптировать */
-  margin: 50px auto; /* центр по горизонтали */
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 5px;
 }
 
 .banner img {
   width: 100%;
-  height: auto;
   display: block;
   object-fit: cover;
+}
+/* 🔹 Мобильный стиль, как у about-us */
+@media (max-width: 980px) {
+  .banner img {
+    height: 220px; /* можно 200-250px, подбери по макету */
+    object-fit: cover;
+    
+  }
 }

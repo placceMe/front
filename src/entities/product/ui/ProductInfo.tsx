@@ -4,7 +4,7 @@ import {
   Card, Typography, Rate, Space, Descriptions, Flex, Button, InputNumber
 } from 'antd';
 import {
-  MinusOutlined, PlusOutlined, HeartOutlined, HeartFilled, SwapOutlined
+  MinusOutlined, PlusOutlined, HeartOutlined, HeartFilled,
 } from '@ant-design/icons';
 import { GlassCard } from '@shared/ui/GlassCard/GlassCard';
 import { TagBlock } from './TagBlock';
@@ -59,7 +59,7 @@ const decrementQuantity = () => {
 };
 
   //const [isFavorite, setIsFavorite] = useState(false);
-  const [isCompared, setIsCompared] = useState(false);
+//  const [isCompared, setIsCompared] = useState(false);
   const userId = useAppSelector(state => state.user.user?.id) || "guest";
   const [wishlist, setWishlist] = useUserProductIds(userId, "userWishlist"); // массив id-шек!
 
@@ -79,7 +79,7 @@ const toggleFavorite = (prod: any) => {
       setWishlist([product.id, ...wishlist]);
     }
   };
-  const toggleCompare = () => setIsCompared(prev => !prev);
+ // const toggleCompare = () => setIsCompared(prev => !prev);
 
   // oldPrice: если не указан, считаем price * 2
   const displayOldPrice = product.price * 2;
@@ -91,9 +91,9 @@ const toggleFavorite = (prod: any) => {
         <Flex justify="space-between" align="flex-start" className="mb-4">
           <Title
             level={2}
-            className="font-montserrat font-semibold text-h1 text-color_gradient flex-1"
-            style={{ marginBottom: 0 }}
-          >
+        className="font-montserrat font-semibold text-color_gradient flex-1 leading-tight"
+  style={{ marginBottom: 0, fontSize: 'clamp(18px, 4vw, 32px)' }}
+>
             {product.title}
           </Title>
           <div className="hidden sm:flex gap-2 ml-4">
@@ -170,7 +170,8 @@ const toggleFavorite = (prod: any) => {
             oldPrice={displayOldPrice}
           />
           {/* Quantity selector */}
-           <Flex gap="middle" className="items-center w-full">
+          
+           <Flex gap="middle" className="items-center w-full ">
           <div className="flex items-center gap-2">
             <Button
               type="primary"
@@ -199,13 +200,14 @@ const toggleFavorite = (prod: any) => {
               style={{ minWidth: '40px' }}
             />
           </div>
-          {/* Purchase buttons */}
-         
             <AddToCartButton product={product} quantity={quantity} className="flex-1" />
-       
           </Flex>
+
+
+          
           {/* Mobile action buttons */}
           <div className="flex sm:hidden justify-center gap-4 pt-2">
+            {/**
             <Button
               type="text"
               icon={<SwapOutlined />}
@@ -214,7 +216,7 @@ const toggleFavorite = (prod: any) => {
               size="large"
             >
               Порівняти
-            </Button>
+            </Button> */}
             <Button
               type="text"
               icon={isFavorite ? <HeartFilled /> : <HeartOutlined />}

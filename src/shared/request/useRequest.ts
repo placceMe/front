@@ -18,7 +18,8 @@ export const useRequest = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  async function request<T = unknown>(url: string, params: RequestInit = {}): Promise<T | null> {
+
+  async function request<T = any>(url: string, params: RequestInit = {}): Promise<T | null> {
     setLoading(true);
     try {
 
@@ -28,7 +29,7 @@ export const useRequest = () => {
 
       const response = await fetch(reqUrl.href, {
         ...params,
-        body: params.body ? JSON.stringify(params.body) : undefined,
+        //body: params.body ? JSON.stringify(params.body) : undefined,
         credentials: "include",
         headers:{
           "Content-Type": "application/json",
@@ -37,7 +38,7 @@ export const useRequest = () => {
 
       const data = await response.json();
       return data;
-    } catch (err: unknown) {
+    } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
       return null;
     } finally {
@@ -47,6 +48,8 @@ export const useRequest = () => {
 
   return { request, error, loading };
 };
+
+
 
 
 /*

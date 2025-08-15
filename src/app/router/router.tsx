@@ -11,6 +11,11 @@ import OrdersTab from "../../widgets/OrdersTab";
 import ViewedProducts from "@pages/ViewedProducts";
 import { useAppSelector } from "@store/hooks";
 import { AboutSeller } from "@pages/AboutSeller.tsx";
+import AboutUsPage from "@pages/AboutUs/AboutUsPage";
+
+import { FAQ } from "@pages/FAQ/FAQ";
+import { DeliveryInfoPage } from "@pages/Delivery/DeliveryInfoPage";
+import PrivacyPolicy from "@pages/Policy/Policy";
 
 const Home = lazy(() => import("@pages/Home/ui/HomePage"));
 const CartPage = lazy(() => import("@pages/CartPage"));
@@ -37,6 +42,13 @@ export const AppRouter = () => {
           { path: 'category/:categoryId', element: <CategoryProductsPage /> },
           { path: 'wishlist', element: <Wishlist /> },
           { path: 'seller/:sellerId', element: <AboutSeller /> },
+          { path: 'aboutus', element: <AboutUsPage /> },
+          { path: 'delivery', element: <DeliveryInfoPage /> },
+          { path: 'faq', element: <FAQ /> },
+          { path: 'policy', element: <PrivacyPolicy /> },
+          
+           
+          
 
           ...(user?.id ? [{
             path: "/profile",

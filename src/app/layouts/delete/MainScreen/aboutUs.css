@@ -1,65 +1,70 @@
-.about-us {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  background-color: #fff;
-  padding: 0px 160px;
-  gap: 40px;
+.about-us{
+  width: 100%;
 }
 
-.about-title {
-  font-size: 32px;
+.about-title{
+  font-size: clamp(24px, 3.2vw, 32px);
   font-weight: 700;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
-.about-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.about-grid{
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr; /* текст / картинка */
+  gap: clamp(16px, 4vw, 40px);
 }
 
-.about-list li {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin-bottom: 12px;
-  color: #222;
-  line-height: 1.4;
+.about-list{ list-style:none; margin:0; padding:0; }
+.about-list li{
+  display:flex; align-items:flex-start; gap:10px;
+  margin-bottom: 10px; color:#222; line-height:1.5;
+  font-size: clamp(16px, 1.6vw, 18px); /* регулируй тут базовый размер */
+}
+.icon{ color:#3e4826; margin-top: 3px; flex-shrink:0; }
+
+/* Кнопки */
+.about-button{
+  margin-top: 16px; height: 40px; width: 240px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 150%), #3E4826;
+  color:#fff; border:none; border-radius:5px; cursor:pointer;
+  font-size:14px; font-weight:500;
+  display: inline-block;
 }
 
-.icon {
-  color: #3e4826;
-  margin-top: 3px;
-  flex-shrink: 0;
-}
-
-.about-button {
-  margin-top: 20px;
-  height: 38px;
-  width: 250px;
-  text-align: center;
-    background: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0) 0%,
-      rgba(0, 0, 0, 1) 150%
-    ),
-    #3E4826;
-  color: white;
-  padding: 5px 20px;
+.about-dropdown-btn{
+  display: none;
+  align-items: center;
+  gap: 6px;
   font-size: 14px;
   font-weight: 500;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+  color: #3e4826;
+  background: none; border: none; cursor: pointer; padding: 0;
 }
 
-.about-button:hover {
-  background-color: #2e361b;
+/* Картинка */
+.about-image img{
+  width: 100%; height: auto; border-radius: 5px; display:block;
 }
 
-.about-image img {
-  max-width: 675px;
-  border-radius: 8px;
+/* 🔹 Моб/планшет */
+@media (max-width: 980px){
+  .about-grid{ grid-template-columns: 1fr; }
+
+  /* Только 2 пункта на мобилке */
+  .about-list li:nth-child(n+3){ display: none; }
+
+  .about-button{ display: none; }
+  .about-dropdown-btn{
+    display: flex; justify-content: center; align-items: center;
+    margin: 0 auto; color: #8D8C5F;
+  }
+
+  /* при желании фиксированный размер шрифта на мобилке */
+  /* .about-list li { font-size: 18px; } */
+}
+
+/* очень узкие экраны */
+@media (max-width: 600px){
+  .about-title{ font-size: 20px; }
 }

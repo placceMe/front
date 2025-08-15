@@ -1,4 +1,4 @@
-import React from 'react';
+/*import React from 'react';
 import "./productGrid.css";
 import ProductCard from 'app/layouts/delete/ProductCard/ProductCard';
 import type { Product } from '@shared/types/api';
@@ -43,3 +43,4 @@ const ProductGrid: React.FC<ProductGridProps> = ({ title, products }) => {
 };
 
 export default ProductGrid;
+*/

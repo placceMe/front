@@ -4,10 +4,49 @@
 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-
+  background-color: '#F4F4F4';
+height: 100%;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+   --hx: 170px;
+}
+.container{
+ /*width: 100%;
+     max-width: 1600px;       если нужен лимит, иначе убери
+  margin-inline: auto; */
+  padding-inline: var(--hx);
+}
+
+
+.section {
+  padding-top: 0;
+  padding-bottom: clamp(20px, 4vw, 48px);
+}
+
+.section {
+  padding-top: 0;
+  padding-bottom: clamp(20px, 4vw, 48px);
+}
+
+.section:first-of-type {
+  padding-top: clamp(20px, 4vw, 48px);
+}
+
+
+
+
+@media (max-width: 1280px){ :root{ --hx: 80px; } }
+@media (max-width: 1120px){ :root{ --hx: 40px; } }
+@media (max-width: 1020px){ :root{ --hx: 16px; } }
+@media (max-width: 480px) { :root{ --hx: 22px; } }
+
+/* перебиваем tailwind .container */
+.container{
+  width: 100% !important;
+  max-width: none !important;   /* иначе будет 1024/1280/1536 */
+  padding-inline: var(--hx) !important;
 }

@@ -1,4 +1,4 @@
-.footer {
+/*.footer {
   background: #37412e url('./bgFooter.png') no-repeat center/cover;
   color: white;
   padding: 40px 160px 30px;
@@ -76,4 +76,237 @@
 
 .footer-copy {
   opacity: 0.8;
+}
+*/
+
+.footer {
+  background: #37412e url('./bgFooter.png') no-repeat center/cover;
+  color: white;
+  padding: 40px 160px 30px;
+  font-size: 14px;
+}
+
+.footer-top {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 40px;
+}
+
+.footer-logo-block {
+  max-width: 280px;
+}
+
+.footer-logo {
+  width: 160px;
+  margin-bottom: 10px;
+}
+
+/* ===== ИСПРАВЛЕНО: Добавлены стили для социальных сетей ===== */
+.footer-socials {
+  display: flex;
+  gap: 12px;
+  font-size: 20px;
+  margin-top: 15px; /* ИСПРАВЛЕНО: увеличен отступ с 10px до 15px */
+}
+
+.footer-socials a {
+  color: white;
+  transition: color 0.2s;
+}
+
+.footer-socials a:hover {
+  color: #f6a630;
+}
+
+.footer-columns {
+  display: flex;
+  gap: 60px;
+  flex-wrap: wrap;
+}
+
+.footer-columns h4 {
+  margin-bottom: 15px; /* ИСПРАВЛЕНО: увеличен отступ с 10px до 15px */
+  font-weight: 600;
+  font-size: 16px; /* ИСПРАВЛЕНО: добавлен размер шрифта */
+}
+
+.footer-columns ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-columns li {
+  margin-bottom: 8px; /* ИСПРАВЛЕНО: увеличен отступ с 6px до 8px */
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.footer-columns li:hover {
+  color: #f6a630;
+}
+
+/* ИСПРАВЛЕНО: Добавлены стили для ссылок навигации */
+.footer-columns .nav-link {
+  color: white;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-columns .nav-link:hover {
+  color: #f6a630;
+}
+
+.footer-line {
+  border-top: 1px dashed rgba(255, 255, 255, 0.2);
+  margin: 30px 0;
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 13px;
+  gap: 20px;
+}
+
+/* ИСПРАВЛЕНО: Добавлены стили для платежных систем */
+.footer-payments {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.footer-payments img {
+  height: 24px;
+}
+
+.footer-copy {
+  opacity: 0.8;
+  text-align: center; /* ИСПРАВЛЕНО: добавлено центрирование */
+}
+
+/* ===== ПЛАНШЕТ (≤1024px) ===== */
+@media (max-width: 1024px) {
+  .footer {
+    padding: 30px 60px 25px;
+  }
+  
+  .footer-columns {
+    gap: 40px;
+  }
+  
+  .footer-logo {
+    width: 140px;
+  }
+}
+
+/* ===== МОБИЛЬНЫЙ (≤768px) - ИСПРАВЛЕНО: Полностью переработан блок ===== */
+@media (max-width: 768px) {
+  .footer {
+    padding: 25px 20px 20px; /* ИСПРАВЛЕНО: уменьшены отступы */
+    font-size: 13px; /* ИСПРАВЛЕНО: уменьшен шрифт */
+  }
+  
+  .footer-top {
+    flex-direction: column; /* ИСПРАВЛЕНО: колонки стали вертикальными */
+    gap: 25px; /* ИСПРАВЛЕНО: увеличен отступ */
+  }
+  
+  .footer-logo-block {
+    max-width: 100%; /* ИСПРАВЛЕНО: убрано ограничение ширины */
+    text-align: center; /* ИСПРАВЛЕНО: центрирование */
+  }
+  
+  .footer-logo {
+    width: 120px; /* ИСПРАВЛЕНО: уменьшен логотип */
+  }
+  
+  .footer-socials {
+    justify-content: center; /* ИСПРАВЛЕНО: центрирование соцсетей */
+    margin-top: 10px; /* ИСПРАВЛЕНО: уменьшен отступ */
+  }
+  
+  .footer-columns {
+    justify-content: space-between; /* ИСПРАВЛЕНО: равномерное распределение */
+    gap: 20px; /* ИСПРАВЛЕНО: уменьшен отступ */
+    width: 100%;
+  }
+  
+  .footer-columns > div {
+    flex: 1;
+    min-width: calc(50% - 10px); /* ИСПРАВЛЕНО: колонки по 50% */
+  }
+  
+  .footer-columns h4 {
+    font-size: 14px; /* ИСПРАВЛЕНО: уменьшен заголовок */
+    margin-bottom: 10px; /* ИСПРАВЛЕНО: уменьшен отступ */
+  }
+  
+  .footer-line {
+    margin: 20px 0; /* ИСПРАВЛЕНО: уменьшены отступы линии */
+  }
+  
+  .footer-bottom {
+    flex-direction: column; /* ИСПРАВЛЕНО: вертикальный footer-bottom */
+    text-align: center;
+    gap: 15px; /* ИСПРАВЛЕНО: уменьшен отступ */
+  }
+  
+  .footer-payments {
+    justify-content: center; /* ИСПРАВЛЕНО: центрирование платежных систем */
+  }
+  
+  .footer-payments img {
+    height: 20px; /* ИСПРАВЛЕНО: уменьшены иконки */
+  }
+}
+
+/* ===== ОЧЕНЬ МАЛЕНЬКИЙ МОБИЛЬНЫЙ (≤480px) - ИСПРАВЛЕНО: Добавлен новый брейкпоинт ===== */
+@media (max-width: 480px) {
+  .footer {
+    padding: 20px 15px 15px; /* ИСПРАВЛЕНО: минимальные отступы */
+    font-size: 12px; /* ИСПРАВЛЕНО: самый мелкий шрифт */
+  }
+  
+  .footer-top {
+    gap: 20px; /* ИСПРАВЛЕНО: еще меньше отступ */
+  }
+  
+  .footer-logo {
+    width: 100px; /* ИСПРАВЛЕНО: очень маленький логотип */
+  }
+  
+  .footer-columns {
+    flex-direction: column; /* ИСПРАВЛЕНО: все колонки в одну колонку */
+    gap: 15px; /* ИСПРАВЛЕНО: минимальный отступ */
+  }
+  
+  .footer-columns > div {
+    min-width: 100%; /* ИСПРАВЛЕНО: колонки на всю ширину */
+  }
+  
+  .footer-columns h4 {
+    font-size: 13px; /* ИСПРАВЛЕНО: уменьшен заголовок */
+    margin-bottom: 8px; /* ИСПРАВЛЕНО: уменьшен отступ */
+  }
+  
+  .footer-columns li {
+    margin-bottom: 6px; /* ИСПРАВЛЕНО: уменьшен отступ элементов */
+  }
+  
+  .footer-socials {
+    gap: 8px; /* ИСПРАВЛЕНО: уменьшен отступ между иконками */
+    font-size: 18px; /* ИСПРАВЛЕНО: уменьшены иконки */
+  }
+  
+  .footer-payments img {
+    height: 18px; /* ИСПРАВЛЕНО: очень маленькие иконки */
+  }
+  
+  .footer-line {
+    margin: 15px 0; /* ИСПРАВЛЕНО: минимальные отступы линии */
+  }
 }

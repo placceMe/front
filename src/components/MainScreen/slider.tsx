@@ -1,3 +1,4 @@
+/*
 import React, { useState, useEffect } from "react";
 
 import "./slider.css";
@@ -46,3 +47,4 @@ const Slider: React.FC = () => {
 };
 
 export default Slider;
+*/

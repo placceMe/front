@@ -8,11 +8,11 @@ import { useUserProductIds } from '@shared/hooks/useUserProductIds';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { addToCart, updateQuantity } from '@features/cart/model/cartSlice';
 import { Button } from 'antd';
+import FavFilledIcon from '../../../../assets/icons/fav_filled.svg?react';
+import FavOutlinedIcon from '../../../../assets/icons/fav_outlined.svg?react';
 
-import { CheckCircleFilled, HeartOutlined } from '@ant-design/icons';
-import { RxHeartFilled } from 'react-icons/rx';
-import { FONTS } from '@shared/constants/fonts';
-import { COLORS } from '@shared/constants/colors';
+
+import { CheckCircleFilled,} from '@ant-design/icons';
 
 interface ProductCardProps {
   product: Product;
@@ -83,81 +83,93 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
 
 
-  console.log("ProductCard image:", id);
+ // console.log("ProductCard image:", id);
 
   return (
     <div className="product-card">
       <div className="card-icons">
         <Button
           type="text"
-          icon={isFavorite ? <RxHeartFilled /> : <HeartOutlined />}
+          icon={
+  isFavorite ? (
+    <FavFilledIcon width={26} height={24} />
+  ) : (
+    <FavOutlinedIcon width={26} height={24} />
+  )
+}
           onClick={toggleFavorite}
           className={`text-gray-600 hover:text-red-500 ${isFavorite ? 'text-red-500' : ''}`}
           size="large"
         />
       </div>
 
-      <img
-        src={imageUrl}
-        alt={title}
-        className="product-image"
-        onClick={() => navigate(`/product/${id}`)}
-      />
-      <NavLink to={`/product/${id}`} replace={true} >
-        <h3 className="product-title">
-          {title.length > 60 ? title.slice(0, 30) + '…' : title}
-        </h3>
-      </NavLink>
-      <p className="product-price" style={{ fontWeight: 500 }}>{price} ₴</p>
-      <p className="product-price">Артикул: {id?.match(/\d/g)?.join('') || '—'}</p>
+     <img
+  src={imageUrl}
+  alt={title}
+  className="product-image"
+  onClick={() => navigate(`/product/${id}`)}
+/>
 
+<div className="card-body">
+  <NavLink to={`/product/${id}`} replace>
+    <h3 className="product-title">
+      {title.length > 60 ? title.slice(0, 30) + '…' : title}
+    </h3>
+  </NavLink>
 
-      <div className="product-actions">
+  <p className="sku">Артикул: {id?.match(/\d/g)?.join('') || '—'}</p>
 
-        <div className="quantity-control">
-          <button className="square-btn" onClick={decrease}>−</button>
-          <span className="quantity-value">{quantity}</span>
-          <button className="square-btn" onClick={increase}>+</button>
-        </div>
-        <Button
+  {/* Мобильный ряд: цена + корзина справа */}
+  <div className="price-row">
+    <p className="product-price">{price} ₴</p>
+    <Button
+      onClick={handleAddToCart}
+      disabled={isInCart}
+      icon={
+        isInCart ? (
+          <CheckCircleFilled style={{ fontSize: 16 }} />
+        ) : (
+          <FaCartPlus style={{ fontSize: 16 }} />
+        )
+      }
+      className="buy-btn"
+      aria-label="Додати в кошик"
+    >
+      <span className="btn-text">{isInCart ? 'У кошику' : 'В кошик'}</span>
+    </Button>
+  </div>
 
-          onClick={handleAddToCart}
-          disabled={isInCart}
-          icon={
-            isInCart ? (
-              <CheckCircleFilled style={{ color: '#3E4826', fontSize: 16 }} />
-            ) : (
-              <FaCartPlus style={{ marginRight: 6, fontSize: 16 }} />
-            )
-          }
-          className={isInCart ? 'rounded-md border border-solid flex items-center' : 'buy-btn'}
-          style={{
-            height: 34,
-            fontSize: 14,
-            fontWeight: 600,
-            fontFamily: FONTS.family.montserratBold,
-            minWidth: 100,
-            ...(isInCart
-              ? {
-                backgroundColor: '#F8FAEC',
-                borderColor: '#3E4826',
-                color: COLORS.color04,
-              }
-              : {}),
-          }}
-        >
-          {isInCart ? 'У кошику' : 'В кошик'}
-        </Button>
-
-
-
-
-        {/*<button className="buy-btn" disabled={!isAvailable} onClick={handleAddToCart}>
-          <FaCartPlus style={{ marginRight: 6 }} />
-          {isAvailable ? 'В кошик' : 'Немає'}
-        </button>*/}
-      </div>
+  {/* Десктопный блок как был (на мобилке скроем CSS-ом) */}
+  <div className="product-actions">
+    <div className="quantity-control">
+      <button className="square-btn" onClick={decrease}>−</button>
+      <span className="quantity-value">{quantity}</span>
+      <button className="square-btn" onClick={increase}>+</button>
     </div>
+    <Button
+      onClick={handleAddToCart}
+      disabled={isInCart}
+      icon={
+        isInCart ? (
+          <CheckCircleFilled style={{ fontSize: 16 }} />
+        ) : (
+          <FaCartPlus style={{ fontSize: 16 }} />
+        )
+      }
+      className={isInCart ? 'rounded-md border border-solid flex items-center buy-btn' : 'buy-btn'}
+      style={{
+        height: 34,
+        fontSize: 14,
+        fontWeight: 600,
+        minWidth: 100,
+        ...(isInCart ? { backgroundColor:'#F8FAEC', borderColor:'#3E4826', color:'#3E4826' } : {})
+      }}
+    >
+      <span className="btn-text">{isInCart ? 'У кошику' : 'В кошик'}</span>
+    </Button>
+  </div>
+</div>
+</div>
   );
 };
 

@@ -57,16 +57,12 @@ export const Wishlist = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-40">
-        {products.map(prod => (
-          <div
-            key={prod.id}
+     {Array.isArray(products) && products.map(prod => (
+  <div key={prod.id} style={{ minHeight: 320 }}>
+    <ProductCard product={prod} />
+  </div>
+))}
 
-            style={{ minHeight: 320 }}
-          >
-           <ProductCard product={prod} />
-
-          </div>
-        ))}
       </div>
     </div>
   );

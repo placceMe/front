@@ -17,17 +17,17 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<User>) => {
-      state.user = action.payload;
-      state.activeRole = action.payload.roles[0] ?? null;
-      state.isLoaded = true;
-    },
+    setUser: (state, action: PayloadAction<User | null>) => {
+    state.user = action.payload;
+    state.activeRole = action.payload?.roles?.[0] ?? null;
+    state.isLoaded = true;
+},
     setActiveRole: (state, action: PayloadAction<string>) => {
       if (state.user && state.user.roles.includes(action.payload)) {
         state.activeRole = action.payload;
       }
     },
-    logout: (state) => {
+    logoutAction: (state) => {
       state.user = null;
       state.activeRole = null;
       state.isLoaded = true;
@@ -35,5 +35,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { setActiveRole, setUser, logout } = userSlice.actions;
+export const { setActiveRole, setUser, logoutAction } = userSlice.actions;
 export default userSlice.reducer;

@@ -1,4 +1,4 @@
-import React from "react";
+/*import React from "react";
 import { FaTruck, FaCheckCircle, FaExchangeAlt, FaCertificate } from "react-icons/fa";
 import "./advantages.css";
 
@@ -26,3 +26,4 @@ const Advantages: React.FC = () => {
 };
 
 export default Advantages;
+*/

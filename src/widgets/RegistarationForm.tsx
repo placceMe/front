@@ -7,7 +7,7 @@ import { UserOutlined, LockOutlined, IdcardOutlined, PhoneOutlined, CalendarOutl
 import type { User } from "@shared/types/api";
 import { useRequest } from "@shared/request/useRequest";
 import { useAuth } from "@shared/hooks/useAuth";
-import type dayjs from 'dayjs';
+import { useNavigate } from "react-router-dom";
 
 
 const BLUR_STYLE = {
@@ -20,40 +20,35 @@ interface RegistrationFormProps {
   user: User;
 }
 
-interface UpdateUserFormValues {
-  name: string;
-  surname: string;
-  email: string;
-  phone?: string;
-  birthDate?: dayjs.Dayjs; // т.к. используется DatePicker из antd
-  oldPassword?: string;
-  newPassword?: string;
-  confirmPassword?: string;
-}
-
 
 const RegistrationForm: React.FC<RegistrationFormProps> = ({ user }) => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-
+  const navigate = useNavigate();
   const { logout, loading } = useAuth();
 
   const { request } = useRequest();
 
   useEffect(() => {
     if (user) {
+       const formattedPhone = user.phone
+      ? user.phone.replace(/\D/g, "") // удаляем всё, кроме цифр
+          .replace(/^38?(\d{3})(\d{3})(\d{2})(\d{2})$/, "+38($1) $2 $3 $4")
+      : "";
+
       form.setFieldsValue({
         name: user.name || "",
         surname: user.surname || "",
         // middleName: user.middleName || "",
         email: user.email || "",
-        phone: user.phone || "",
+        phone: formattedPhone || "",
         // birthDate: user.birthDate ? dayjs(user.birthDate) : undefined,
       });
     }
+     navigate("/profile#info");
   }, [user, form]);
 
-  const onFinish = async (values: UpdateUserFormValues) => {
+  const onFinish = async (values: any) => {
     const updatedUser = await request<User>(`/api/users/${user.id}`, {
       method: "PUT",
       headers: {
@@ -79,6 +74,9 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ user }) => {
 
   async function signOut() {
     await logout();
+   // await apiLogout();
+    // dispatch(logout());
+    navigate("/");
   }
 
   return (<div>
@@ -88,69 +86,61 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ user }) => {
       Контактна інформація
     </h2>
     <Form form={form} layout="vertical" onFinish={onFinish} disabled={loading}>
-      <Row gutter={19} className="mb-2">
-        <Col span={5}>
-          <Form.Item
-            label={
-              <span>
-                Ім'я
-                <span className="text-red-500 ml-1 align-middle">*</span>
-              </span>
-            }
-            name="name"
-            rules={[{ required: true, message: "Введіть ім'я" }]}
-          >
-            <Input
-              placeholder="Артем"
-              className="h-10 rounded-xl font-semibold"
-              style={BLUR_STYLE}
-              prefix={<IdcardOutlined />}
-            />
-          </Form.Item>
-        </Col>
-        <Col span={5}>
-          <Form.Item
-            label={
-              <span>
-                Прізвище <span className="text-red-500 ml-1 align-middle">*</span>
-              </span>
-            }
-            name="surname"
-            rules={[{ required: true, message: "Введіть прізвище" }]}
-          >
-            <Input
-              placeholder="Павленко"
-              className="h-10 rounded-xl font-semibold"
-              style={BLUR_STYLE}
-              prefix={<IdcardOutlined />}
-            />
-          </Form.Item>
-        </Col>
-        <Col span={5}>
-          {/**
-
-             
-              <Form.Item
-                label={
-                  <span>
-                    По-батькові <span className="text-red-500 ml-1 align-middle">*</span>
-                  </span>
-                }
-                name="middleName"
-              >
-                <Input
-                  placeholder="Олександрович"
-                  className="h-10 rounded-xl font-semibold"
-                  style={BLUR_STYLE}
-                  prefix={<IdcardOutlined />}
-                />
-              </Form.Item> 
-              */ }
-        </Col>
-      </Row>
+     <Row gutter={19} className="mb-2">
+  <Col 
+    xs={24} sm={12} md={8} lg={5}  // xs=мобилка, sm=планшет, md=средний экран, lg=большой
+  >
+    <Form.Item
+      label={
+        <span>
+          Ім'я
+          <span className="text-red-500 ml-1 align-middle">*</span>
+        </span>
+      }
+      name="name"
+      rules={[{ required: true, message: "Введіть ім'я" }]}
+    >
+      <Input
+        placeholder="Артем"
+        className="h-10 rounded-xl font-semibold"
+        style={BLUR_STYLE}
+        prefix={<IdcardOutlined />}
+      />
+    </Form.Item>
+  </Col>
+  
+  <Col 
+    xs={24} sm={12} md={8} lg={5}
+  >
+    <Form.Item
+      label={
+        <span>
+          Прізвище <span className="text-red-500 ml-1 align-middle">*</span>
+        </span>
+      }
+      name="surname"
+      rules={[{ required: true, message: "Введіть прізвище" }]}
+    >
+      <Input
+        placeholder="Павленко"
+        className="h-10 rounded-xl font-semibold"
+        style={BLUR_STYLE}
+        prefix={<IdcardOutlined />}
+      />
+    </Form.Item>
+  </Col>
+  
+  <Col 
+    xs={24} sm={12} md={8} lg={5}
+  >
+    {/* Ваш закомментированный код */}
+  </Col>
+</Row>
 
       <Row gutter={120} align="top">
         <Col xs={24} md={10}>
+
+        
           <Form.Item
             label={<span>Дата народження</span>}
             name="birthDate"
@@ -268,6 +258,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ user }) => {
           >
             Вихід
           </Button>
+          {/** 
           <Button
             type="default"
             className="h-10 px-7 font-bold rounded-xl shadow-none transition-all"
@@ -281,7 +272,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ user }) => {
             }}
           >
             Видалити мій акаунт
-          </Button>
+          </Button>*/}
         </div>
       </div>
     </Form>

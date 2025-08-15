@@ -1,21 +1,18 @@
+/* ==== HEADER BASE ==== */
 .header {
   background-color: #fff;
-  padding: 8px 170px;
+ /* padding: 8px 170px;*/
+  padding: 8px var(--hx);
   font-size: 14px;
   font-weight: 500;
   color: #000;
   width: 100%;
 }
 
-.header-top,
 .header-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-
-.header-top {
   height: 60px;
 }
 
@@ -24,12 +21,12 @@
   gap: 16px;
   margin-left: 100px;
 }
-.nav-links a{
+.nav-links a {
   font-size: 15px;
   color: #0E120A;
   font-weight: bold;
-  
 }
+
 .lang-login {
   display: flex;
   gap: 8px;
@@ -37,34 +34,32 @@
   margin-left: auto;
 }
 
-.logo img {
-  height: 45px;
-}
+.logo img { height: 45px; }
 
+.header-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
 .header-center {
   display: flex;
   flex-grow: 1;
-  /* margin: 0 24px; */
 }
 
 .category-button {
-  background: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0) 0%,
-      rgba(0, 0, 0, 1) 150%
-    ),
+  background:
+    linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 150%),
     #3E4826;
-  color: white;
+  color: #fff;
   font-size: 12px;
   height: 38px;
   width: 140px;
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.25); /* Drop shadow */
+  box-shadow: 0 4px 6px rgba(0,0,0,.25);
 }
-
 
 .search-input {
   padding: 8px 12px;
@@ -78,21 +73,9 @@
   outline: none;
 }
 
-.header-bottom {
-  display: flex;
-  align-items: center;
-  justify-content: space-between; /* 👈 это ключ */
-}
-
-.contact {
-  text-align: right;
-  display: none;
-}
-
+.contact { text-align: right; display: none; }
 @media (min-width: 1024px) {
-  .contact {
-    display: block;
-  }
+  .contact { display: block; }
 }
 
 .manager-button {
@@ -108,7 +91,7 @@
 
 .lang-button {
   background-color: #3749a9;
-  color: white;
+  color: #fff;
   font-size: 12px;
   padding: 4px 8px;
   border: none;
@@ -119,7 +102,7 @@
 
 .login-button {
   background-color: #f6a630;
-  color: white;
+  color: #fff;
   font-size: 12px;
   padding: 4px 8px;
   border: none;
@@ -133,4 +116,229 @@
   gap: 40px;
   font-size: 34px;
   color: #2c2c1d;
+}
+
+/* ==== STICKY BOTTOM BAR (desktop hidden) ==== */
+.sticky-bottom-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background-color: #fff;
+  border-top: 1px solid #e0e0e0;
+  z-index: 1000;
+  display: none;               /* по умолчанию спрятан */
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 0;
+  box-shadow: 0 -2px 10px rgba(0,0,0,.1);
+}
+.sticky-bottom-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: #666;
+  text-decoration: none;
+  font-size: 12px;
+  cursor: pointer;
+}
+.sticky-bottom-item svg { font-size: 20px; }
+.sticky-bottom-item:hover { color: #3E4826; }
+
+/* default hidden helpers */
+.mobile-logo { display: none; }
+.mobile-categories { display: none; }
+
+/* ==== DESKTOP ≥1021 ==== */
+@media (min-width: 1021px) {
+  .header-center { order: 1; }
+  .header-right  { order: 2; }
+  .mobile-categories { display: none; }
+}
+
+/* ==== MOBILE ≤1020 ==== */
+@media (max-width: 1020px) {
+ /* .header { padding: 8px 16px; }*/
+
+  /* скрываем верхнюю полоску навигации */
+  .header-top { display: none; }
+
+  .header-bottom {
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+  }
+
+  /* логотип слева */
+  .mobile-logo {
+    display: block;
+    order: 1;
+    flex-shrink: 0;
+  }
+  .mobile-logo img { height: 35px; }
+
+  /* поиск по центру */
+  .header-center {
+    order: 2;
+    flex-grow: 1;
+    margin: 0 16px;
+    justify-content: center;
+  }
+  /* прячем десктопный дропдаун категорий в центре */
+  .header-center .relative { display: none; }
+
+  .search-input {
+    width: 100%;
+    max-width: 300px;
+    margin-left: 0;
+  }
+
+  /* справа бургер + мобильные категории */
+  .header-right {
+    order: 3;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .mobile-categories { display: block; }
+
+  .category-button {
+    width: auto;
+    min-width: 40px;
+    padding: 8px 12px;
+    font-size: 20px;
+    background: #3E4826;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* позиционирование выпадашки категорий */
+  .mobile-categories { position: static; }
+  .mobile-categories > div:last-child {
+    position: fixed !important;
+    top: 68px !important;
+    right: 16px !important;
+    left: auto !important;
+    width: 280px !important;
+    max-width: calc(100vw - 32px) !important;
+    z-index: 9999 !important;
+  }
+
+  /* иконки прячем на мобилке */
+  .icons { display: none; }
+
+  /* показываем sticky bottom bar */
+  .sticky-bottom-bar { display: flex; z-index: 1200; }
+
+  /* чтобы бар не перекрывал контент */
+  body { padding-bottom: 70px; }
+}
+
+/* ==== VERY SMALL ≤480 ==== */
+@media (max-width: 480px) {
+  /*.header { padding: 8px 12px; }*/
+  .header-center { margin: 0 12px; }
+  .search-input { max-width: 200px; font-size: 12px; }
+  .category-button { padding: 6px 10px; font-size: 18px; }
+  .logo img { height: 30px; }
+}
+/* Десктоп */
+@media (min-width: 1021px) {
+  .header-center > .relative { position: relative; }
+  .header-center > .relative > :not(button){
+    position: absolute !important;
+    top: 44px; left: 0; right: auto;
+    max-width: 420px; z-index: 3000;
+  }
+}
+
+/* Мобилка */
+@media (max-width: 1020px) {
+  .mobile-categories { position: static !important; }
+  .mobile-categories > :not(button){
+    position: fixed !important;
+    top: 68px !important; right: 16px !important; left: auto !important;
+    width: min(320px, calc(100vw - 32px)) !important;
+    max-height: calc(100vh - 90px);
+    overflow:auto; transform:none !important; z-index: 4000;
+  }
+}
+
+/* ====== полудесктоп: убираем “режем всё справа” ====== */
+
+/* 1) плавно уменьшаем боковые поля и зазоры */
+@media (max-width: 1280px) {
+ /*  .header { padding: 8px 80px; }           было 170px */
+  .nav-links { margin-left: 40px; gap: 14px; }
+  .icons { gap: 28px; font-size: 30px; }
+}
+
+@media (max-width: 1120px) {
+ /* .header { padding: 8px 40px; }*/
+  .nav-links { margin-left: 24px; gap: 12px; }
+  .manager-button { padding: 4px 6px; font-size: 11px; }
+  .lang-button, .login-button { padding: 4px 6px; font-size: 11px; height: 26px; }
+  .icons { gap: 24px; font-size: 28px; }
+}
+
+/* 2) центр можем сжимать, иначе поиск выпирает */
+.header-center { min-width: 0; }
+
+/* 3) поиск не фиксированной ширины — занимает остаток */
+@media (max-width: 1280px) {
+  .search-input {
+    width: auto;           /* отменяем 570px */
+    max-width: none;
+    flex: 1 1 auto;        /* растягивается/сжимается */
+    margin-left: 8px;
+  }
+}
+
+/* 4) телефон и кнопки справа не переносятся по словам и не рвутся */
+.contact { white-space: nowrap; } /* номер одной строкой */
+.lang-login { gap: 6px; }         /* чуть компактнее */
+.logo img { flex-shrink: 0; }     /* логотип не сжимать до каши */
+
+/* компактный, адаптивный поиск */
+.header-center { align-items: center; gap: 10px; min-width: 0; }
+
+.search-input{
+  /* вместо фиксированных 570px */
+  width: clamp(260px, 32vw, 440px);
+  flex: 0 1 clamp(260px, 32vw, 440px);
+  height: 38px;
+  padding: 8px 12px;
+  margin-left: 8px;
+  font-size: 14px;
+  border: 1px solid #3E4826;
+  border-radius: 8px;
+  color: #3E4826;
+  outline: none;
+}
+
+/* чуть уже на “полудесктопе” */
+@media (max-width: 1280px){
+  .search-input{
+    width: clamp(220px, 28vw, 380px);
+    flex-basis: clamp(220px, 28vw, 380px);
+    margin-left: 6px;
+  }
+}
+
+/* совсем узкие — пусть растягивается, но не больше 300 */
+@media (max-width: 1020px){
+  .search-input{
+    width: 100%;
+    max-width: 300px;
+    flex: 1 1 0%;
+    margin-left: 0;
+  }
+}
+
+/* очень маленькие телефоны */
+@media (max-width: 480px){
+  .search-input{
+    max-width: 220px;
+    font-size: 12px;
+  }
 }

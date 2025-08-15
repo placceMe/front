@@ -2,42 +2,49 @@ import React from 'react';
 import './footer.css';
 import { FaInstagram, FaYoutube, FaTelegram } from 'react-icons/fa';
 import logo from './logo_light.png'; // путь к светлому логотипу
+import { useAppSelector } from '@store/hooks';
+import { NavLink } from 'react-router-dom';
+
 
 const Footer: React.FC = () => {
+
+  const categories = useAppSelector(state => state.categories.active);
+
   return (
     <footer className="footer">
       <div className="footer-top">
         <div className="footer-logo-block">
           <img src={logo} alt="NORSEN" className="footer-logo" />
           <p>Інтернет-маркетплейс військового спорядження</p>
-          <div className="footer-socials">
+           <div className="footer-socials">
             <FaInstagram />
             <FaYoutube />
             <FaTelegram />
-          </div>
+          </div> 
         </div>
 
         <div className="footer-columns">
           <div>
             <h4>Каталог</h4>
             <ul>
-              <li>Розпродаж</li>
-              <li>Кемпінг та виживання</li>
-              <li>Аксесуари</li>
-              <li>Сумки і рюкзаки</li>
-              <li>Бронежилети</li>
-              <li>Тактичні окуляри</li>
-              <li>Тактичне взуття</li>
-              <li>Тактичний одяг</li>
+              {Array.isArray(categories) && categories.map(cat => (
+    <li key={cat.id}>
+      <NavLink to={`/category/${cat.id}`} className="nav-link">
+        {cat.name}
+      </NavLink>
+    </li>
+  ))}
             </ul>
           </div>
 
           <div>
             <h4>Компанія</h4>
             <ul>
-              <li>Про нас</li>
-              <li>Доставка та оплата</li>
-              <li>Питання та відповіді</li>
+              <li>
+                <NavLink to="/aboutus" className="nav-link"> Про нас</NavLink>
+              </li>
+              <li><NavLink to="/delivery" className="nav-link">Доставка та оплата</NavLink></li>
+              <li><NavLink to="/faq" className="nav-link">Питання й відповіді</NavLink></li>
             </ul>
           </div>
 
@@ -54,7 +61,7 @@ const Footer: React.FC = () => {
       <div className="footer-bottom">
         <div className="footer-copy">
           <p>NORSEN © {new Date().getFullYear()}</p>
-          <p>© 2025 ТОВ “НОРСЕН” код ЄДРПОУ 45623479</p>
+
         </div>
       </div>
     </footer>

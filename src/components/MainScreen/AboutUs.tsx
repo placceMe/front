@@ -1,4 +1,4 @@
-import React from 'react';
+/*import React from 'react';
 import './aboutUs.css';
 import { FaPlusCircle } from 'react-icons/fa';
 import AboutImage from "../../assets/mainscreen/AboutAs.png"; // замени на актуальный путь
@@ -50,3 +50,4 @@ const AboutUs: React.FC = () => {
 };
 
 export default AboutUs;
+*/

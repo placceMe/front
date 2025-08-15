@@ -3,7 +3,8 @@ import type { Product } from "@shared/types/api";
 import { useState, useEffect } from "react";
 
 export function useProductsByIds(ids: string[]) {
-  const [products, setProducts] = useState<Product[]>([]);
+  //const [products, setProducts] = useState<any[]>([]);
+    const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const { request } = useRequest()
 
@@ -14,7 +15,8 @@ export function useProductsByIds(ids: string[]) {
     }
 
     setLoading(true);
-    request<Product[]>("/api/products/many", {
+   // request<any[]>("/api/products/many", {
+     request<Product[]>("/api/products/many", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids }),
