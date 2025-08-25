@@ -10,6 +10,9 @@ import { Button } from "antd";
 import FavFilledIcon from "../../../../assets/icons/fav_filled.svg?react";
 import FavOutlinedIcon from "../../../../assets/icons/fav_outlined.svg?react";
 import { CheckCircleFilled } from "@ant-design/icons";
+import { useSelector } from "react-redux";
+import type { RootState } from "@store/store";
+import { formatPrice } from "@shared/lib/formatPrice";
 
 interface ProductCardProps {
   product: Product;
@@ -73,10 +76,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     const comparison: Product[] = stored ? JSON.parse(stored) : [];
     const compared = comparison.some((p) => p.id === product.id);
     setIsCompared(compared);
-
-    console.log(
-      `[COMPARE] Монтируется карточка ID=${product.id}. В сравнении: ${compared}`
-    );
   }, [product.id]);
 
   const toggleCompare = () => {
@@ -87,15 +86,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
     if (isCompared) {
       newComparison = comparison.filter((p) => p.id !== product.id);
-      console.log(`[COMPARE] ❌ Убрали из сравнения товар:`, product);
     } else {
-      newComparison = [product, ...comparison]; // ← кладём весь объект
-      console.log(`[COMPARE] ✅ Добавили в сравнение товар:`, product);
+      newComparison = [product, ...comparison];
     }
 
     localStorage.setItem(COMPARE_KEY, JSON.stringify(newComparison));
-    console.log(`[COMPARE] Текущий список:`, newComparison);
-
     setIsCompared(!isCompared);
   };
   // ------------------------------------------------
@@ -104,10 +99,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     dispatch(addToCart({ product, quantity }));
   };
 
+  // форматирование цены
+  const { current, rates } = useSelector((state: RootState) => state.currency);
+  const formatted = formatPrice(price, current, rates);
+
   return (
     <div className="product-card">
       <div className="card-icons">
-        {/* ❤️ избранное */}
         <Button
           type="text"
           icon={
@@ -124,7 +122,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           size="large"
         />
 
-        {/* ⚖️ весы (сравнение) */}
         <Button
           type="text"
           icon={
@@ -162,7 +159,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
         {/* Мобильный ряд: цена + корзина справа */}
         <div className="price-row">
-          <p className="product-price">{price} ₴</p>
+          <p className="product-price">{formatted}</p>
           <Button
             onClick={handleAddToCart}
             disabled={isInCart}

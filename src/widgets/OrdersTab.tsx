@@ -4,6 +4,9 @@ import { FaChevronUp, FaChevronDown, FaChevronLeft, FaChevronRight } from 'react
 import type { OrderResponse, OrderItemResponse, Product } from '@shared/types/api';
 import { useRequest } from '@shared/request/useRequest';
 import { useAppSelector } from '@store/hooks';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@store/store';
+import { formatPrice } from '@shared/lib/formatPrice';
 
 //const FILES_BASE_URL = 'http://localhost:5001/api/files/file/';
 const FILES_BASE_URL = "http://31.42.190.94:8080/api/files/file/";
@@ -26,6 +29,7 @@ const OrdersTab: React.FC = () => {
   const user = useAppSelector(state => state.user.user);
   const customerId = user?.id;
   const { request } = useRequest();
+  const { current, rates } = useSelector((state: RootState) => state.currency);
 
 
 
@@ -128,7 +132,7 @@ const OrdersTab: React.FC = () => {
 
               <div className="flex justify-center">
                 <div className="font-bold text-sm whitespace-nowrap">
-                  Всього: {(order.finalAmount ?? order.totalAmount)?.toLocaleString() ?? '—'} грн
+                  Всього: {formatPrice(order.finalAmount ?? order.totalAmount ?? 0, current, rates)}
                 </div>
               </div>
 
@@ -161,11 +165,14 @@ const OrdersTab: React.FC = () => {
             {expandedId === String(order.id) && (
               <div className="mt-3 text-sm text-gray-600">
                 <div>
-                  {order.items?.map((item: OrderItemResponse, i: number) => (
-                    <div key={item.id || i}>
-                      {item.productName} × {item.quantity} — {item.price} грн
-                    </div>
-                  ))}
+                {order.items?.map((item: OrderItemResponse, i: number) => {
+  const total = (item.price ?? 0) * item.quantity;
+  return (
+    <div key={item.id || i}>
+      {item.productName} × {item.quantity} — {formatPrice(total, current, rates)}
+    </div>
+  );
+})}
                 </div>
               </div>
             )}

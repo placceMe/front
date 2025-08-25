@@ -1,13 +1,90 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-//import '../components/MainScreen/ProductGrid/productGrid.css';
 import type { Product } from "@shared/types/api";
 import { useRequest } from "@shared/request/useRequest";
 import { Pagination } from "@shared/ui/Pagination/Pagination";
 import ProductCard from "../app/layouts/delete/ProductCard/ProductCard";
 
+const CSS = `
+.category-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  padding: 6px 4px;
+}
+
+.category-grid > .product-card {
+  width: 100%;
+  max-width: 300px;
+  justify-self: center;
+}
+
+@media (max-width: 1440px) { 
+  .category-grid { 
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+  }
+  .category-grid > .product-card { max-width: 280px; }
+}
+
+@media (max-width: 1280px) { 
+  .category-grid { 
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 
+  }
+  .category-grid > .product-card { max-width: 260px; }
+}
+
+@media (max-width: 1024px) { 
+  .category-grid { 
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+  }
+  .category-grid > .product-card { max-width: 240px; }
+}
+
+@media (max-width: 768px) { 
+  .category-grid { 
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+  }
+  .category-grid > .product-card { max-width: 220px; }
+}
+
+@media (max-width: 600px) { 
+  .category-grid { 
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
+  }
+  .category-grid > .product-card { max-width: 140px; }
+}
+
+.category-section { 
+  margin: 10px 0 5px; 
+}
+
+.category-title { 
+  font-size: 22px; 
+  font-weight: 700; 
+  color: #212910; 
+  margin: 0 0 10px; 
+}
+
+@media (max-width: 768px) { 
+  .category-title { 
+    font-size: 18px; 
+  } 
+}
+`;
+
+function useInjectOnce(id: string, css: string) {
+  useEffect(() => {
+    if (document.getElementById(id)) return;
+    const s = document.createElement("style");
+    s.id = id; 
+    s.appendChild(document.createTextNode(css));
+    document.head.appendChild(s);
+  }, [id, css]);
+}
 
 const CategoryProductsPage: React.FC = () => {
+  useInjectOnce("category-css", CSS);
+  
   const { categoryId } = useParams<{ categoryId: string }>();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,6 +111,12 @@ const CategoryProductsPage: React.FC = () => {
   }, [categoryId, currentPage]);
 */
 
+
+
+
+
+
+/*
 useEffect(() => {
    console.log("Fetching category and products for:", categoryId);
   if (!categoryId) return;
@@ -53,46 +136,74 @@ useEffect(() => {
     })
     .finally(() => setLoading(false));
 }, [categoryId, currentPage]);
+*/
 
+
+  useEffect(() => {
+    if (!categoryId) return;
+    setLoading(true);
+
+    const limit = 12;
+    const offset = (currentPage - 1) * limit;
+
+    Promise.all([
+      request<any>(`/api/category/${categoryId}`),
+      request<any>(`/api/products/category/${categoryId}?limit=${limit}&offset=${offset}`)
+    ])
+    .then(([categoryData, res]) => {
+      console.log("RAW /api/products/category response ->", res);
+
+      setCategoryName(categoryData?.name ?? "");
+      const items = Array.isArray(res?.products) ? res.products : [];
+      setProducts(items);
+
+      const pageSize = Number(res?.pagination?.pageSize) || limit;
+      const totalItems = Number(res?.pagination?.totalItems) || 0;
+      const totalPagesFromApi = Number(res?.pagination?.totalPages);
+
+      const computed = totalPagesFromApi && totalPagesFromApi > 0
+        ? totalPagesFromApi
+        : (totalItems > 0 ? Math.ceil(totalItems / pageSize) : 1);
+
+      setTotalPages(Math.max(1, computed));
+    })
+    .finally(() => setLoading(false));
+  }, [categoryId, currentPage]);
+
+  useEffect(() => { 
+    setCurrentPage(1); 
+  }, [categoryId]);
 
   return (
-   <div className="mt-10 mb-20 px-4 md:px-44" >
-  <h2 className="category-title pb-6 text-lg font-medium 
-               sm:text-xl sm:font-semibold 
-               md:text-xl md:font-semibold 
-               lg:text-2xl lg:font-bold">{products.length > 0
-      ? `${categoryName || "..."}`
-      : `У цій категорії немає товарів`}</h2>
-{loading ? (
-  <div>Завантаження...</div>
-) : (
-  <div className="category-grid"  style={{
-    display: "grid",
-    gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-    gap: "12px",
-  }}>
-    {products.map((product) => (
-      <ProductCard
-        key={product.id}
-        product={product}
-        isAvailable={product.quantity > 0}
-      />
-    ))}
-  </div>
-)}
+    <div className="container section">
+      <h2 className="category-title">
+        {products.length > 0
+          ? `${categoryName || "..."}`
+          : `У цій категорії немає товарів`}
+      </h2>
+      
+      {loading ? (
+        <div>Завантаження...</div>
+      ) : (
+        <div className="category-grid">
+          {products.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              isAvailable={product.quantity > 0}
+            />
+          ))}
+        </div>
+      )}
 
-
-
-
-  <div className="mt-10">
-    <Pagination
-      currentPage={currentPage}
-      totalPages={totalPages}
-      onPageChange={setCurrentPage}
-    />
-  </div>
-</div>
-
+      <div className="mt-10">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      </div>
+    </div>
   );
 };
 

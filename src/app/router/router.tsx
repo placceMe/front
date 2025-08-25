@@ -10,11 +10,11 @@ import { CabinetLayout } from "../../app/layouts/CabinetLayout";
 import OrdersTab from "../../widgets/OrdersTab";
 import ViewedProducts from "@pages/ViewedProducts";
 import { useAppSelector } from "@store/hooks";
-import { AboutSeller } from "@pages/AboutSeller.tsx";
+
 import AboutUsPage from "@pages/AboutUs/AboutUsPage";
 import Comparison from "@pages/ComparsionProductPage/ComparsionProductPage";
 import { FAQ } from "@pages/FAQ/FAQ";
-import { DeliveryInfoPage } from "@pages/Delivery/DeliveryInfoPage";
+
 import PrivacyPolicy from "@pages/Policy/Policy";
 import UsersAdmin from "@pages/Admin/UsersPageAdmin";
 import OrderAdmin from "@pages/Admin/OrderPageAdmin";
@@ -22,6 +22,12 @@ import CategoryAdmin from "@pages/Admin/CategoryPageAdmin";
 import CharacteristicAdmin from "@pages/Admin/CharacteristicPageAdmin";
 import OrderModer from "@pages/Admin/OrderPageModeration";
 import OrderModerationDetailsPage from "@pages/Admin/OrderDetailPageModeration";
+import SearchResultsPage from "@features/searchProducts/ui/SearchResultsPage";
+import DeliveryInfoPage from "@pages/Delivery/DeliveryInfoPage";
+import { AboutSeller } from "@pages/AboutSeller.tsx";
+import EditProductPage from "@pages/EditProductPage/EditProductPage";
+import PaymentTestPage from "@pages/PaymentTestPage";
+
 
 const Home = lazy(() => import("@pages/Home/ui/HomePage"));
 const CartPage = lazy(() => import("@pages/CartPage"));
@@ -50,6 +56,9 @@ export const AppRouter = () => {
           { path: 'faq', element: <FAQ /> },
           { path: 'policy', element: <PrivacyPolicy /> },
           {path: 'comparison', element: <Comparison />}, // Assuming compare is similar to wishlist
+          { path: 'search', element: <SearchResultsPage /> },
+          { path: "products/:productId/edit", element: <EditProductPage /> },
+           { path: "pay-test", element: <PaymentTestPage  /> },
           
            
           

@@ -146,3 +146,28 @@ export type OrderResponse = {
   createdAt: string;          
   updatedAt: string;          
 };
+
+
+
+export type CharacteristicDicts = {
+  id: string;
+  name: string;
+  code: string;                           
+  categoryId: string;
+
+  type: "string" | "number" | "boolean" | "date" | "select" | "multiselect";
+  unit?: string | null;
+
+  options?: string[] | null;              // для select/multiselect
+  required?: boolean;                     // обов’язковість у товарі
+  filterable?: boolean;                   // показувати у фільтрах
+  kitRelevant?: boolean;                  // показувати у конфігураторі комплектів
+
+  order?: number | null;                  // порядок у формі/фільтрах
+
+  // (опційно під фільтри по замовчуванню)
+  defaultFilter?: {
+    useRange?: boolean;                   // для number: вмикати інтервал
+    buckets?: number[];                   // кастомні “сходинки” (наприклад, [1,2,3,4])
+  } | null;
+};

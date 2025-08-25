@@ -8,6 +8,7 @@ export function useProduct(id: string) {
 
   useEffect(() => {
     if (!id) return;
+     console.log("GET ->", `/api/products/${id}`); 
     request<Product>(`/api/products/${id}`).then((data) => {
       if (data) setProduct(data);
     });

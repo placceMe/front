@@ -3,8 +3,8 @@ import { FONTS } from '@shared/constants/fonts';
 import React from 'react';
 
 interface ProductPriceBlockProps {
-  price: number;
-  oldPrice?: number;
+  price: string;
+  oldPrice?: string;
 }
 
 export const ProductPriceBlock: React.FC<ProductPriceBlockProps> = ({
@@ -22,7 +22,7 @@ export const ProductPriceBlock: React.FC<ProductPriceBlockProps> = ({
           color: COLORS.color05,
         }}
       >
-        {oldPrice?.toLocaleString()} грн
+        {oldPrice?.toLocaleString()} 
       </span>
     )}
     <span
@@ -34,7 +34,7 @@ export const ProductPriceBlock: React.FC<ProductPriceBlockProps> = ({
         fontSize: FONTS.size.h3,
       }}
     >
-      {price?.toLocaleString()} грн
+      {price?.toLocaleString()} 
     </span>
   </div>
 );

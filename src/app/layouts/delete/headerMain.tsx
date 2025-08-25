@@ -1,134 +1,3 @@
-/*import React, { useState } from "react";
-import {
-  FaHeart,
-  FaUser,
-} from "react-icons/fa";
-import { NavLink, useNavigate } from "react-router-dom";
-import Logo from "./Logo.png";
-import CategoriesDropdown from "../../../widgets/categoriesDropdown"; // проверь путь!
-import "./headerMain.css";
-import { useAppSelector } from "@store/hooks";
-import { Modal } from "antd";
-import { AuthTabs } from "..//..//../widgets/AuthTabs";
-import { CartIcon } from "@features/cart/ui/CartIcon";
-
-const Header: React.FC = () => {
-  const navigate = useNavigate();
-  const [showCategories, setShowCategories] = useState(false);
-  //  const [searchTerm, setSearchTerm] = useState('');
-  const user = useAppSelector(state => state.user.user);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleUserClick = () => {
-    if (user?.id) {
-      navigate('/profile');
-    } else {
-      setIsModalOpen(true);
-    }
-  };
-
-
-  return (
-    <header className="header">
-     
-      <div className="header-top">
-        <NavLink to="/" className="logo">
-          <img src={Logo} alt="Logo" className="logo-image" />
-        </NavLink>
-        <nav className="nav-links">
-          <NavLink to="/delivery" className="nav-link">Доставка та оплата</NavLink>
-            <NavLink to="/aboutus" className="nav-link"> Про нас</NavLink>    
-          <NavLink to="/faq" className="nav-link">Питання й відповіді</NavLink>
-        </nav>
-        <div className="lang-login">
-          <div className="contact">
-            <p>+38 (063) 391-31-70</p>
-          </div>
-          <button className="manager-button">Зв'язатись з менеджером</button>
-          <button className="lang-button">UA/UA</button>
-          <button className="login-button">$UAN</button>
-        </div>
-      </div>
-
-    
-      <div className="header-bottom">
-        <div className="header-center relative">
-          <div
-            className="relative inline-block"
-          >
-            <button
-              className="category-button flex items-center gap-2 bg-yellow-700 text-white px-4 py-2 rounded-md"
-              type="button"
-              onClick={() => setShowCategories(v => !v)}
-            >
-              ☰ Категорії
-            </button>
-            <CategoriesDropdown
-              isOpen={showCategories}
-              onClose={() => setShowCategories(false)}
-            />
-          </div>
-          <input
-            type="text"
-            placeholder="Пошук"
-            className="search-input"
-          />
-        </div>
-
-        <div className="header-right">
-          <div className="icons flex gap-4 items-center">
-           
-            <FaHeart onClick={() => navigate('/Wishlist')} className="cursor-pointer" />
-            <button
-              onClick={handleUserClick}
-              className="hover:text-[#5a6b3b] focus:outline-none"
-              title="Особистий кабінет"
-            >
-              <FaUser />
-            </button>
-
-            <button
-              onClick={() => navigate('/cart')}
-              className="hover:text-[#5a6b3b] focus:outline-none"
-              title="Кошик"
-            >
-              <CartIcon/>
-             
-            </button>
-
-                 <Modal
-        open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
-        footer={null}
-        destroyOnClose
-        centered
-        width="auto"
-        styles={{
-          mask: {
-            backgroundColor: 'rgba(0, 0, 0, 0.6)', // Полупрозрачный фон
-          },
-          wrapper: {
-            backgroundColor: 'transparent',
-          },
-          content: {
-            backgroundColor: 'transparent',
-            boxShadow: 'none',
-            padding: 0,
-          },
-        }}
-      >
-        <AuthTabs onSuccess={() => setIsModalOpen(false)} />
-      </Modal>
-          </div>
-        </div>
-      </div>
-    </header>
-  );
-};
-
-export default Header;
-*/
-
 import React, { useState } from "react";
 import { FaHeart, FaUser, FaBalanceScale } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -139,6 +8,9 @@ import { useAppSelector } from "@store/hooks";
 import { Modal } from "antd";
 import { AuthTabs } from "..//..//../widgets/AuthTabs";
 import { CartIcon } from "@features/cart/ui/CartIcon";
+import { SearchBox } from "@features/searchProducts/ui/SearchBox";
+import { CurrencySwitcher } from "@features/currencySwitcher/ui/CurrencySwitcher";
+
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -164,24 +36,23 @@ const Header: React.FC = () => {
             <img src={Logo} alt="Logo" className="logo-image" />
           </NavLink>
           <nav className="nav-links">
-            <NavLink to="/delivery" className="nav-link">
-              Доставка та оплата
-            </NavLink>
-            <NavLink to="/aboutus" className="nav-link">
-              {" "}
-              Про нас
-            </NavLink>
-            <NavLink to="/faq" className="nav-link">
-              Питання й відповіді
-            </NavLink>
+            <NavLink to="/delivery" className="nav-link">Доставка та оплата</NavLink>
+            <NavLink to="/aboutus" className="nav-link"> Про нас</NavLink>
+            <NavLink to="/faq" className="nav-link">Питання й відповіді</NavLink>
+          {/**   <NavLink to="/pay-test" className="nav-link"> PaymentTset</NavLink>
+            */}
           </nav>
           <div className="lang-login">
             <div className="contact">
               <p>+38 (063) 391-31-70</p>
             </div>
             <button className="manager-button">Зв'язатись з менеджером</button>
-            <button className="lang-button">UA/UA</button>
-            <button className="login-button">$UAN</button>
+            {/** <button className="lang-button">UA/UA</button>*/}
+         
+<div className="login-button">
+  <CurrencySwitcher />
+</div>
+
           </div>
         </div>
 
@@ -205,7 +76,7 @@ const Header: React.FC = () => {
                 onClose={() => setShowDesktopCategories(false)}
               />
             </div>
-            <input type="text" placeholder="Пошук" className="search-input" />
+            <SearchBox className="search-input" debounceMs={300} minLen={2} />
           </div>
 
           <div className="header-right">

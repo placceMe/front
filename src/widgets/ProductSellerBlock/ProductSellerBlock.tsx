@@ -1,42 +1,53 @@
+import { useRequest } from "@shared/request/useRequest";
 import { GlassCard } from "@shared/ui/GlassCard/GlassCard";
-import { useAppSelector } from "@store/hooks";
-import StarIcon from '../../assets/icons/star_yellow.svg?react';
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 
-export const ProductSellerBlock = () => {
-  const user = useAppSelector(state => state.user.user);
-  const sellerRating = 4.6;
-  const reviewsCount = 36;
+interface Props {
+  sellerId: string;
+}
+
+export const ProductSellerBlock = ({ sellerId }: Props) => {
   const navigate = useNavigate();
+  const [seller, setSeller] = useState<any>(null); // тип лучше уточни
+
+  const { request } = useRequest();
+
+  useEffect(() => {
+    if (!sellerId) return;
+    request(`/api/users/${sellerId}`) // или `/api/salerinfo/by-user/${sellerId}` — зависит от структуры
+      .then(setSeller)
+      .catch(console.error);
+  }, [sellerId]);
 
   const handleClick = () => {
-    if (user) {
-      navigate(`/seller/${user.id}`);
-    }
+    navigate(`/seller/${sellerId}`);
   };
 
   return (
     <GlassCard>
-      <span className="font-montserrat font-semibold text-base">
-        Продавець:
-        <button onClick={handleClick} className="text-[color-link] hover:underline ml-1">
-          {user ? user.name : 'Гість'}
-        </button>
-      </span>
+       <div
+    onClick={handleClick}
+    className="cursor-pointer hover:underline hover:text-[#3E4826] font-montserrat font-semibold text-base transition-colors"
+  >
+    Продавець: <span className="ml-1">{seller?.name || "—"}</span>
+  </div>
 
-      <div className="flex items-center gap-2">
-        <div className="flex items-center gap-1">
+      {/*   <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1">
           <span className="font-montserrat font-semibold text-base">
-            {sellerRating}/5
+            {(seller?.rating ?? '')}/5
+
           </span>
           <StarIcon />
         </div>
+       
         <span className="font-montserrat font-normal text-base text-[color05]">
-          ({reviewsCount} оцінок)
+          ({seller?.reviewsCount ?? 36} оцінок)
         </span>
-      </div>
-
+       
+      </div> */}
     </GlassCard>
   );
 };

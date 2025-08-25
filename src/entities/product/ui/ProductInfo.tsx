@@ -19,6 +19,10 @@ import { useUserProductIds } from '@shared/hooks/useUserProductIds';
 
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { updateQuantity } from '@features/cart/model/cartSlice';
+import { formatPrice } from '@shared/lib/formatPrice';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@store/store';
+import { useProductFeedbackSummary } from '@shared/hooks/useProductFeedbackSummary';
 
 
 const { Title, Text } = Typography;
@@ -33,6 +37,8 @@ const dispatch = useAppDispatch();
 const cartItems = useAppSelector(state => state.cart.items);
 const existing = cartItems.find(i => i.product.id === product.id);
 const [quantity, setQuantity] = useState(existing?.quantity || 1);
+const { current, rates } = useSelector((state: RootState) => state.currency);
+const formatted = formatPrice(product.price, current, rates);
 
 
 const handleQuantityChange = (value: number | null) => {
@@ -82,7 +88,20 @@ const toggleFavorite = (prod: any) => {
  // const toggleCompare = () => setIsCompared(prev => !prev);
 
   // oldPrice: если не указан, считаем price * 2
-  const displayOldPrice = product.price * 2;
+  //const displayOldPrice = product.price * 2;
+const { summary, loading } = useProductFeedbackSummary(product.id);
+if (loading || !summary) return null;
+
+function pluralize(count: number, one: string, few: string, many: string): string {
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+
+  if (mod10 === 1 && mod100 !== 11) return one;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return few;
+  return many;
+}
+
+
 
   return (
     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
@@ -124,9 +143,10 @@ const toggleFavorite = (prod: any) => {
               character={<StarOrangeIcon width={22} height={22} />}
               style={{ fontSize: 22 }}
               allowHalf
+              value={summary.averageRating}
             />
             <Text className="font-montserrat font-normal text-[15px] text-color05">
-              ({3} відгуки)
+                 ({summary.totalFeedbacks} {pluralize(summary.totalFeedbacks, 'відгук', 'відгуки', 'відгуків')})
             </Text>
           </Flex>
           <Descriptions
@@ -149,7 +169,7 @@ const toggleFavorite = (prod: any) => {
         </Space>
       </GlassCard>
       {/* Product Seller Block */}
-      <ProductSellerBlock />
+      <ProductSellerBlock sellerId={product.sellerId}/>
 
       {/* Purchase Options Card */}
       <Card
@@ -165,9 +185,11 @@ const toggleFavorite = (prod: any) => {
             isTop={true}
             discount={10}
           />
+          
           <ProductPriceBlock
-            price={product.price}
-            oldPrice={displayOldPrice}
+          
+            price={formatted}
+            oldPrice={formatted}
           />
           {/* Quantity selector */}
           

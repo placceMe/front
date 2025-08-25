@@ -32,6 +32,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ user }) => {
 
   const { request } = useRequest();
 
+
+  /*
   useEffect(() => {
     if (user) {
       console.log("📥 Данные пользователя с сервера:", user);
@@ -54,6 +56,12 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ user }) => {
   }, [user, form]);
 
   const onFinish = async (values: any) => {
+    const payload: any = {
+    ...user,          
+    ...values,        
+     birthDate: values.birthDate ? values.birthDate.toISOString() : null,
+   
+  };
     const updatedUser = await request<User>(`/api/users/${user.id}`, {
       method: "PUT",
       headers: {
@@ -82,6 +90,58 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ user }) => {
     }
   };
   if (!user) return null;
+*/
+useEffect(() => {
+  if (user) {
+    const formattedPhone = user.phone
+      ? user.phone.replace(/\D/g, "").replace(/^38?(\d{3})(\d{3})(\d{2})(\d{2})$/, "+38($1) $2 $3 $4")
+      : "";
+
+    form.setFieldsValue({
+      name: user.name || "",
+      surname: user.surname || "",
+      email: user.email || "",
+      phone: formattedPhone || "",
+      // Если хочешь проставлять дату в форме:
+      // birthDate: user.birthDate ? dayjs(user.birthDate) : undefined,
+    });
+  }
+  // ❌ убери автопереход отсюда
+  // navigate("/profile#info");
+}, [user, form]);
+
+const onFinish = async (values: any) => {
+  const payload: any = {
+    name: values.name,
+    surname: values.surname,
+    email: values.email,
+    phone: values.phone
+      ? "+38" + values.phone.replace(/\D/g, "").replace(/^38/, "")
+      : null,
+   
+  };
+
+  // Если меняем пароль — добавляем поля, иначе не шлём вовсе
+  if (values.oldPassword && values.newPassword && values.confirmPassword) {
+    payload.oldPassword = values.oldPassword;
+    payload.newPassword = values.newPassword;
+    payload.confirmPassword = values.confirmPassword;
+  }
+
+  const updatedUser = await request<User>(`/api/users/${user.id}`, {
+    method: "PUT",
+    body: payload,               
+  });
+
+  if (updatedUser) {
+    dispatch(setUser(updatedUser));
+    window.alert("Дані оновлено!");
+    // ✅ если нужен переход — делай тут:
+  navigate("/profile#info");
+  } else {
+    window.alert("Помилка оновлення!");
+  }
+};
 
   async function signOut() {
     await logout();
