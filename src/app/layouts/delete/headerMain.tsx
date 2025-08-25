@@ -130,10 +130,7 @@ export default Header;
 */
 
 import React, { useState } from "react";
-import {
-  FaHeart,
-  FaUser,
-} from "react-icons/fa";
+import { FaHeart, FaUser, FaBalanceScale } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import Logo from "./Logo.png";
 import CategoriesDropdown from "../../../widgets/categoriesDropdown"; // проверь путь!
@@ -146,14 +143,14 @@ import { CartIcon } from "@features/cart/ui/CartIcon";
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const [showDesktopCategories, setShowDesktopCategories] = useState(false);
-const [showMobileCategories, setShowMobileCategories] = useState(false);
+  const [showMobileCategories, setShowMobileCategories] = useState(false);
   //  const [searchTerm, setSearchTerm] = useState('');
-  const user = useAppSelector(state => state.user.user);
+  const user = useAppSelector((state) => state.user.user);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleUserClick = () => {
     if (user?.id) {
-      navigate('/profile');
+      navigate("/profile");
     } else {
       setIsModalOpen(true);
     }
@@ -167,9 +164,16 @@ const [showMobileCategories, setShowMobileCategories] = useState(false);
             <img src={Logo} alt="Logo" className="logo-image" />
           </NavLink>
           <nav className="nav-links">
-            <NavLink to="/delivery" className="nav-link">Доставка та оплата</NavLink>
-            <NavLink to="/aboutus" className="nav-link"> Про нас</NavLink>    
-            <NavLink to="/faq" className="nav-link">Питання й відповіді</NavLink>
+            <NavLink to="/delivery" className="nav-link">
+              Доставка та оплата
+            </NavLink>
+            <NavLink to="/aboutus" className="nav-link">
+              {" "}
+              Про нас
+            </NavLink>
+            <NavLink to="/faq" className="nav-link">
+              Питання й відповіді
+            </NavLink>
           </nav>
           <div className="lang-login">
             <div className="contact">
@@ -192,20 +196,16 @@ const [showMobileCategories, setShowMobileCategories] = useState(false);
               <button
                 className="category-button flex items-center gap-2 bg-yellow-700 text-white px-4 py-2 rounded-md"
                 type="button"
-                onClick={() => setShowDesktopCategories(v => !v)}
+                onClick={() => setShowDesktopCategories((v) => !v)}
               >
                 ☰ Категорії
               </button>
               <CategoriesDropdown
-  isOpen={showDesktopCategories}
-  onClose={() => setShowDesktopCategories(false)}
-/>
+                isOpen={showDesktopCategories}
+                onClose={() => setShowDesktopCategories(false)}
+              />
             </div>
-            <input
-              type="text"
-              placeholder="Пошук"
-              className="search-input"
-            />
+            <input type="text" placeholder="Пошук" className="search-input" />
           </div>
 
           <div className="header-right">
@@ -214,19 +214,26 @@ const [showMobileCategories, setShowMobileCategories] = useState(false);
               <button
                 className="category-button flex items-center gap-2"
                 type="button"
-                onClick={() => setShowMobileCategories(v => !v)}
+                onClick={() => setShowMobileCategories((v) => !v)}
               >
                 ☰
               </button>
               <CategoriesDropdown
-  isOpen={showMobileCategories}
-  onClose={() => setShowMobileCategories(false)}
-/>
+                isOpen={showMobileCategories}
+                onClose={() => setShowMobileCategories(false)}
+              />
             </div>
 
             {/* Иконки для десктопа */}
             <div className="icons flex gap-4 items-center">
-              <FaHeart onClick={() => navigate('/Wishlist')} className="cursor-pointer" />
+              <FaBalanceScale
+                onClick={() => navigate("/comparison")}
+                className="cursor-pointer"
+              />
+              <FaHeart
+                onClick={() => navigate("/Wishlist")}
+                className="cursor-pointer"
+              />
               <button
                 onClick={handleUserClick}
                 className="hover:text-[#5a6b3b] focus:outline-none"
@@ -236,11 +243,11 @@ const [showMobileCategories, setShowMobileCategories] = useState(false);
               </button>
 
               <button
-                onClick={() => navigate('/cart')}
+                onClick={() => navigate("/cart")}
                 className="hover:text-[#5a6b3b] focus:outline-none"
                 title="Кошик"
               >
-                <CartIcon/>
+                <CartIcon />
               </button>
             </div>
           </div>
@@ -250,19 +257,19 @@ const [showMobileCategories, setShowMobileCategories] = useState(false);
           open={isModalOpen}
           onCancel={() => setIsModalOpen(false)}
           footer={null}
-          destroyOnClose
+          destroyOnHidden
           centered
           width="auto"
           styles={{
             mask: {
-              backgroundColor: 'rgba(0, 0, 0, 0.6)',
+              backgroundColor: "rgba(0, 0, 0, 0.6)",
             },
             wrapper: {
-              backgroundColor: 'transparent',
+              backgroundColor: "transparent",
             },
             content: {
-              backgroundColor: 'transparent',
-              boxShadow: 'none',
+              backgroundColor: "transparent",
+              boxShadow: "none",
               padding: 0,
             },
           }}
@@ -273,22 +280,25 @@ const [showMobileCategories, setShowMobileCategories] = useState(false);
 
       {/* Sticky Bottom Bar для мобильных */}
       <div className="sticky-bottom-bar">
-       {/** <div className="sticky-bottom-item" onClick={() => navigate('/compare')}>
+        {/** <div className="sticky-bottom-item" onClick={() => navigate('/compare')}>
           <FaBalanceScale />
           <span>Порівняти</span>
         </div>
          */}
-        <div className="sticky-bottom-item" onClick={() => navigate('/Wishlist')}>
+        <div
+          className="sticky-bottom-item"
+          onClick={() => navigate("/Wishlist")}
+        >
           <FaHeart />
           <span>Збережене</span>
         </div>
-        
+
         <div className="sticky-bottom-item" onClick={handleUserClick}>
           <FaUser />
           <span>Профіль</span>
         </div>
-        
-        <div className="sticky-bottom-item" onClick={() => navigate('/cart')}>
+
+        <div className="sticky-bottom-item" onClick={() => navigate("/cart")}>
           <CartIcon />
           <span>Кошик</span>
         </div>

@@ -1,0 +1,189 @@
+/* фон страницы как на скрине */
+.cmp-page {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 18px 16px 40px;
+  background: #f7f7f2;
+  border-color: #3E4826;
+  border-width: 2px;
+}
+
+/* заголовок */
+.cmp-header {
+  margin-bottom: 8px;
+}
+.cmp-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #222;
+}
+
+/* карточка-контейнер блока сравнения */
+.cmp-card {
+  background: #f7f7f2;
+  border-radius: 6px;
+  padding: 14px 12px 18px;
+}
+.cmp-card + .cmp-card { margin-top: 18px; }
+
+.cmp-card__title {
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #2a2a1b;
+}
+
+/* таблица */
+.cmp-grid {
+  display: grid;
+  gap: 0;
+  border: 1px solid #d8ddcc;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+/* левая колонка (названия строк) */
+.cmp-head,
+.cmp-rowtitle {
+  background: #f9f9f0;                  /* светлая полоса как у тебя */
+  font-weight: 600;
+  color: #2a2a1b;
+  padding: 12px 14px;
+  border-right: 1px solid #e1e6d6;
+  border-bottom: 1px solid #e1e6d6;
+}
+
+/* ячейки */
+.cmp-cell {
+  background: #fff;
+  padding: 12px 14px;
+  border-bottom: 1px solid #e1e6d6;
+  border-right: 1px solid #e1e6d6;
+  color: #1e1e14;
+  line-height: 1.45;
+}
+.cmp-cell--name {
+  background: #f7f7f2;
+}
+
+/* ссылка-название товара (с подчёркиванием) */
+.cmp-link {
+  font-weight: 600;
+  color: #1d1f0f;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.cmp-link:hover { color: #2e3a1b; }
+
+/* изображение товара в рамке */
+.cmp-image {
+  width: 150px;
+  height: 140px;
+  border: 1px solid #d8ddcc;
+  border-radius: 6px;
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.cmp-image img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
+
+/* кнопки снизу колонки — 1 в 1 */
+.cmp-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* «Купити» — оливковая */
+.btn-buy {
+  background: #2c2c1d !important;
+  color: #fff !important;
+  border: 1px solid #2c2c1d !important;
+  font-weight: 600;
+  border-radius: 6px;
+}
+.btn-buy:hover {
+  filter: brightness(0.92);
+}
+
+/* «Видалити» — розовая таблетка */
+.btn-delete {
+  background: #eb2626 !important;
+  border: 1px solid #c93a6d !important;
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 6px;
+}
+.btn-delete:hover {
+  filter: brightness(0.95);
+}
+
+/* пустой экран */
+.cmp-empty {
+  margin-top: 16px;
+  background: #f7f7f2;
+  border: 1px solid #d8ddcc;
+  border-radius: 8px;
+  padding: 32px 20px;
+  text-align: center;
+}
+.cmp-empty__icon {
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  background: #ececdf;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  margin-bottom: 14px;
+}
+.cmp-empty h2 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 600;
+}
+.cmp-empty p {
+  color: #646b52;
+  max-width: 540px;
+  margin: 0 auto 14px;
+}
+.btn-continue {
+  background: #2c2c1d !important;
+  color: #fff !important;
+  border: 1px solid #2c2c1d !important;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+/* контейнер для горизонтального скролла */
+.cmp-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* инерция на iOS */
+}
+
+/* чуть меньше превью и поля на узких экранах */
+@media (max-width: 768px) {
+  .cmp-image {
+    width: 120px;
+    height: 110px;
+  }
+  .cmp-cell, .cmp-rowtitle, .cmp-head {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+}
+
+/* на совсем узких — ещё компактнее */
+@media (max-width: 480px) {
+  .cmp-image {
+    width: 100px;
+    height: 92px;
+  }
+  .cmp-link { font-size: 14px; }
+  .btn-buy, .btn-delete { padding: 0 10px; height: 32px; }
+}

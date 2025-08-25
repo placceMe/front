@@ -287,7 +287,7 @@ const handleWarehouseChange = (_: string, option?: { label: string; value: strin
         footer={null}
         centered
         width={450}
-        destroyOnClose
+        destroyOnHidden
       >
         <h3>Ви не авторизовані! Будь ласка, авторизуйтесь</h3>
         <AuthTabs onSuccess={() => setShowAuthModal(false)} />

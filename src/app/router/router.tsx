@@ -12,18 +12,21 @@ import ViewedProducts from "@pages/ViewedProducts";
 import { useAppSelector } from "@store/hooks";
 import { AboutSeller } from "@pages/AboutSeller.tsx";
 import AboutUsPage from "@pages/AboutUs/AboutUsPage";
-
+import Comparison from "@pages/ComparsionProductPage/ComparsionProductPage";
 import { FAQ } from "@pages/FAQ/FAQ";
 import { DeliveryInfoPage } from "@pages/Delivery/DeliveryInfoPage";
 import PrivacyPolicy from "@pages/Policy/Policy";
+import UsersAdmin from "@pages/Admin/UsersPageAdmin";
+import OrderAdmin from "@pages/Admin/OrderPageAdmin";
+import CategoryAdmin from "@pages/Admin/CategoryPageAdmin";
+import CharacteristicAdmin from "@pages/Admin/CharacteristicPageAdmin";
+import OrderModer from "@pages/Admin/OrderPageModeration";
+import OrderModerationDetailsPage from "@pages/Admin/OrderDetailPageModeration";
 
 const Home = lazy(() => import("@pages/Home/ui/HomePage"));
 const CartPage = lazy(() => import("@pages/CartPage"));
 const CheckoutPage = lazy(() => import("@pages/CheckoutPage"));
 const AdminPage = lazy(() => import("@pages/Admin/ui/Admin"));
-
-const CategoryAdmin = lazy(() => import("@features/admin/Category/ui/CategoryAdmin"));
-const CharacteristicAdmin = lazy(() => import("@features/admin/Characteristic/ui/CharacteristicAdmin"));
 
 export const AppRouter = () => {
   const user = useAppSelector(state => state.user.user);
@@ -46,6 +49,7 @@ export const AppRouter = () => {
           { path: 'delivery', element: <DeliveryInfoPage /> },
           { path: 'faq', element: <FAQ /> },
           { path: 'policy', element: <PrivacyPolicy /> },
+          {path: 'comparison', element: <Comparison />}, // Assuming compare is similar to wishlist
           
            
           
@@ -68,7 +72,11 @@ export const AppRouter = () => {
         element: <AdminPage />,
         children: [
           { path: "categories", element: <CategoryAdmin /> },
-          { path: "characteristics", element: <CharacteristicAdmin /> }
+          { path: "characteristics", element: <CharacteristicAdmin /> },
+          { path: "users", element: <UsersAdmin /> },
+          { path: "orders", element: <OrderAdmin /> },
+          { path: "ordersmoder", element: <OrderModer /> },
+          { path: "ordersmoder/:id", element: <OrderModerationDetailsPage /> },
         ]
       },
       {
