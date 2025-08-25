@@ -109,7 +109,8 @@ export const ProductPage = () => {
           </div>
           {tab === "main" && <ProductMainBlock product={product} />}
           {tab === "specs" && <ProductSpecsBlock product={product} />}
-          {tab === "reviews" && <ProductReviewsBlock   productId={product.id}/>}
+          {tab === "reviews" && <ProductReviewsBlock productId={product.id} showAll />
+}
         </BlurBlock>
 
         {tab === "main" && (
@@ -117,7 +118,13 @@ export const ProductPage = () => {
             <div className="max-w-[1100px] mx-auto px-4 space-y-8">
               <ProductDescriptionBlock product={product} />
               <ProductSpecsBlock product={product} />
-              <ProductReviewsBlock productId={product.id} />
+              <ProductReviewsBlock
+  productId={product.id}
+  showAll={false}
+  onShowAllClick={() => handleChangeTab("reviews")}
+/>
+           
+
             </div>
           </div>
         )}

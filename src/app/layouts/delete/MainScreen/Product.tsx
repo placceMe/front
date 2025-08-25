@@ -189,17 +189,15 @@ const ProductPage: React.FC = () => {
       setCatsLoading(prev => ({ ...prev, [cat.id]: true }));
 
       (async () => {
-        try {
-          const items = await req(
-            `/api/products/category/${cat.id}?limit=12&offset=0` as any,
+        try {  
+          const res = await req(`/api/products/category/${cat.id}?limit=12&offset=0` as any,
             // @ts-ignore
-            
-            { signal: ac.signal }
-          );
-          if (!ac.signal.aborted) {
-            setCatProducts(prev => ({ ...prev, [cat.id]: items ?? [] }));
-            fetchedOk.current.add(cat.id); // помечаем fetched только после успеха
-          }
+            { signal: ac.signal });
+const items: Product[] = Array.isArray(res?.products) ? res.products : [];
+if (!ac.signal.aborted) {
+  setCatProducts(prev => ({ ...prev, [cat.id]: items }));
+  fetchedOk.current.add(cat.id);
+}
         } finally {
           if (!ac.signal.aborted) {
             setCatsLoading(prev => ({ ...prev, [cat.id]: false }));

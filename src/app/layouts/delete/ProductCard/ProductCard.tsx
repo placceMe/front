@@ -13,6 +13,9 @@ import FavOutlinedIcon from '../../../../assets/icons/fav_outlined.svg?react';
 
 
 import { CheckCircleFilled,} from '@ant-design/icons';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@store/store';
+import { formatPrice } from '@shared/lib/formatPrice';
 
 interface ProductCardProps {
   product: Product;
@@ -46,7 +49,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
 
-  const { id, title, mainImageUrl, price } = product;
+  const { id, title, mainImageUrl } = product;
   const navigate = useNavigate();
 
   /*const imageUrl = image ? FILES_BASE_URL + image : '/placeholder.png';*/
@@ -81,6 +84,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     dispatch(addToCart({ product, quantity }));
   };
 
+const { current, rates } = useSelector((state: RootState) => state.currency);
+const formatted = formatPrice(product.price, current, rates);
 
 
  // console.log("ProductCard image:", id);
@@ -116,12 +121,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       {title.length > 60 ? title.slice(0, 30) + '…' : title}
     </h3>
   </NavLink>
-
+<p className="product-price">{formatted}</p>
   <p className="sku">Артикул: {id?.match(/\d/g)?.join('') || '—'}</p>
+    
 
-  {/* Мобильный ряд: цена + корзина справа */}
+ 
   <div className="price-row">
-    <p className="product-price">{price} ₴</p>
+    <p className="product-price">{formatted}</p>
     <Button
       onClick={handleAddToCart}
       disabled={isInCart}

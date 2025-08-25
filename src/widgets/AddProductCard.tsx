@@ -614,6 +614,7 @@ export const AddProductCard = ({ sellerId }: AddProductCardProps) => {
     formData.append("CategoryId", values.CategoryId);
     formData.append("Price", String(values.Price));
     formData.append("SellerId", sellerId);
+    formData.append("Quantity", String(values.Quantity));
 
     if (values.Color) formData.append("Color", values.Color);
     if (values.Weight !== undefined) formData.append("Weight", String(values.Weight));
@@ -768,7 +769,19 @@ export const AddProductCard = ({ sellerId }: AddProductCardProps) => {
                 <InputNumber
                   min={0}
                   style={{ ...BLUR_STYLE, width: "100%" }}
-                  addonAfter="₴"
+                  addonAfter="грн"
+                  className="rounded-xl font-semibold h-10"
+                />
+              </Form.Item>
+                <Form.Item
+                label="Кількість"
+                name="Quantity"
+                rules={[{ required: true, message: "Вкажіть кількість" }]}
+              >
+                <InputNumber
+                  min={0}
+                  step={1}
+                  style={{ ...BLUR_STYLE, width: "100%" }}
                   className="rounded-xl font-semibold h-10"
                 />
               </Form.Item>

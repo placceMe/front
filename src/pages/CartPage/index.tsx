@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { goToCheckout } from "../../features/lib/navigation";
 import  emptyCartImg  from '../../assets/pages/cart.png'
 import { useEffect } from 'react';
+import { formatPrice } from '@shared/lib/formatPrice';
+import type { RootState } from '@store/store';
 
 const CartPage = () => {
   const dispatch = useAppDispatch();
@@ -31,6 +33,9 @@ const CartPage = () => {
     (acc, item) => acc + (item.product.price * item.quantity),
     0
   );
+const { current, rates } = useAppSelector((state: RootState) => state.currency);
+const formattedTotalPrice = formatPrice(totalPrice, current, rates);
+
 
   const handleCheckout = () => {
     goToCheckout(navigate);
@@ -94,7 +99,7 @@ useEffect(() => {
             </div>
             <div className="flex justify-between font-bold text-xl mt-2">
               <span>Разом:</span>
-              <span>{totalPrice} грн</span>
+              <span>{formattedTotalPrice} </span>
             </div>
             <div className="mt-4 flex justify-end">
               <Button

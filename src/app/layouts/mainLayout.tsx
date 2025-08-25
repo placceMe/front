@@ -10,6 +10,7 @@ import {  logoutAction, setUser } from "../../entities/user/model/userSlice";
 import { setCart, setUserId } from "@features/cart/model/cartSlice";
 import type { Category, Product, User } from "@shared/types/api";
 import { setCategories } from "../../entities/category/model/categoriesSlice";
+import { useCurrency } from "@features/currencySwitcher/model/useCurrency";
 
 // import Footer from "../../components/good/footer";
 // import Header from "../../components/MainScreen/headerMain";
@@ -74,6 +75,7 @@ export const MainLayout = () => {
 const { request } = useRequest();
 const dispatch = useAppDispatch();
 
+ useCurrency(); 
 async function fetchUser() {
   try {
     const user = await request<User>("/api/auth/me");

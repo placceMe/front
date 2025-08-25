@@ -10,12 +10,21 @@ import { CabinetLayout } from "../../app/layouts/CabinetLayout";
 import OrdersTab from "../../widgets/OrdersTab";
 import ViewedProducts from "@pages/ViewedProducts";
 import { useAppSelector } from "@store/hooks";
-import { AboutSeller } from "@pages/AboutSeller.tsx";
+
 import AboutUsPage from "@pages/AboutUs/AboutUsPage";
 
 import { FAQ } from "@pages/FAQ/FAQ";
-import { DeliveryInfoPage } from "@pages/Delivery/DeliveryInfoPage";
+
 import PrivacyPolicy from "@pages/Policy/Policy";
+import SearchResultsPage from "@features/searchProducts/ui/SearchResultsPage";
+import AdminProducts from "@features/admin/Products/ui/AdminProducts";
+import AdminUsers from "@features/admin/Users/ui/AdminUsers";
+import AdminFeedback from "@features/admin/Feedback/ui/AdminFeedback";
+import DeliveryInfoPage from "@pages/Delivery/DeliveryInfoPage";
+import { AboutSeller } from "@pages/AboutSeller.tsx";
+import EditProductPage from "@pages/EditProductPage/EditProductPage";
+import PaymentTestPage from "@pages/PaymentTestPage";
+
 
 const Home = lazy(() => import("@pages/Home/ui/HomePage"));
 const CartPage = lazy(() => import("@pages/CartPage"));
@@ -46,6 +55,9 @@ export const AppRouter = () => {
           { path: 'delivery', element: <DeliveryInfoPage /> },
           { path: 'faq', element: <FAQ /> },
           { path: 'policy', element: <PrivacyPolicy /> },
+          { path: 'search', element: <SearchResultsPage /> },
+          { path: "products/:productId/edit", element: <EditProductPage /> },
+           { path: "pay-test", element: <PaymentTestPage  /> },
           
            
           
@@ -68,7 +80,10 @@ export const AppRouter = () => {
         element: <AdminPage />,
         children: [
           { path: "categories", element: <CategoryAdmin /> },
-          { path: "characteristics", element: <CharacteristicAdmin /> }
+          { path: "characteristics", element: <CharacteristicAdmin /> },
+          { path: "products", element: <AdminProducts /> },
+          { path: "users", element: <AdminUsers /> },
+          { path: "feedback", element: <AdminFeedback /> },
         ]
       },
       {

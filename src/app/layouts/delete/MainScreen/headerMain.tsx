@@ -1,4 +1,4 @@
-import React from "react";
+/*import React from "react";
 import {
   FaHeart,
   FaUser,
@@ -11,7 +11,7 @@ import Logo from "../../assets/mainscreen/Logo.png";
 const Header: React.FC = () => {
   return (
     <header className="header">
-      {/* Top Row: Navigation */}
+  
       <div className="header-top">
         <div className="logo">
           <img src={Logo} alt="NORSEN Logo" />
@@ -32,7 +32,7 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Bottom Row: Logo, Search, Icons */}
+    
       <div className="header-bottom">
 
         <div className="header-center">
@@ -46,7 +46,7 @@ const Header: React.FC = () => {
 
         <div className="header-right">
           <div className="icons">
-            {  /*<FaBalanceScale />*/}
+         
             <FaHeart />
             <FaUser />
             <FaShoppingCart />
@@ -58,3 +58,4 @@ const Header: React.FC = () => {
 };
 
 export default Header;
+*/

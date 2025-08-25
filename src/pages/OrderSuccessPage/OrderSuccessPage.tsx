@@ -2,6 +2,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Typography, Table, Descriptions, Spin } from "antd";
 import { useRequest } from "@shared/request/useRequest";
+import { useSelector } from "react-redux";
+import type { RootState } from "@store/store";
+import { formatPrice } from "@shared/lib/formatPrice";
 
 interface ProductInfo {
   id: string;
@@ -34,6 +37,7 @@ export const OrderSuccessPage = () => {
   const [order, setOrder] = useState<OrderDetails | null>(null);
   const navigate = useNavigate();
  const { request } = useRequest();
+const { current, rates } = useSelector((state: RootState) => state.currency);
 
 useEffect(() => {
   if (!orderId) return;
@@ -86,21 +90,21 @@ useEffect(() => {
             title: "Ціна за одиницю",
             dataIndex: "product",
             key: "price",
-            render: (product?: ProductInfo) => product?.price ? `${product.price} грн` : "-"
+            render: (product?: ProductInfo) => product?.price ? formatPrice(product.price, current, rates) : "-"
           },
           {
             title: "Сума",
             key: "total",
             render: (_: unknown, item: OrderItem) => {
               const price = item.product?.price ?? item.price ?? 0;
-              return `${price * item.quantity} грн`;
+            return formatPrice(price * item.quantity, current, rates);
             }
           }
         ]}
         style={{ marginBottom: 24 }}
       />
       <div className="flex justify-end text-xl font-semibold mb-4">
-        {order.totalAmount && <>Разом: {order.totalAmount} грн.</>}
+        {order.totalAmount && <>Разом: {formatPrice(order.totalAmount, current, rates)}</>}
       </div>
       <div style={{ textAlign: 'center', padding: 25 }}>
         <button

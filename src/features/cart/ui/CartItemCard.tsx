@@ -1,6 +1,9 @@
 import { Button, InputNumber } from 'antd';
 import type { CartItem } from '@shared/types/cart';
 import { useState } from 'react';
+import { formatPrice } from '@shared/lib/formatPrice';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@store/store';
 
 interface Props {
   item: CartItem;
@@ -9,11 +12,19 @@ interface Props {
 }
 
 //const FILES_BASE_URL = 'http://localhost:5001/api/files/';
- const FILES_BASE_URL = "http://31.42.190.94:8080/api/files/";
+
+const FILES_BASE_URL = "http://31.42.190.94:8080/api/files/";
+
+
+
+
+
 // TODO useRerequest 
 
 export const CartItemCard = ({ item, onChangeQuantity, onRemove }: Props) => {
   const { product, quantity } = item;
+const { current, rates } = useSelector((state: RootState) => state.currency);
+const formatted = formatPrice(product.price, current, rates);
 
 
   const imgUrl = product.mainImageUrl
@@ -35,7 +46,7 @@ export const CartItemCard = ({ item, onChangeQuantity, onRemove }: Props) => {
       <div className="flex-1 min-w-0">
         <div className="font-semibold truncate">{product.title || 'Без назви'}</div>
         <div className="text-gray-500 truncate">{product.description || ''}</div>
-        <div className="mt-1 font-bold">{product.price} грн</div>
+        <div className="mt-1 font-bold">{formatted} </div>
       </div>
 
       <div className="flex flex-col items-end gap-2">

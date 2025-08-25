@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useUserProductIds } from "@shared/hooks/useUserProductIds";
 import { useProductsByIds } from "@shared/hooks/useProductsByIds";
 import ProductCard from "../app/layouts/delete/ProductCard/ProductCard";
@@ -6,9 +7,86 @@ import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import wishlistEmptyImg from '../assets/pages/favourite.png';
 
+const CSS = `
+.wishlist-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  padding: 6px 4px;
+}
 
+.wishlist-grid > .product-card {
+  width: 100%;
+  max-width: 300px;
+  justify-self: center;
+}
+
+@media (max-width: 1440px) { 
+  .wishlist-grid { 
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+  }
+  .wishlist-grid > .product-card { max-width: 280px; }
+}
+
+@media (max-width: 1280px) { 
+  .wishlist-grid { 
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 
+  }
+  .wishlist-grid > .product-card { max-width: 260px; }
+}
+
+@media (max-width: 1024px) { 
+  .wishlist-grid { 
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+  }
+  .wishlist-grid > .product-card { max-width: 240px; }
+}
+
+@media (max-width: 768px) { 
+  .wishlist-grid { 
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+  }
+  .wishlist-grid > .product-card { max-width: 220px; }
+}
+
+@media (max-width: 600px) { 
+  .wishlist-grid { 
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
+  }
+  .wishlist-grid > .product-card { max-width: 140px; }
+}
+
+.wishlist-section { 
+  margin: 10px 0 5px; 
+}
+
+.wishlist-title { 
+  font-size: 22px; 
+  font-weight: 700; 
+  color: #212910; 
+  margin: 0 0 10px; 
+}
+
+@media (max-width: 768px) { 
+  .wishlist-title { 
+    font-size: 18px; 
+  } 
+}
+`;
+
+function useInjectOnce(id: string, css: string) {
+  useEffect(() => {
+    if (document.getElementById(id)) return;
+    const s = document.createElement("style");
+    s.id = id; 
+    s.appendChild(document.createTextNode(css));
+    document.head.appendChild(s);
+  }, [id, css]);
+}
 
 export const Wishlist = () => {
+  useInjectOnce("wishlist-css", CSS);
+  
   const userId = useAppSelector(state => state.user.user?.id) || "guest";
   const [wishlist] = useUserProductIds(userId, "userWishlist");
   const { products } = useProductsByIds(wishlist);
@@ -16,7 +94,6 @@ export const Wishlist = () => {
 
   if (!wishlist.length) {
     return (
-
       <div className="text-center text-[#1f2614] px-4 mt-[50px]">
         <img
           src={wishlistEmptyImg}
@@ -26,7 +103,7 @@ export const Wishlist = () => {
         <h2 className="text-[36px] font-semibold font-montserrat mb-[15px]">
           Обране
         </h2>
-        <p className="text-[15px] font-semibold font-montserrat mb-[20px]  mx-auto">
+        <p className="text-[15px] font-semibold font-montserrat mb-[20px] mx-auto">
           Зберігайте спорядження, яке Вас зацікавило і повертайтесь до нього, коли будете готові до дії.
         </p>
         <Button
@@ -37,33 +114,25 @@ export const Wishlist = () => {
           Продовжити
         </Button>
       </div>
-
     );
   }
 
   return (
-    <div className="mx-auto max-w-[1440px] px-2 md:px-8 pb-10">
-      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2 mb-6">
-        <div>
-
-          <h2 className="text-3xl font-semibold mb-1 text-[#3E4826]">
-            Список бажань
-          </h2>
-          <div className="text-[#000000]-500 text-sm font-medium">
-            (кількість товарів: <span className="font-semibold">{products.length}</span>)
-          </div>
-        </div>
-        {/* Место для кнопки "Очистити список", если нужно */}
+    <section className="container section">
+      <h2 className="wishlist-title">Список бажань</h2>
+      <div className="text-gray-600 text-sm mb-4">
+        (кількість товарів: <span className="font-semibold">{products.length}</span>)
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-40">
-     {Array.isArray(products) && products.map(prod => (
-  <div key={prod.id} style={{ minHeight: 320 }}>
-    <ProductCard product={prod} />
-  </div>
-))}
-
+      <div className="wishlist-grid">
+        {Array.isArray(products) && products.map(prod => (
+          <ProductCard 
+            key={prod.id} 
+            product={prod} 
+            isAvailable={prod.quantity > 0}
+          />
+        ))}
       </div>
-    </div>
+    </section>
   );
 };

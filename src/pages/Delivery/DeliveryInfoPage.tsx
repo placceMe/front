@@ -1,101 +1,112 @@
-import { CheckCircleOutlined, InfoCircleOutlined, CreditCardOutlined, BankOutlined, ShoppingOutlined, FileTextOutlined } from "@ant-design/icons";
-import NovaPoshtaIcon from '../../assets/icons/nova_poshta.svg?react';
-import UkrPoshtaIcon from '../../assets/icons/ukr_poshta.svg?react';
+import React from 'react';
+import DeliveryBlock from '../../assets/pages/delivery_block.png'
+import Payment from '../../assets/pages/payment.png'
+import UnionIcon from '../../assets/icons/union.svg?react'
 
-
-export const DeliveryInfoPage = () => {
+const DeliveryInfoPage: React.FC = () => {
     return (
-        <section className="px-4 md:px-44 py-6 text-[#212910] font-['Montserrat, sans-serif']">
-            <h2 className="text-3xl font-bold mb-6">Доставка та оплата</h2>
 
-            {/* Доставка */}
-            <div className="bg-[#f6f8f3] rounded-xl p-6 md:p-10 mb-12">
-                <h3 className="text-2xl font-semibold mb-6">Доставка по Україні</h3>
+        <div className=" container section">
+            <div className="max-w-6xl mx-auto space-y-20">
+                <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 mb-8">
+                    Доставка
+                </h2>
+                <section className="grid lg:grid-cols-2 gap-12 items-center">
 
-                <div className="grid md:grid-cols-2 gap-6 mb-6">
-                    <div className="bg-white border-l-4 border-[#f9c642] p-4 shadow-sm rounded-md flex items-center gap-3">
-                        <InfoCircleOutlined className="text-[#f9c642] text-xl" />
-                        <span>Мінімальна сума замовлення – <strong>200 грн</strong></span>
-                    </div>
-                    <div className="bg-white border-l-4 border-green-600 p-4 shadow-sm rounded-md flex items-center gap-3">
-                        <CheckCircleOutlined className="text-green-600 text-xl" />
-                        <span>Замовлення понад <strong>20 000 грн</strong> надсилаються тільки за умови повної оплати</span>
-                    </div>
-                </div>
+                    <div className="lg:order-1">
 
-                {/* Перевізники */}
-                <div className="grid md:grid-cols-2 gap-10">
-                    {/* Нова Пошта */}
-                    <div>
-                        <div className="flex items-center  ">
-                            <NovaPoshtaIcon className="w-48 h-28" />
 
-                        </div>
-                        <ul className="list-disc list-inside space-y-2 text-sm md:text-base">
-                            <li><strong>Безкоштовно</strong> при замовленні від <strong>2000 грн</strong></li>
-
-                            <li><strong>Накладений платіж:</strong> 2% + 20 грн від суми</li>
-                        </ul>
-                    </div>
-
-                    {/* Укрпошта */}
-                    <div>
-                        <div className="flex items-center 4">
-                            <UkrPoshtaIcon className="w-48 h-28" />
-
-                        </div>
-                        <ul className="list-disc list-inside space-y-2 text-sm md:text-base">
-                            <li><strong>Безкоштовно</strong> при замовленні від <strong>2000 грн</strong></li>
-
-                            <li><strong>Накладений платіж:</strong> 2% + 20 грн від суми</li>
-                        </ul>
-                    </div>
-                </div>
-                  <h3 className="text-2xl font-semibold mb-6 mt-12">Оплата</h3>
-
-                <div className="grid md:grid-cols-2 gap-8">
-                    {/* Для фізичних осіб */}
-                    <div>
-                        <h4 className="text-xl font-semibold mb-4">Для фізичних осіб:</h4>
-                        <ul className="space-y-4 text-sm md:text-base">
-                            <li className="flex items-start gap-2">
-                                <ShoppingOutlined className="text-xl mt-1" />
-                                Оплата післяплатою при отриманні у відділенні перевізника
-                            </li>
-                            <li className="flex items-start gap-2">
-                                <CreditCardOutlined className="text-xl mt-1" />
-                                Оплата банківською карткою Visa / MasterCard
-                            </li>
-                            <li className="flex items-start gap-2">
-                                <BankOutlined className="text-xl mt-1" />
-                                Оплата готівкою при отриманні товару
-                            </li>
-                            <li className="flex items-start gap-2">
-                                <FileTextOutlined className="text-xl mt-1" />
-                                Оплата на розрахунковий рахунок ПриватБанку
-                            </li>
-                        </ul>
-                    </div>
-
-                    {/* Для юридичних осіб */}
-                    <div>
-                        <h4 className="text-xl font-semibold mb-4">Для юридичних осіб:</h4>
-                        <p className="mb-4">
-                            Оплата за безготівковим розрахунком здійснюється згідно рахунку-фактури. Менеджер надасть всі документи після оформлення замовлення.
-                        </p>
-                        <div className="bg-white rounded-md p-4 shadow-sm border-l-4 border-red-500 text-sm space-y-2">
-                            <p className="text-red-600">
-                                <strong>Увага!</strong> Товар надсилається лише після 100% передоплати.
+                        <div className="space-y-4 text-gray-700 leading-relaxed">
+                            <p>
+                                Ми дбаємо про те, щоб Ваше замовлення прибуло швидко та зручно.
                             </p>
                             <p>
-                                У випадку відсутності товару на складі в Україні термін доставки може бути збільшено — менеджер повідомить про це додатково.
+                                Доставка здійснюється по всій Україні протягом 1-3 робочих днів.
+                            </p>
+                            <p className="font-semibold">
+                                Доступні наступні способи:
                             </p>
                         </div>
-                    </div>
-                </div>
-            </div>
 
-          
-        </section>
+                        <div className="mt-8 space-y-4">
+                            <div className="flex items-start gap-3">
+                                <UnionIcon width={40} />
+                                <p className="text-gray-700">
+                                    <span className="font-semibold">Самовивіз з відділення Нової Пошти</span> — заберіть замовлення у найближчому для Вас відділенні;
+                                </p>
+                            </div>
+
+                            <div className="flex items-start gap-3">
+                                <UnionIcon width={40} />
+                                <p className="text-gray-700">
+                                    <span className="font-semibold">Самовивіз з поштомата Нової Пошти</span> — отримайте посилку у зручний час у поштоматі, який працює 24/7;
+                                </p>
+                            </div>
+
+                            <div className="flex items-start gap-3">
+                                <UnionIcon width={40} />
+                                <p className="text-gray-700">
+                                    <span className="font-semibold">Кур'єрська доставка Нової Пошти</span> — замовлення буде доставлено прямо до Вашого дому чи офісу.
+                                </p>
+                            </div>
+                        </div>
+
+                        <p className="mt-6 text-gray-700">
+                            Вартість доставки розраховується згідно з тарифами перевізника.
+                        </p>
+                    </div>
+
+                    <div className="lg:order-2 flex justify-center">
+                        <img src={DeliveryBlock} alt="DeliveryBlock" />
+                    </div>
+                </section>
+
+                 <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 mb-8">
+                    Оплата
+                </h2>
+                <section className="grid lg:grid-cols-2 gap-12 items-center">
+
+                    <div className="flex justify-center">
+                        <img src={Payment} alt="Payment" />
+
+                    </div>
+                    <div>
+                        <p className="text-gray-700 leading-relaxed mb-6">
+                            Для Вашої зручності ми пропонуємо кілька способів оплати:
+                        </p>
+
+                        <div className="space-y-4">
+                            <div className="flex items-start gap-3">
+                                <UnionIcon width={40} />
+                                <p className="text-gray-700">
+                                    <span className="font-semibold">Готівкою при отриманні</span> — сплачуйте за замовлення під час його отримання у відділенні чи від кур'єра;
+                                </p>
+                            </div>
+
+                            <div className="flex items-start gap-3">
+                                <UnionIcon width={40} />
+                                <p className="text-gray-700">
+                                    <span className="font-semibold">Онлайн-оплата банківською карткою</span> — приймаємо Visa, Monobank, PrivatBank та Mastercard;
+                                </p>
+                            </div>
+
+                            <div className="flex items-start gap-3">
+                                <UnionIcon width={40} />
+                                <p className="text-gray-700">
+                                    <span className="font-semibold">Безготівковий розрахунок для юридичних осіб</span> — за потреби надаємо рахунок для оплати.
+                                </p>
+                            </div>
+                        </div>
+
+                        <p className="mt-6 text-gray-700">
+                            Ми не вимагаємо передоплати. Ви завжди можете оплатити замовлення при отриманні.
+                        </p>
+                    </div>
+                </section>
+
+            </div>
+        </div>
     );
 };
+
+export default DeliveryInfoPage;
