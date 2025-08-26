@@ -14,13 +14,18 @@ interface UseChatProps {
   hubUrl: string;
   userId: string;
   userName: string;
+  handleReceiveMessage: (message: ChatMessage) => void;
 }
 
-export const useReciveChat = ({ hubUrl, userId, userName }: UseChatProps) => {
+export const useReciveChat = ({
+  hubUrl,
+  userId,
+  userName,
+  handleReceiveMessage,
+}: UseChatProps) => {
   const { connection, isConnected, startConnection, stopConnection } =
     useSignalRConnection(hubUrl);
   const [currentRoomId, setCurrentRoomId] = useState<string | null>(null);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isJoiningRoom, setIsJoiningRoom] = useState(false);
 
   const joinRoom = useCallback(
@@ -40,7 +45,6 @@ export const useReciveChat = ({ hubUrl, userId, userName }: UseChatProps) => {
         // Join new room
         await connection.invoke("JoinRoom", roomId, userId, userName);
         setCurrentRoomId(roomId);
-        setMessages([]); // Clear messages when switching rooms
       } catch (error) {
         console.error("Failed to join room:", error);
         throw error;
@@ -57,38 +61,30 @@ export const useReciveChat = ({ hubUrl, userId, userName }: UseChatProps) => {
     try {
       await connection.invoke("LeaveRoom", currentRoomId);
       setCurrentRoomId(null);
-      setMessages([]);
     } catch (error) {
       console.error("Failed to leave room:", error);
     }
   }, [connection, currentRoomId]);
 
-  const sendMessage = useCallback(
-    async (message: string) => {
-      if (!connection || !currentRoomId || !message.trim()) return;
-
-      try {
-        await connection.invoke(
-          "SendMessage",
-          currentRoomId,
-          userId,
-          userName,
-          message
-        );
-      } catch (error) {
-        console.error("Failed to send message:", error);
-      }
-    },
-    [connection, currentRoomId, userId, userName]
-  );
+  const handleWrittenMessage = async (message: ChatMessage) => {
+    if (!connection || !currentRoomId || !message) return;
+    // Handle written messages
+    try {
+      await connection.invoke(
+        "markMessageAsRead",
+        currentRoomId,
+        userId,
+        userName,
+        message.id
+      );
+    } catch (error) {
+      console.error("Failed to send message:", error);
+    }
+  };
 
   // Setup SignalR event listeners
   useEffect(() => {
     if (!connection) return;
-
-    const handleReceiveMessage = (message: ChatMessage) => {
-      setMessages((prev) => [...prev, message]);
-    };
 
     const handleUserJoined = (userId: string, userName: string) => {
       console.log(`User ${userName} joined the room`);
@@ -134,8 +130,7 @@ export const useReciveChat = ({ hubUrl, userId, userName }: UseChatProps) => {
     leaveRoom,
 
     // Messaging
-    messages,
-    sendMessage,
+    handleWrittenMessage,
 
     // Connection management
     startConnection,
