@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useRecieveChat } from "./useRecieveChat";
+import { useReciveChat } from "./useReciveChat";
 import { useRequest } from "@shared/request/useRequest";
 
 interface ChatMessage {
@@ -29,19 +29,31 @@ interface ChatsState {
 }
 
 interface UseChatProps {
-  hubUrl: string;
-  userId: string;
-  userName: string;
+  receiver: ReturnType<typeof useReciveChat>;
+  roomId: string;
 }
 
-export const useChat = ({ hubUrl, userId, userName }: UseChatProps) => {
-  const { request, loading } = useRequest();
+export const useChat = ({ receiver, roomId }: UseChatProps) => {
+  const { request: sendMessageRequest, loading: isSendingMessage } =
+    useRequest();
+  const { request: startChatRequest, loading: isStartingChat } = useRequest();
+  const { request: getMyChatsRequest, loading: isLoadingMyChats } =
+    useRequest();
+  const { request: getSpecificChatRequest, loading: isLoadingSpecificChat } =
+    useRequest();
+  const { request: getChatMessagesRequest, loading: isLoadingMessages } =
+    useRequest();
 
-  const { connection, isConnected, startConnection, stopConnection, joinRoom } =
-    useRecieveChat(hubUrl);
-  const [currentRoomId, setCurrentRoomId] = useState<string | null>(null);
+  const {
+    isConnected,
+    startConnection,
+    stopConnection,
+    joinRoom,
+    leaveRoom,
+    isJoiningRoom,
+  } = receiver;
+
   const [chats, setChats] = useState<ChatsState>({});
-  const [isJoiningRoom, setIsJoiningRoom] = useState(false);
 
   // Initialize chat if it doesn't exist
   const initializeChat = useCallback(
@@ -65,37 +77,104 @@ export const useChat = ({ hubUrl, userId, userName }: UseChatProps) => {
     []
   );
 
-  const leaveRoom = useCallback(async () => {
-    if (!connection || !currentRoomId) return;
-
-    try {
-      await connection.invoke("LeaveRoom", currentRoomId);
-      setCurrentRoomId(null);
-    } catch (error) {
-      console.error("Failed to leave room:", error);
-    }
-  }, [connection, currentRoomId]);
-
   const sendMessage = useCallback(
     async (message: string, chatId?: string) => {
-      const targetChatId = chatId || currentRoomId;
+      const targetChatId = chatId || roomId;
       if (!targetChatId || !message.trim()) return;
 
       try {
-        await request("/api/chat/messages", {
+        await sendMessageRequest(`/api/chat/${targetChatId}/messages`, {
           method: "POST",
           body: JSON.stringify({
-            roomId: targetChatId,
-            userId,
-            userName,
-            message: message.trim(),
+            content: message.trim(),
           }),
         });
       } catch (error) {
         console.error("Failed to send message:", error);
       }
     },
-    [request, currentRoomId, userId, userName]
+    [sendMessageRequest, roomId]
+  );
+
+  const startChatWithSeller = useCallback(
+    async (productId: string) => {
+      try {
+        const response = await startChatRequest("/api/chat/start", {
+          method: "POST",
+          body: JSON.stringify({
+            productId,
+          }),
+        });
+        return response;
+      } catch (error) {
+        console.error("Failed to start chat:", error);
+        throw error;
+      }
+    },
+    [startChatRequest]
+  );
+
+  const getMyChats = useCallback(async () => {
+    try {
+      const response = await getMyChatsRequest("/api/chat/my-chats");
+      return response;
+    } catch (error) {
+      console.error("Failed to get chats:", error);
+      throw error;
+    }
+  }, [getMyChatsRequest]);
+
+  const getSpecificChat = useCallback(
+    async (chatId: string) => {
+      try {
+        const response = await getSpecificChatRequest(`/api/chat/${chatId}`);
+        return response;
+      } catch (error) {
+        console.error("Failed to get chat:", error);
+        throw error;
+      }
+    },
+    [getSpecificChatRequest]
+  );
+
+  const getChatMessages = useCallback(
+    async (chatId: string, page: number = 1, pageSize: number = 50) => {
+      try {
+        const response = await getChatMessagesRequest(
+          `/api/chat/${chatId}/messages?page=${page}&pageSize=${pageSize}`
+        );
+        return response;
+      } catch (error) {
+        console.error("Failed to get chat messages:", error);
+        throw error;
+      }
+    },
+    [getChatMessagesRequest]
+  );
+
+  const loadChatMessages = useCallback(
+    async (chatId: string, page: number = 1, pageSize: number = 50) => {
+      try {
+        const messages = await getChatMessages(chatId, page, pageSize);
+
+        setChats((prev) => ({
+          ...prev,
+          [chatId]: {
+            ...prev[chatId],
+            messages:
+              page === 1
+                ? messages
+                : [...(prev[chatId]?.messages || []), ...messages],
+          },
+        }));
+
+        return messages;
+      } catch (error) {
+        console.error("Failed to load chat messages:", error);
+        throw error;
+      }
+    },
+    [getChatMessages]
   );
 
   const addMessageToChat = useCallback(
@@ -153,14 +232,21 @@ export const useChat = ({ hubUrl, userId, userName }: UseChatProps) => {
   );
 
   // Get current chat data
-  const currentChat = currentRoomId ? chats[currentRoomId] : null;
+  const currentChat = roomId ? chats[roomId] : null;
   const currentMessages = currentChat?.messages || [];
 
   return {
     // Connection state
     isConnected,
     isJoiningRoom,
-    currentRoomId,
+    roomId,
+
+    // Loading states
+    isSendingMessage,
+    isStartingChat,
+    isLoadingMyChats,
+    isLoadingSpecificChat,
+    isLoadingMessages,
 
     // Chat data
     chats,
@@ -176,6 +262,13 @@ export const useChat = ({ hubUrl, userId, userName }: UseChatProps) => {
     sendMessage,
     addMessageToChat,
     updateChatInfo,
+
+    // API methods
+    startChatWithSeller,
+    getMyChats,
+    getSpecificChat,
+    getChatMessages,
+    loadChatMessages,
 
     // Connection management
     startConnection,
