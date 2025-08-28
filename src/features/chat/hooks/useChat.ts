@@ -1,14 +1,16 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useReciveChat } from "./useReciveChat";
 import { useRequest } from "@shared/request/useRequest";
 
 interface ChatMessage {
   id: string;
-  userId: string;
-  userName: string;
-  message: string;
-  timestamp: Date;
-  roomId: string;
+  chatId: string;
+  senderId: string;
+  content: string;
+  sentAt: Date;
+  isRead: boolean;
+  // Optionally, you can add a 'chat' property if needed for navigation
+  // chat?: ChatInfo;
 }
 
 interface ChatInfo {
@@ -51,6 +53,7 @@ export const useChat = ({ receiver, roomId }: UseChatProps) => {
     joinRoom,
     leaveRoom,
     isJoiningRoom,
+    connection,
   } = receiver;
 
   const [chats, setChats] = useState<ChatsState>({});
@@ -188,7 +191,7 @@ export const useChat = ({ receiver, roomId }: UseChatProps) => {
               chatInfo: {
                 id: chatId,
                 name: `Chat ${chatId}`,
-                lastActivity: message.timestamp,
+                lastActivity: message.sentAt,
               },
               messages: [message],
             },
@@ -201,7 +204,7 @@ export const useChat = ({ receiver, roomId }: UseChatProps) => {
             ...prev[chatId],
             chatInfo: {
               ...prev[chatId].chatInfo,
-              lastActivity: message.timestamp,
+              lastActivity: message.sentAt,
             },
             messages: [...prev[chatId].messages, message],
           },
@@ -235,6 +238,24 @@ export const useChat = ({ receiver, roomId }: UseChatProps) => {
   const currentChat = roomId ? chats[roomId] : null;
   const currentMessages = currentChat?.messages || [];
 
+  // Handle incoming messages from SignalR
+  const processIncomingMessage = useCallback(
+    (message: ChatMessage) => {
+      addMessageToChat(message.chatId, message);
+    },
+    [addMessageToChat]
+  );
+
+  useEffect(() => {
+    if (!connection) return;
+
+    connection.on("ReceiveMessage", processIncomingMessage);
+
+    return () => {
+      connection.off("ReceiveMessage", processIncomingMessage);
+    };
+  }, [connection, processIncomingMessage]);
+
   return {
     // Connection state
     isConnected,
@@ -262,6 +283,7 @@ export const useChat = ({ receiver, roomId }: UseChatProps) => {
     sendMessage,
     addMessageToChat,
     updateChatInfo,
+    // processIncomingMessage,
 
     // API methods
     startChatWithSeller,

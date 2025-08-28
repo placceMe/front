@@ -14,15 +14,9 @@ interface UseChatProps {
   hubUrl: string;
   userId: string;
   userName: string;
-  handleReceiveMessage: (message: ChatMessage) => void;
 }
 
-export const useReciveChat = ({
-  hubUrl,
-  userId,
-  userName,
-  handleReceiveMessage,
-}: UseChatProps) => {
+export const useReciveChat = ({ hubUrl, userId, userName }: UseChatProps) => {
   const { connection, isConnected, startConnection, stopConnection } =
     useSignalRConnection(hubUrl);
   const [currentRoomId, setCurrentRoomId] = useState<string | null>(null);
@@ -94,12 +88,10 @@ export const useReciveChat = ({
       console.log(`User ${userName} left the room`);
     };
 
-    connection.on("ReceiveMessage", handleReceiveMessage);
     connection.on("UserJoined", handleUserJoined);
     connection.on("UserLeft", handleUserLeft);
 
     return () => {
-      connection.off("ReceiveMessage", handleReceiveMessage);
       connection.off("UserJoined", handleUserJoined);
       connection.off("UserLeft", handleUserLeft);
     };
@@ -121,6 +113,7 @@ export const useReciveChat = ({
 
   return {
     // Connection state
+    connection,
     isConnected,
     isJoiningRoom,
     currentRoomId,
