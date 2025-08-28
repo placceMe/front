@@ -28,7 +28,7 @@ const navigate = useNavigate();
     if (resp?.success && resp?.user?.id) {
       dispatch(setUser(resp.user));
     } else {
-      window.alert("Помилка під час реєстрації");
+      window.alert("Ми надіслали лист на вашу пошту в MailHog, для завершення реєстрації перейдіть за посиланням");
     }
   };
 

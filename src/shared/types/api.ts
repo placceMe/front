@@ -22,6 +22,8 @@ export type Role = "Admin" | "User" | "Saler" | "Moderator";
 export type Product = {
     id: string;
     title: string;
+    producer?: string,
+    isNew?: true,
     description: string;
     price: number;
     categoryId: string;

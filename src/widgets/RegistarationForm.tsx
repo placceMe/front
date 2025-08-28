@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Form, Input, Button, DatePicker, Row, Col } from "antd";
+import { Form, Input, Button, DatePicker, Row, Col, Popconfirm } from "antd";
 import { useAppDispatch } from "@store/hooks";
 import { setUser } from "../entities/user/model/userSlice";
 import {
@@ -216,6 +216,7 @@ const onFinish = async (values: any) => {
 
         <Row gutter={120} align="top">
           <Col xs={24} md={10}>
+    {/**       
             <Form.Item
               label={<span>Дата народження</span>}
               name="birthDate"
@@ -232,7 +233,7 @@ const onFinish = async (values: any) => {
                 }
                 style={BLUR_STYLE}
               />
-            </Form.Item>
+            </Form.Item>*/}
             <Form.Item
               label={<span>E-mail/Логін</span>}
               name="email"
@@ -248,7 +249,7 @@ const onFinish = async (values: any) => {
                 prefix={<UserOutlined />}
               />
             </Form.Item>
-            <Form.Item
+              {/**   <Form.Item
               label={<span>Номер телефону</span>}
               name="phone"
               rules={[
@@ -264,9 +265,9 @@ const onFinish = async (values: any) => {
                 style={BLUR_STYLE}
                 prefix={<PhoneOutlined />}
               />
-            </Form.Item>
+            </Form.Item>*/}
           </Col>
-
+{/** 
           <Col xs={24} md={10}>
             <Form.Item
               label={<span>Старий пароль</span>}
@@ -311,6 +312,8 @@ const onFinish = async (values: any) => {
               />
             </Form.Item>
           </Col>
+*/}
+
         </Row>
 
         <div className="flex justify-between items-center my-8 gap-4">
@@ -327,8 +330,16 @@ const onFinish = async (values: any) => {
             Зберегти
           </Button>
           <div className="flex gap-4">
+          <Popconfirm
+            title="Ви впевнені, що хочете вийти з акаунта?"
+            okText="Так, вийти"
+            cancelText="Скасувати"
+            okButtonProps={{ danger: true }}
+            onConfirm={() => signOut()}
+          >
             <Button
-              type="default"
+              type="default"      
+              htmlType="button"      
               className="h-10 px-7 font-bold rounded-xl shadow-none transition-all"
               style={{
                 ...BLUR_STYLE,
@@ -338,12 +349,10 @@ const onFinish = async (values: any) => {
                 fontSize: 15,
                 border: "1px solid #3E4826",
               }}
-              onClick={() => {
-                signOut();
-              }}
             >
               Вихід
             </Button>
+          </Popconfirm>
             {/** 
           <Button
             type="default"

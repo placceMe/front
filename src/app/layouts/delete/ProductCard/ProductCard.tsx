@@ -156,6 +156,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </NavLink>
 
         <p className="sku">Артикул: {id?.match(/\d/g)?.join("") || "—"}</p>
+        <p className="product-price product-price--desktop">{formatted}</p>
+
 
         {/* Мобильный ряд: цена + корзина справа */}
         <div className="price-row">

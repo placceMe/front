@@ -8,8 +8,8 @@ import { useSelector } from 'react-redux';
 import type { RootState } from '@store/store';
 import { formatPrice } from '@shared/lib/formatPrice';
 
-//const FILES_BASE_URL = 'http://localhost:5001/api/files/file/';
-const FILES_BASE_URL = "http://31.42.190.94:8080/api/files/file/";
+const FILES_BASE_URL = 'http://localhost:5001/api/files/file/';
+//const FILES_BASE_URL = "http://31.42.190.94:8080/api/files/file/";
 const ORDERS_PER_PAGE = 5;
 
 const ORDER_STATUS_MAP: Record<number, { label: string; color: string; }> = {

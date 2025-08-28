@@ -11,9 +11,9 @@ interface Props {
   onRemove: (productId: string) => void;
 }
 
-//const FILES_BASE_URL = 'http://localhost:5001/api/files/';
+const FILES_BASE_URL = 'http://localhost:5001/api/files/';
 
-const FILES_BASE_URL = "http://31.42.190.94:8080/api/files/";
+//const FILES_BASE_URL = "http://31.42.190.94:8080/api/files/";
 
 
 

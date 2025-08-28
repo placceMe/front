@@ -39,6 +39,8 @@ const existing = cartItems.find(i => i.product.id === product.id);
 const [quantity, setQuantity] = useState(existing?.quantity || 1);
 const { current, rates } = useSelector((state: RootState) => state.currency);
 const formatted = formatPrice(product.price, current, rates);
+const producer = (product as any).producer ?? (product as any).producer ?? '—';
+const isNew = Boolean((product as any).isNew ?? (product as any).isNew);
 
 
 const handleQuantityChange = (value: number | null) => {
@@ -160,10 +162,10 @@ function pluralize(count: number, one: string, few: string, many: string): strin
 
                 </Text>
               },
-              {
-                label: <Text strong className="font-montserrat text-color05">Виробник</Text>,
-                children: <Text className="font-montserrat text-color05">{'Global Ballistics'}</Text>
-              }
+                      {
+            label: <Text strong className="font-montserrat text-color05">Виробник</Text>,
+            children: <Text className="font-montserrat text-color05">{producer}</Text>
+          }
             ]}
           />
         </Space>

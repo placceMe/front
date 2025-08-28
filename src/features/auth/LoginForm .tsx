@@ -158,12 +158,14 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
 
       {/* Забыли пароль */}
       <div className="text-right mb-4">
+
+        {/** 
         <button 
           type="button"
           className="text-sm text-red-500 hover:underline bg-none border-none p-0 cursor-pointer"
         >
           Забули пароль?
-        </button>
+        </button>*/}
       </div>
 
       {/* Кнопки */}
@@ -178,6 +180,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
         >
           Увійти
         </Button>
+         {/**
    <Button
   size="middle"
   className="flex items-center justify-center gap-2"
@@ -201,6 +204,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
     target.style.color = "#3E4826";
   }}
 >
+ 
   <span className="hidden sm:inline">Вхід за допомогою</span>
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -214,7 +218,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
     <path d="M121.3 326.2c-11.3-33.5-11.3-69.9 0-103.4V153.3H32.4c-38.8 77.7-38.8 169.6 0 247.3l88.9-74.4z" />
     <path d="M272.1 107.7c39.4-.6 77.2 13.8 106 40.6l79.1-79.1C408.1 24.3 344.6 0 272.1 0 167.8 0 76.9 60.5 32.4 148.6l88.9 74.4c21.3-63.5 80.7-110.8 150.8-110.8z" />
   </svg>
-</Button>
+</Button> */}
 
 
       </div>
