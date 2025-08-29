@@ -1,7 +1,18 @@
 // src/pages/admin/ProductsPage.tsx
 import React, { useEffect, useMemo, useState } from "react";
 import {
-  Table, Button, Popconfirm, Modal, Form, Input, InputNumber, message, Space, Tag, Upload, Switch, Select,
+  Table,
+  Button,
+  Popconfirm,
+  Modal,
+  Form,
+  Input,
+  InputNumber,
+  message,
+  Space,
+  Tag,
+  Upload,
+  Select,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { UploadFile } from "antd/es/upload/interface";
@@ -57,7 +68,7 @@ const isImage = (file: File) => file.type.startsWith("image/");
 const beforeUploadValidate = (file: File) => {
   if (!isImage(file)) { message.error("Можна завантажувати тільки зображення"); return Upload.LIST_IGNORE; }
   if (file.size > MAX_FILE_SIZE) { message.error("Файл завеликий (макс. 5MB)"); return Upload.LIST_IGNORE; }
-  return false;
+  return false; // не аплоадимо автоматично
 };
 
 /* ===================== Компонент ===================== */
@@ -87,9 +98,9 @@ const ProductsPage: React.FC = () => {
   // CRUD modal
   const [isOpen, setIsOpen] = useState(false);
   const [editing, setEditing] = useState<Product | null>(null);
-  const [withFiles, setWithFiles] = useState(false);
   const [form] = Form.useForm();
 
+  // файли (тільки для створення)
   const [mainFileList, setMainFileList] = useState<UploadFile[]>([]);
   const [galleryFileList, setGalleryFileList] = useState<UploadFile[]>([]);
 
@@ -168,10 +179,9 @@ const ProductsPage: React.FC = () => {
     form.setFieldsValue(
       record || {
         title: "", description: "", price: 0, color: "", weight: 0,
-        mainImageUrl: "", categoryId: undefined, sellerId: undefined, quantity: 0,
+        categoryId: undefined, sellerId: undefined, quantity: 0,
       }
     );
-    setWithFiles(false);
     setMainFileList([]); setGalleryFileList([]);
     setIsOpen(true);
   };
@@ -194,6 +204,7 @@ const ProductsPage: React.FC = () => {
     try {
       const values = await form.validateFields();
 
+      // ===== UPDATE (без зміни файлів) =====
       if (editing) {
         const res = await fetch(`${API_PRODUCTS}/${editing.id}`, {
           method: "PUT",
@@ -207,41 +218,31 @@ const ProductsPage: React.FC = () => {
         return;
       }
 
-      if (withFiles) {
-        const mainFile = mainFileList[0]?.originFileObj as File | undefined;
-        if (!mainFile) { message.error("Додайте головне зображення"); return; }
+      // ===== CREATE — тільки з файлами (MainImage + AdditionalImages) =====
+      const mainFile = mainFileList[0]?.originFileObj as File | undefined;
+      if (!mainFile) { message.error("Додайте головне зображення"); return; }
 
-        const fd = new FormData();
-        fd.append("title", values.title);
-        if (values.description) fd.append("description", values.description);
-        fd.append("price", String(values.price ?? 0));
-        if (values.color) fd.append("color", values.color);
-        if (values.weight !== undefined) fd.append("weight", String(values.weight ?? 0));
-        fd.append("categoryId", values.categoryId);
-        if (values.sellerId) fd.append("sellerId", values.sellerId);
-        fd.append("quantity", String(values.quantity ?? 0));
-        fd.append("MainImage", mainFile);
-        galleryFileList.forEach((f) => {
-          const file = f.originFileObj as File;
-          if (file) fd.append("AdditionalImages", file);
-        });
+      const fd = new FormData();
+      // PascalCase як у робочому AddProductCard
+      fd.append("Title", values.title);
+      if (values.description) fd.append("Description", values.description);
+      fd.append("Price", String(values.price ?? 0));
+      if (values.color) fd.append("Color", values.color);
+      if (values.weight !== undefined) fd.append("Weight", String(values.weight ?? 0));
+      fd.append("CategoryId", values.categoryId);
+      if (values.sellerId) fd.append("SellerId", values.sellerId);
+      fd.append("Quantity", String(values.quantity ?? 0));
+      fd.append("MainImage", mainFile);
+      galleryFileList.forEach((f) => {
+        const file = f.originFileObj as File;
+        if (file) fd.append("AdditionalImages", file);
+      });
 
-        const res = await fetch(`${API_PRODUCTS}/with-files`, { method: "POST", body: fd });
-        if (!res.ok) throw new Error();
-        message.success("Товар створено (з файлами)");
-        closeModal();
-        fetchAll();
-      } else {
-        const res = await fetch(API_PRODUCTS, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(values),
-        });
-        if (!res.ok) throw new Error();
-        message.success("Товар створено");
-        closeModal();
-        fetchAll();
-      }
+      const res = await fetch(`${API_PRODUCTS}/with-files`, { method: "POST", body: fd });
+      if (!res.ok) throw new Error();
+      message.success("Товар створено (з файлами)");
+      closeModal();
+      fetchAll();
     } catch (err: any) {
       if (!err?.errorFields) message.error("Помилка при збереженні");
     }
@@ -376,17 +377,6 @@ const ProductsPage: React.FC = () => {
         onOk={handleSave}
         width={760}
       >
-        {!editing && (
-          <Space style={{ marginBottom: 16, flexWrap: "wrap" }}>
-            <span>Створити з файлами</span>
-            <Switch checked={withFiles} onChange={setWithFiles} />
-            <Button size="small" loading={catLoading} onClick={fetchCategories}>Оновити категорії</Button>
-            <Button size="small" icon={<UserSwitchOutlined />} loading={sellersLoading} onClick={fetchSellers}>
-              Оновити продавців
-            </Button>
-          </Space>
-        )}
-
         <Form form={form} layout="vertical">
           <Form.Item name="title" label="Назва" rules={[{ required: true }]}><Input /></Form.Item>
           <Form.Item name="description" label="Опис"><Input.TextArea rows={3} /></Form.Item>
@@ -400,12 +390,6 @@ const ProductsPage: React.FC = () => {
             <Form.Item name="color" label="Колір"><Input /></Form.Item>
             <Form.Item name="weight" label="Вага"><InputNumber min={0} style={{ width: "100%" }} /></Form.Item>
           </Space>
-
-          {!withFiles && !editing && (
-            <Form.Item name="mainImageUrl" label="Головне зображення (URL)">
-              <Input placeholder="https://..." />
-            </Form.Item>
-          )}
 
           <Space size="middle" style={{ display: "flex" }}>
             <Form.Item
@@ -422,7 +406,8 @@ const ProductsPage: React.FC = () => {
             </Form.Item>
           </Space>
 
-          {!editing && withFiles && (
+          {/* Створення — лише з файлами */}
+          {!editing && (
             <>
               <Form.Item
                 label="Головне зображення"
