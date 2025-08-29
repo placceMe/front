@@ -22,7 +22,7 @@ type Category = { id: string; name?: string; title?: string };
 const API_PRODUCTS = "http://localhost:8080/api/products";
 const API_CATEGORIES = "http://localhost:8080/api/category";
 
-/* ---------- Цвет тега категории (детерминированный) ---------- */
+/* ---------- Колір тега категорії (детермінований) ---------- */
 const hashCode = (str: string) => {
   let h = 0;
   for (let i = 0; i < str.length; i++) { h = (h << 5) - h + str.charCodeAt(i); h |= 0; }
@@ -46,11 +46,11 @@ const colorForCategory = (key: string) => {
 
 const statusTag = (s?: string) => {
   switch (s) {
-    case "Active": return <Tag color="green">Active</Tag>;
-    case "Blocked": return <Tag color="red">Blocked</Tag>;
-    case "Archived": return <Tag color="blue">Archived</Tag>;
-    case "Moderation": return <Tag color="gold">Moderation</Tag>;
-    case "Deleted": return <Tag>Deleted</Tag>;
+    case "Active": return <Tag color="green">Активний</Tag>;
+    case "Blocked": return <Tag color="red">Заблокований</Tag>;
+    case "Archived": return <Tag color="blue">В архіві</Tag>;
+    case "Moderation": return <Tag color="gold">Модерація</Tag>;
+    case "Deleted": return <Tag>Видалений</Tag>;
     default: return <Tag>{s || "—"}</Tag>;
   }
 };
@@ -71,15 +71,12 @@ const ProductsModerationPage: React.FC = () => {
 
   const fetchCategories = async () => {
     setCatLoading(true);
-    console.log("📥 [fetchCategories] start");
     try {
       const r = await fetch(API_CATEGORIES);
       const list: Category[] = await r.json();
-      console.log("✅ [fetchCategories] success", list);
       setCategories(list || []);
     } catch (e) {
-      console.error("❌ [fetchCategories] error", e);
-      message.error("Не удалось загрузить категории");
+      message.error("Не вдалося завантажити категорії");
     } finally {
       setCatLoading(false);
     }
@@ -87,15 +84,12 @@ const ProductsModerationPage: React.FC = () => {
 
   const fetchModeration = async () => {
     setLoading(true);
-    console.log("📥 [fetchModeration] GET /api/products/state/Moderation");
     try {
       const r = await fetch(`${API_PRODUCTS}/state/Moderation`);
       const items: Product[] = await r.json();
-      console.log("✅ [fetchModeration] success", items);
       setData(items || []);
     } catch (e) {
-      console.error("❌ [fetchModeration] error", e);
-      message.error("Не удалось загрузить модерацию");
+      message.error("Не вдалося завантажити модерацію");
     } finally {
       setLoading(false);
     }
@@ -118,13 +112,13 @@ const ProductsModerationPage: React.FC = () => {
         <Input
           allowClear
           prefix={<SearchOutlined />}
-          placeholder="Поиск по названию/описанию"
+          placeholder="Пошук за назвою/описом"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           style={{ width: 320 }}
         />
         <Button icon={<ReloadOutlined />} onClick={fetchModeration} loading={loading || catLoading}>
-          Обновить
+          Оновити
         </Button>
       </Space>
 
@@ -135,16 +129,15 @@ const ProductsModerationPage: React.FC = () => {
         pagination={{ showSizeChanger: true, pageSize: 10 }}
         onRow={(record) => ({
           onDoubleClick: () => {
-            console.log("👁️‍🗨️ [row dblclick] open details", record.id);
-            navigate(`/admin/ordersmoder/${record.id}`);
+            navigate(`/admin/productsmoder/${record.id}`);
           },
         })}
         columns={[
-          { title: "Название", dataIndex: "title" },
-          { title: "Цена", dataIndex: "price", render: (v: number) => `${v} ₴` },
-          { title: "Кол-во", dataIndex: "quantity" },
+          { title: "Назва", dataIndex: "title" },
+          { title: "Ціна", dataIndex: "price", render: (v: number) => `${v} ₴` },
+          { title: "Кількість", dataIndex: "quantity" },
           {
-            title: "Категория",
+            title: "Категорія",
             dataIndex: "categoryId",
             render: (id: string) => {
               const lab = getCatLabel(id);
@@ -154,13 +147,10 @@ const ProductsModerationPage: React.FC = () => {
           },
           { title: "Статус", dataIndex: "state", render: (s?: string) => statusTag(s) },
           {
-            title: "Просмотр",
+            title: "Перегляд",
             render: (_, r) => (
-              <Button type="link" onClick={() => {
-                console.log("👁️ [view] open details", r.id);
-                navigate(`/admin/ordersmoder/${r.id}`);
-              }}>
-                Просмотреть
+              <Button type="link" onClick={() => navigate(`/admin/productsmoder/${r.id}`)}>
+                Переглянути
               </Button>
             ),
           },

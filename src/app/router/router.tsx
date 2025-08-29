@@ -16,12 +16,16 @@ import Comparison from "@pages/ComparsionProductPage/ComparsionProductPage";
 import { FAQ } from "@pages/FAQ/FAQ";
 
 import PrivacyPolicy from "@pages/Policy/Policy";
+
 import UsersAdmin from "@pages/Admin/UsersPageAdmin";
-import OrderAdmin from "@pages/Admin/OrderPageAdmin";
+import ProductAdmin from "@pages/Admin/ProductPageAdmin";
 import CategoryAdmin from "@pages/Admin/CategoryPageAdmin";
 import CharacteristicAdmin from "@pages/Admin/CharacteristicPageAdmin";
-import OrderModer from "@pages/Admin/OrderPageModeration";
-import OrderModerationDetailsPage from "@pages/Admin/OrderDetailPageModeration";
+import ProductModer from "@pages/Admin/ProductPageModeration";
+import ProductModerationDetailsPage from "@pages/Admin/ProductPageDetailModer";
+import OrderAdmin from "@pages/Admin/OrderPageAdmin";
+import FeedbackModer from "@pages/Admin/FeedbackPageModer";
+
 import SearchResultsPage from "@features/searchProducts/ui/SearchResultsPage";
 import DeliveryInfoPage from "@pages/Delivery/DeliveryInfoPage";
 import { AboutSeller } from "@pages/AboutSeller.tsx";
@@ -83,9 +87,11 @@ export const AppRouter = () => {
           { path: "categories", element: <CategoryAdmin /> },
           { path: "characteristics", element: <CharacteristicAdmin /> },
           { path: "users", element: <UsersAdmin /> },
-          { path: "orders", element: <OrderAdmin /> },
-          { path: "ordersmoder", element: <OrderModer /> },
-          { path: "ordersmoder/:id", element: <OrderModerationDetailsPage /> },
+          { path: "products", element: <ProductAdmin /> },
+          { path: "productsmoder", element: <ProductModer /> },
+          { path: "productsmoder/:id", element: <ProductModerationDetailsPage /> },
+          {path: "orders", element: <OrderAdmin /> },
+          {path: "feedbacksmoder", element: <FeedbackModer /> },
         ]
       },
       {
