@@ -5,27 +5,31 @@ import type { MenuProps } from "antd";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   UserOutlined,
+  ShoppingOutlined,
   AppstoreOutlined,
   TagsOutlined,
-  PartitionOutlined,
+  ShoppingCartOutlined,
   AuditOutlined,
-} from "@ant-design/icons";
+  MessageOutlined
+} from "@ant-design/icons"
 
 const { Header, Sider, Content } = Layout;
 
 type SectionKey = "administrator" | "moderator";
 
-// ВСЕ текущие пункты — во вкладке Администратор
+// УСІ поточні пункти — у вкладці Адміністратор
 const ADMINISTRATOR_ITEMS: Required<MenuProps>["items"] = [
-  { key: "users", label: "Пользователи", icon: <UserOutlined /> },
-  { key: "orders", label: "Заказы", icon: <AppstoreOutlined /> },
-  { key: "categories", label: "Категории", icon: <PartitionOutlined /> },
-  { key: "characteristics", label: "Характеристики", icon: <TagsOutlined /> },
+  { key: "users", label: "Користувачі", icon: <UserOutlined /> },             // 👤 логічно
+  { key: "products", label: "Товари", icon: <ShoppingOutlined /> },           // 🛍️ товари
+  { key: "categories", label: "Категорії", icon: <AppstoreOutlined /> },      // 🗂️ категорії
+  { key: "characteristics", label: "Характеристики", icon: <TagsOutlined /> },// 🏷️ характеристики
+  { key: "orders", label: "Замовлення", icon: <ShoppingCartOutlined /> },     // 🛒 замовлення
 ];
 
-// Вкладка модератора — не функциональная (disabled placeholder)
+// Вкладка модератора — не функціональна (disabled placeholder)
 const MODERATOR_ITEMS: Required<MenuProps>["items"] = [
-{ key: "ordersmoder", label: "Товары на модерации", icon: <AuditOutlined /> },
+  { key: "productsmoder",  label: "Товари на модерації",   icon: <AuditOutlined /> },
+  { key: "feedbacksmoder", label: "Відгуки на модерації",  icon: <MessageOutlined /> },
 ];
 
 const ALL_SECTIONS: Record<SectionKey, Required<MenuProps>["items"]> = {
@@ -43,29 +47,29 @@ const AdminLayout: React.FC = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  // текущий пункт из URL (/admin/<key>)
+  // поточний пункт з URL (/admin/<key>)
   const selectedKey = pathname.split("/")[2] || "categories";
 
-  // активная вкладка определяется по роуту, но менять сам роут при переключении вкладок не будем
+  // активна вкладка визначається за роутом, але міняти сам роут при перемиканні вкладок не будемо
   const [section, setSection] = useState<SectionKey>(sectionByRouteKey(selectedKey));
 
   const items = useMemo(() => ALL_SECTIONS[section], [section]);
 
-  // Подсветку пункта даём только если он есть в текущей вкладке (чтобы не было «не того» хайлайта)
+  // Підсвітку пункту даємо лише якщо він є в поточній вкладці (щоб не було «не того» хайлайта)
   const keysInSection = (items || []).map(i => i!.key as string);
   const selectedKeys = keysInSection.includes(selectedKey) ? [selectedKey] : [];
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider width={260} collapsible>
-        <div style={{ color: "white", padding: 16, fontWeight: "bold" }}>Admin Panel</div>
+        <div style={{ color: "white", padding: 16, fontWeight: "bold" }}>Адмін Панель</div>
 
-        {/* Две вкладки всегда показываются. Отключаем троеточие (moreIcon) на всякий. */}
+        {/* Дві вкладки завжди показуються. Вимикаємо трикрапку (moreIcon) на всяк випадок. */}
         <Tabs
           activeKey={section}
           onChange={(k) => setSection(k as SectionKey)}
           items={[
-            { key: "administrator", label: "Админ" },
+            { key: "administrator", label: "Адмін" },
             { key: "moderator", label: "Модер" },
           ]}
           moreIcon={null}
@@ -83,7 +87,7 @@ const AdminLayout: React.FC = () => {
 
       <Layout>
         <Header style={{ background: "#fff", paddingLeft: 16 }}>
-          Панель администратора — {section === "administrator" ? "Админ" : "Модер"}
+          Панель адміністратора — {section === "administrator" ? "Адмін" : "Модер"}
         </Header>
         <Content style={{ margin: 16, padding: 24, background: "#fff" }}>
           <Outlet />

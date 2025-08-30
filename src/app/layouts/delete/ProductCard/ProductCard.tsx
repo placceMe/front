@@ -5,7 +5,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import type { Product } from "@shared/types/api";
 import { useUserProductIds } from "@shared/hooks/useUserProductIds";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
-import { addToCart, updateQuantity } from "@features/cart/model/cartSlice";
+import { addToCart } from "@features/cart/model/cartSlice";
 import { Button } from "antd";
 import FavFilledIcon from "../../../../assets/icons/fav_filled.svg?react";
 import FavOutlinedIcon from "../../../../assets/icons/fav_outlined.svg?react";
@@ -25,26 +25,7 @@ const COMPARE_KEY = "comparison";
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector((state) => state.cart.items);
-  const existing = cartItems.find((i) => i.product.id === product.id);
-  const [quantity, setQuantity] = useState(existing?.quantity || 1);
-
   const isInCart = cartItems.some((item) => item.product.id === product.id);
-
-  const increase = () => {
-    setQuantity((prev) => {
-      const newQty = prev + 1;
-      dispatch(updateQuantity({ productId: product.id, quantity: newQty }));
-      return newQty;
-    });
-  };
-
-  const decrease = () => {
-    setQuantity((prev) => {
-      const newQty = prev > 1 ? prev - 1 : 1;
-      dispatch(updateQuantity({ productId: product.id, quantity: newQty }));
-      return newQty;
-    });
-  };
 
   const { id, title, mainImageUrl, price } = product;
   const navigate = useNavigate();
@@ -59,7 +40,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [wishlist, setWishlist] = useUserProductIds(userId, "userWishlist");
 
   const isFavorite = wishlist.includes(String(product.id));
-
   const toggleFavorite = () => {
     if (isFavorite) {
       setWishlist(wishlist.filter((pid) => pid !== product.id));
@@ -68,35 +48,27 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     }
   };
 
-  // ---------------- ⚖️ Сравнение ----------------
+  // ⚖️ Сравнение
   const [isCompared, setIsCompared] = useState(false);
-
   useEffect(() => {
     const stored = localStorage.getItem(COMPARE_KEY);
     const comparison: Product[] = stored ? JSON.parse(stored) : [];
-    const compared = comparison.some((p) => p.id === product.id);
-    setIsCompared(compared);
+    setIsCompared(comparison.some((p) => p.id === product.id));
   }, [product.id]);
 
   const toggleCompare = () => {
     const stored = localStorage.getItem(COMPARE_KEY);
     const comparison: Product[] = stored ? JSON.parse(stored) : [];
-
-    let newComparison: Product[];
-
-    if (isCompared) {
-      newComparison = comparison.filter((p) => p.id !== product.id);
-    } else {
-      newComparison = [product, ...comparison];
-    }
+    const newComparison = isCompared
+      ? comparison.filter((p) => p.id !== product.id)
+      : [product, ...comparison];
 
     localStorage.setItem(COMPARE_KEY, JSON.stringify(newComparison));
     setIsCompared(!isCompared);
   };
-  // ------------------------------------------------
 
   const handleAddToCart = () => {
-    dispatch(addToCart({ product, quantity }));
+    dispatch(addToCart({ product, quantity: 1 }));
   };
 
   // форматирование цены
@@ -116,27 +88,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             )
           }
           onClick={toggleFavorite}
-          className={`text-gray-600 hover:text-red-500 ${
-            isFavorite ? "text-red-500" : ""
-          }`}
+          className={`text-gray-600 hover:text-red-500 ${isFavorite ? "text-red-500" : ""}`}
           size="large"
         />
 
         <Button
           type="text"
-          icon={
-            isCompared ? (
-              <FaBalanceScaleRight size={22} />
-            ) : (
-              <FaBalanceScale size={22} />
-            )
-          }
+          icon={isCompared ? <FaBalanceScaleRight size={22} /> : <FaBalanceScale size={22} />}
           onClick={toggleCompare}
-          className={
-            isCompared
-              ? "bg-green-100 text-green-700 rounded-full shadow-md"
-              : "text-gray-600 hover:text-green-600"
-          }
+          className={isCompared ? "bg-green-100 text-green-700 rounded-full shadow-md" : "text-gray-600 hover:text-green-600"}
           size="large"
         />
       </div>
@@ -175,23 +135,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             className="buy-btn"
             aria-label="Додати в кошик"
           >
-            <span className="btn-text">
-              {isInCart ? "У кошику" : "В кошик"}
-            </span>
+            <span className="btn-text">{isInCart ? "У кошику" : "В кошик"}</span>
           </Button>
         </div>
 
-        {/* Десктопный блок */}
+        {/* Десктопный блок без +/- */}
         <div className="product-actions">
-          <div className="quantity-control">
-            <button className="square-btn" onClick={decrease}>
-              −
-            </button>
-            <span className="quantity-value">{quantity}</span>
-            <button className="square-btn" onClick={increase}>
-              +
-            </button>
-          </div>
           <Button
             onClick={handleAddToCart}
             disabled={isInCart}
@@ -221,9 +170,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 : {}),
             }}
           >
-            <span className="btn-text">
-              {isInCart ? "У кошику" : "В кошик"}
-            </span>
+            <span className="btn-text">{isInCart ? "У кошику" : "В кошик"}</span>
           </Button>
         </div>
       </div>

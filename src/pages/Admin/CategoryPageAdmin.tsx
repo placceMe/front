@@ -9,7 +9,6 @@ type CategoryDto = {
   name: string;
   status: string;
   createdAt?: string;
-  // иногда ToDto может вернуть массивы/счётчики — подстрахуемся
   products?: unknown[];
   characteristics?: unknown[];
   productsCount?: number;
@@ -18,7 +17,7 @@ type CategoryDto = {
 
 const API_CATEGORY = "http://localhost:8080/api/category";
 
-// Разрешённые статусы (синхронно с твоей моделью CategoryState)
+// Дозволені статуси (синхронно з моделлю CategoryState)
 const STATUS_OPTIONS = ["Active", "Inactive", "Deleted"] as const;
 const statusColor = (s: string) =>
   s === "Active" ? "green" : s === "Inactive" ? "default" : "volcano";
@@ -38,7 +37,7 @@ const CategoriesPage: React.FC = () => {
   const [editing, setEditing] = useState<CategoryDto | null>(null);
   const [form] = Form.useForm();
 
-  // client-side поиск по имени
+  // клієнтський пошук по назві
   const [query, setQuery] = useState("");
   const q = useMemo(() => query.trim().toLowerCase(), [query]);
   const filtered = useMemo(
@@ -48,15 +47,12 @@ const CategoriesPage: React.FC = () => {
 
   const fetchCategories = async () => {
     setLoading(true);
-    console.log("📥 [fetchCategories] start");
     try {
       const res = await fetch(API_CATEGORY);
       const list: CategoryDto[] = await res.json();
-      console.log("✅ [fetchCategories] success", list);
       setData(list);
     } catch (e) {
-      console.error("❌ [fetchCategories] error", e);
-      message.error("Не удалось загрузить категории");
+      message.error("Не вдалося завантажити категорії");
     } finally {
       setLoading(false);
     }
@@ -68,77 +64,63 @@ const CategoriesPage: React.FC = () => {
     setEditing(row || null);
     form.setFieldsValue(row || { name: "", status: "Active" });
     setIsOpen(true);
-    console.log("📂 [modal] open", row ? { mode: "edit", id: row.id } : { mode: "create" });
   };
   const closeModal = () => {
     setIsOpen(false);
     setEditing(null);
     form.resetFields();
-    console.log("📂 [modal] close");
   };
 
   const handleDelete = async (id: string) => {
-    console.log("🗑 [deleteCategory] try", id);
     try {
       const res = await fetch(`${API_CATEGORY}/${id}`, { method: "DELETE" });
       if (res.ok) {
-        message.success("Категория удалена");
-        console.log("✅ [deleteCategory] success", id);
+        message.success("Категорію видалено");
         fetchCategories();
       } else {
-        console.warn("⚠️ [deleteCategory] status", res.status);
-        message.error("Не удалось удалить категорию");
+        message.error("Не вдалося видалити категорію");
       }
     } catch (e) {
-      console.error("❌ [deleteCategory] error", e);
-      message.error("Ошибка сервера");
+      message.error("Помилка сервера");
     }
   };
 
   const handleSave = async () => {
     try {
       const values = await form.validateFields(); // { name, status }
-      console.log("💾 [saveCategory] submit", { values, editing });
 
       if (editing) {
-        // UPDATE
+        // ОНОВЛЕННЯ
         const res = await fetch(`${API_CATEGORY}/${editing.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: editing.id, ...values }),
         });
         if (res.ok) {
-          message.success("Категория обновлена");
-          console.log("✅ [updateCategory] success", editing.id);
+          message.success("Категорію оновлено");
           closeModal();
           fetchCategories();
         } else {
-          console.warn("⚠️ [updateCategory] status", res.status);
-          message.error("Ошибка при обновлении категории");
+          message.error("Помилка при оновленні категорії");
         }
       } else {
-        // CREATE
+        // СТВОРЕННЯ
         const res = await fetch(API_CATEGORY, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(values), // сервис сам выставит Id/CreatedAt
+          body: JSON.stringify(values),
         });
         if (res.ok) {
-          message.success("Категория создана");
-          console.log("✅ [createCategory] success");
+          message.success("Категорію створено");
           closeModal();
           fetchCategories();
         } else {
-          console.warn("⚠️ [createCategory] status", res.status);
-          message.error("Ошибка при создании категории");
+          message.error("Помилка при створенні категорії");
         }
       }
     } catch (err: any) {
-      if (err?.errorFields) {
-        console.warn("⚠️ [form] validation", err.errorFields);
-      } else {
-        console.error("❌ [saveCategory] error", err);
-        message.error("Ошибка при сохранении");
+      if (!err?.errorFields) {
+        message.error("Помилка при збереженні");
       }
     }
   };
@@ -149,15 +131,15 @@ const CategoriesPage: React.FC = () => {
         <Input
           allowClear
           prefix={<SearchOutlined />}
-          placeholder="Поиск по имени категории"
+          placeholder="Пошук за назвою категорії"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           style={{ width: 320 }}
         />
         <Button icon={<ReloadOutlined />} onClick={fetchCategories}>
-          Обновить
+          Оновити
         </Button>
-        <Button type="primary" onClick={() => openModal()}>Создать категорию</Button>
+        <Button type="primary" onClick={() => openModal()}>Створити категорію</Button>
       </Space>
 
       <Table<CategoryDto>
@@ -165,28 +147,28 @@ const CategoriesPage: React.FC = () => {
         dataSource={filtered}
         loading={loading}
         columns={[
-          { title: "Название", dataIndex: "name" },
+          { title: "Назва", dataIndex: "name" },
           {
             title: "Статус",
             dataIndex: "status",
             render: (s: string) => <Tag color={statusColor(s)}>{s}</Tag>,
           },
           {
-            title: "Товаров",
+            title: "Товарів",
             render: (_, r) => getCount(r, "products", "productsCount"),
           },
           {
             title: "Характеристик",
             render: (_, r) => getCount(r, "characteristics", "characteristicsCount"),
           },
-          { title: "Создана", dataIndex: "createdAt", render: (v) => fmtDate(v as string) },
+          { title: "Створена", dataIndex: "createdAt", render: (v) => fmtDate(v as string) },
           {
-            title: "Действия",
+            title: "Дії",
             render: (_, r) => (
               <Space>
-                <Button type="link" onClick={() => openModal(r)}>Редактировать</Button>
-                <Popconfirm title="Удалить категорию?" onConfirm={() => handleDelete(r.id)}>
-                  <Button danger type="link">Удалить</Button>
+                <Button type="link" onClick={() => openModal(r)}>Редагувати</Button>
+                <Popconfirm title="Видалити категорію?" onConfirm={() => handleDelete(r.id)}>
+                  <Button danger type="link">Видалити</Button>
                 </Popconfirm>
               </Space>
             ),
@@ -196,24 +178,20 @@ const CategoriesPage: React.FC = () => {
 
       <Modal
         open={isOpen}
-        title={editing ? "Редактировать категорию" : "Создать категорию"}
+        title={editing ? "Редагувати категорію" : "Створити категорію"}
         onCancel={closeModal}
         onOk={handleSave}
         destroyOnClose
       >
-        <Form
-          form={form}
-          layout="vertical"
-          onValuesChange={(_, all) => console.log("✏️ [form] change:", all)}
-        >
-          <Form.Item name="name" label="Название" rules={[{ required: true, message: "Введите название" }]}>
+        <Form form={form} layout="vertical">
+          <Form.Item name="name" label="Назва" rules={[{ required: true, message: "Введіть назву" }]}>
             <Input />
           </Form.Item>
 
-          <Form.Item name="status" label="Статус" rules={[{ required: true, message: "Выберите статус" }]}>
+          <Form.Item name="status" label="Статус" rules={[{ required: true, message: "Оберіть статус" }]}>
             <Select
               options={STATUS_OPTIONS.map(s => ({ value: s, label: s }))}
-              placeholder="Выберите статус"
+              placeholder="Оберіть статус"
             />
           </Form.Item>
         </Form>
