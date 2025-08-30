@@ -246,7 +246,7 @@ export const BecomeSellerModal: React.FC<BecomeSellerModalProps> = ({
             {/* Назва компанії */}
             <div>
               <label htmlFor="companyName" className="block text-sm font-medium text-gray-700 mb-2">
-                Назва компанії *
+                Назва компанії 
               </label>
               <input
                 type="text"
@@ -267,7 +267,7 @@ export const BecomeSellerModal: React.FC<BecomeSellerModalProps> = ({
             {/* Опис */}
             <div>
               <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-                Опис діяльності *
+                Опис діяльності
               </label>
               <textarea
                 id="description"
@@ -288,7 +288,7 @@ export const BecomeSellerModal: React.FC<BecomeSellerModalProps> = ({
             {/* Графік роботи */}
             <div>
               <label htmlFor="schedule" className="block text-sm font-medium text-gray-700 mb-2">
-                Графік роботи *
+                Графік роботи 
               </label>
               <textarea
                 id="schedule"
@@ -309,7 +309,7 @@ export const BecomeSellerModal: React.FC<BecomeSellerModalProps> = ({
             {/* Контакти */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Контакти *
+                Контакти 
               </label>
               {salerInfo.contacts.map((contact, index) => (
                 <div key={index} className="flex gap-2 mb-3">
@@ -401,6 +401,7 @@ import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from "@store/hooks";
 import { setActiveRole, setUser } from "../../../entities/user/model/userSlice";
 import { useRequest } from "@shared/request/useRequest";
+import type { SalerInfoDto } from '@shared/types/api';
 
 
 interface Contact {
@@ -430,7 +431,7 @@ export const BecomeSellerButton = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
-
+/*
   const handleSubmitSalerInfo = async (salerInfo: SalerInfo) => {
     if (!user) return;
 
@@ -469,6 +470,42 @@ export const BecomeSellerButton = () => {
       setIsLoading(false);
     }
   };
+*/
+const handleSubmitSalerInfo = async (salerInfo: SalerInfo) => {
+  if (!user) return;
+  setIsLoading(true);
+
+  try {
+    // 1) Делаем апгрейд в продавца
+    await baseRequest(`/api/users/make-saler`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: user.id, salerInfo }),
+    });
+
+    // 2) Сразу получаем его salerInfo, чтобы взять sellerId
+    const si = await baseRequest<SalerInfoDto>(`/api/salerinfo/by-user/${user.id}`);
+
+    // 3) Обновляем user в сторе (роль + опционально сохраняем sellerInfoId)
+    const updatedUser: any = {
+      ...user,
+      roles: [...new Set([...(user.roles ?? []), "Saler"])],
+      sellerInfoId: si?.id, // если хочешь хранить
+    };
+
+    dispatch(setUser(updatedUser));
+    dispatch(setActiveRole("Saler"));
+
+    setIsModalOpen(false);
+    // Можно оставить, если хочешь вернуться на главную:
+    // window.location.hash = "#home";
+  } catch (error) {
+    console.error("Ошибка при создании профиля продавца:", error);
+    alert("Не вдалося стати спорядником. Спробуйте ще раз.");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <>

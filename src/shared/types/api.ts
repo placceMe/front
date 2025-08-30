@@ -173,3 +173,14 @@ export type CharacteristicDicts = {
     buckets?: number[];                   // кастомні “сходинки” (наприклад, [1,2,3,4])
   } | null;
 };
+
+export interface SalerInfoDto {
+  id: string;
+  companyName: string;
+  description: string;
+  schedule: string;
+  contacts: { type: string; value: string }[];
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+}

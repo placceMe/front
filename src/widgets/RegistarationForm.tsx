@@ -174,7 +174,7 @@ const onFinish = async (values: any) => {
               label={
                 <span>
                   Ім'я
-                  <span className="text-red-500 ml-1 align-middle">*</span>
+                  <span className="text-red-500 ml-1 align-middle"></span>
                 </span>
               }
               name="name"
@@ -194,7 +194,7 @@ const onFinish = async (values: any) => {
               label={
                 <span>
                   Прізвище{" "}
-                  <span className="text-red-500 ml-1 align-middle">*</span>
+                  <span className="text-red-500 ml-1 align-middle"></span>
                 </span>
               }
               name="surname"

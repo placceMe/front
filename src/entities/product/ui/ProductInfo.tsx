@@ -92,7 +92,16 @@ const toggleFavorite = (prod: any) => {
   // oldPrice: если не указан, считаем price * 2
   //const displayOldPrice = product.price * 2;
 const { summary, loading } = useProductFeedbackSummary(product.id);
-if (loading || !summary) return null;
+const averageRating = summary?.averageRating ?? 0;
+const totalFeedbacks = summary?.totalFeedbacks ?? 0;
+
+
+
+// тоже на sellerId
+const safeSellerId =
+  (product as any).sellerId ??
+  (product as any).SellerId ??
+  product.sellerId;
 
 function pluralize(count: number, one: string, few: string, many: string): string {
   const mod10 = count % 10;
@@ -137,20 +146,20 @@ function pluralize(count: number, one: string, few: string, many: string): strin
           </div>
         </Flex>
         <Space direction="vertical" size="small">
-          <Flex align="center" gap="small">
-            <Rate
-              disabled
-              defaultValue={4.8}
-              count={5}
-              character={<StarOrangeIcon width={22} height={22} />}
-              style={{ fontSize: 22 }}
-              allowHalf
-              value={summary.averageRating}
-            />
-            <Text className="font-montserrat font-normal text-[15px] text-color05">
-                 ({summary.totalFeedbacks} {pluralize(summary.totalFeedbacks, 'відгук', 'відгуки', 'відгуків')})
-            </Text>
-          </Flex>
+        <Flex align="center" gap="small">
+  <Rate
+    disabled
+    count={5}
+    character={<StarOrangeIcon width={22} height={22} />}
+    style={{ fontSize: 22 }}
+    allowHalf
+    value={averageRating}
+  />
+  <Text className="font-montserrat font-normal text-[15px] text-color05">
+    {loading ? 'Завантаження…' : `(${totalFeedbacks} ${pluralize(totalFeedbacks, 'відгук', 'відгуки', 'відгуків')})`}
+  </Text>
+</Flex>
+
           <Descriptions
             column={1}
             size="small"
@@ -171,7 +180,7 @@ function pluralize(count: number, one: string, few: string, many: string): strin
         </Space>
       </GlassCard>
       {/* Product Seller Block */}
-      <ProductSellerBlock sellerId={product.sellerId}/>
+      <ProductSellerBlock userId={product.sellerId}/>
 
       {/* Purchase Options Card */}
       <Card
@@ -182,12 +191,12 @@ function pluralize(count: number, one: string, few: string, many: string): strin
         }}
       >
         <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-          <TagBlock
+        {/**  <TagBlock
             inStock={true}
             isTop={true}
             discount={10}
           />
-          
+          */} 
           <ProductPriceBlock
           
             price={formatted}
