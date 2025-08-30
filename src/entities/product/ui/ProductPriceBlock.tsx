@@ -22,7 +22,7 @@ export const ProductPriceBlock: React.FC<ProductPriceBlockProps> = ({
           color: COLORS.color05,
         }}
       >
-        {oldPrice?.toLocaleString()} 
+       {/**  {oldPrice?.toLocaleString()} */}
       </span>
     )}
     <span

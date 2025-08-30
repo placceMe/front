@@ -14,6 +14,7 @@ import RegistrationForm from "../../widgets/RegistarationForm";
 import OrdersTab from "../../widgets/OrdersTab";
 import { BecomeSellerButton } from "@features/role/ui/BecomeSellerButton";
 import { AddProductCard } from "../../widgets/AddProductCard";
+import SellerProfilePage from "@pages/SellerProfilePage";
 
 const HERO_IMAGES = {
   User: warriorBg,
@@ -28,7 +29,7 @@ export const CabinetLayout = () => {
 
   const TAB_CONTENT: Record<string, React.ReactNode> = role === "Saler"
     ? {
-        home: user && <RegistrationForm user={user} />,
+       home: <SellerProfilePage />,
         products: user?.id && <AddProductCard sellerId={user.id} />,
         orders: <OrdersTab />,
       }

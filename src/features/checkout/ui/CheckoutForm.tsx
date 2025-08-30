@@ -10,12 +10,12 @@ const API_KEY: string = __NP_API_KEY__;
 
 
 interface CheckoutFormValues {
-  notes?: string;
+//  notes?: string;
   cityName: string;
   warehouseName: string;
   cityRef: string;
   warehouseRef: string;
-  promoCode?: string;
+  //promoCode?: string;
   delivery: string;
   payment: string;
   agree: boolean;
@@ -163,7 +163,7 @@ const handleWarehouseChange = (_: string, option?: { label: string; value: strin
    
   const payload: OrderPayload = {
     UserId: user.id,
-    Notes: values.notes,
+   // Notes: values.notes,
     DeliveryAddress: `${values.cityName}, ${values.warehouseName}`,
     Items: items.map((item) => ({
       ProductId: item.product.id,
@@ -233,13 +233,13 @@ const handleWarehouseChange = (_: string, option?: { label: string; value: strin
             />
           </Form.Item>
 
-          <Form.Item name="promoCode">
+        {/**   <Form.Item name="promoCode">
             <Input placeholder="Промокод" />
           </Form.Item>
 
           <Form.Item name="notes">
             <Input.TextArea placeholder="Коментар до замовлення" />
-          </Form.Item>
+          </Form.Item>*/}
         </div>
 
         <Form.Item name="cityName" hidden><input /></Form.Item>
@@ -252,7 +252,7 @@ const handleWarehouseChange = (_: string, option?: { label: string; value: strin
         >
           <Radio.Group className="flex flex-col gap-2">
             <Radio value="cash">Оплата при отриманні</Radio>
-            <Radio value="card">Банківський переказ</Radio>
+          {/**      <Radio value="card">Банківський переказ</Radio>*/}
           </Radio.Group>
         </Form.Item>
 

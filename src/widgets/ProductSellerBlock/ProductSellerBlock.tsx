@@ -3,51 +3,47 @@ import { GlassCard } from "@shared/ui/GlassCard/GlassCard";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-
 interface Props {
-  sellerId: string;
+  userId: string; // 👈 теперь сразу userId
 }
 
-export const ProductSellerBlock = ({ sellerId }: Props) => {
+interface SalerInfoDto {
+  id: string;
+  companyName: string;
+  description: string;
+  schedule: string;
+  contacts: { type: string; value: string }[];
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export const ProductSellerBlock = ({ userId }: Props) => {
   const navigate = useNavigate();
-  const [seller, setSeller] = useState<any>(null); // тип лучше уточни
+  const [sellerInfo, setSellerInfo] = useState<SalerInfoDto | null>(null);
 
   const { request } = useRequest();
 
   useEffect(() => {
-    if (!sellerId) return;
-    request(`/api/users/${sellerId}`) // или `/api/salerinfo/by-user/${sellerId}` — зависит от структуры
-      .then(setSeller)
+    if (!userId) return;
+    request<SalerInfoDto | null>(`/api/salerinfo/by-user/${userId}`)
+      .then(setSellerInfo)
       .catch(console.error);
-  }, [sellerId]);
+  }, [userId]);
 
   const handleClick = () => {
-    navigate(`/seller/${sellerId}`);
+    navigate(`/seller/${userId}#about`); // переход на страницу продавца по userId
   };
 
   return (
     <GlassCard>
-       <div
-    onClick={handleClick}
-    className="cursor-pointer hover:underline hover:text-[#3E4826] font-montserrat font-semibold text-base transition-colors"
-  >
-    Продавець: <span className="ml-1">{seller?.name || "—"}</span>
-  </div>
-
-      {/*   <div className="flex items-center gap-2">
-      <div className="flex items-center gap-1">
-          <span className="font-montserrat font-semibold text-base">
-            {(seller?.rating ?? '')}/5
-
-          </span>
-          <StarIcon />
-        </div>
-       
-        <span className="font-montserrat font-normal text-base text-[color05]">
-          ({seller?.reviewsCount ?? 36} оцінок)
-        </span>
-       
-      </div> */}
+      <div
+        onClick={handleClick}
+        className="cursor-pointer hover:underline hover:text-[#3E4826] font-montserrat font-semibold text-base transition-colors"
+      >
+        Продавець:{" "}
+        <span className="ml-1">{sellerInfo?.companyName || "—"}</span>
+      </div>
     </GlassCard>
   );
 };
