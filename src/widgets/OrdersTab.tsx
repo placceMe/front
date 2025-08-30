@@ -30,7 +30,8 @@ const OrdersTab: React.FC = () => {
   const [productImages, setProductImages] = useState<Record<string, string>>({});
   const [processingOrders, setProcessingOrders] = useState<Set<string>>(new Set());
 
-  const user = useAppSelector(state => state.user.user);
+  const { user, activeRole } = useAppSelector(state => state.user);
+
   const customerId = user?.id;
   const { request } = useRequest();
   const { current, rates } = useSelector((state: RootState) => state.currency);
@@ -128,10 +129,10 @@ const OrdersTab: React.FC = () => {
     rejectOrderRequest(orderId);
   };
   const canConfirmOrder = (status: string) => {
-    return status.toLowerCase() !== "confirmed"; // Only "New" orders can be confirmed/rejected
+    return status.toLowerCase() !== "confirmed" && activeRole === "Saler"; // Only "New" orders can be confirmed/rejected
   };
   const canRejectOrder = (status: string) => {
-    return status.toLowerCase() !== "rejected"; // Only "New" orders can be confirmed/rejected
+    return status.toLowerCase() !== "rejected" && activeRole === "Saler"; // Only "New" orders can be confirmed/rejected
   };
 
   const totalPages = Math.ceil(orders.length / ORDERS_PER_PAGE);
