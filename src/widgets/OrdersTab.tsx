@@ -1,14 +1,17 @@
 
 import React, { useState, useEffect } from 'react';
-import { FaChevronUp, FaChevronDown, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaChevronUp, FaChevronDown, FaChevronLeft, FaChevronRight, FaCheck, FaTimes } from 'react-icons/fa';
 import type { OrderResponse, OrderItemResponse, Product } from '@shared/types/api';
 import { useRequest } from '@shared/request/useRequest';
 import { useAppSelector } from '@store/hooks';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@store/store';
 import { formatPrice } from '@shared/lib/formatPrice';
+import { message } from 'antd';
 
 const FILES_BASE_URL = 'http://localhost:5001/api/files/file/';
+const API_ORDERS = "http://localhost:8080/api/orders";
+
 //const FILES_BASE_URL = "http://31.42.190.94:8080/api/files/file/";
 const ORDERS_PER_PAGE = 5;
 
@@ -25,6 +28,7 @@ const OrdersTab: React.FC = () => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [productImages, setProductImages] = useState<Record<string, string>>({});
+  const [processingOrders, setProcessingOrders] = useState<Set<string>>(new Set());
 
   const user = useAppSelector(state => state.user.user);
   const customerId = user?.id;
@@ -86,6 +90,49 @@ const OrdersTab: React.FC = () => {
     });
   }, [orders, currentPage]);
 
+  const confirmOrderRequest = async (id: string) => {
+    try {
+      const res = await fetch(`${API_ORDERS}/${id}/confirm`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "Approved" }),
+      });
+      if (!res.ok) throw new Error();
+      message.success("Замовлення підтверджено");
+      setOrders(prev => prev.map(o => (o.id === id ? { ...o, status: "Confirmed", updatedAt: new Date().toISOString() } : o)));
+    } catch {
+      message.error("Помилка при підтвердженні замовлення");
+    }
+  };
+
+  const rejectOrderRequest = async (id: string) => {
+    try {
+      const res = await fetch(`${API_ORDERS}/${id}/reject`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "Rejected" }),
+      });
+      if (!res.ok) throw new Error();
+      message.success("Замовлення відхилено");
+      setOrders(prev => prev.map(o => (o.id === id ? { ...o, status: "Rejected", updatedAt: new Date().toISOString() } : o)));
+    } catch {
+      message.error("Помилка при відхиленні замовлення");
+    }
+  };
+
+  const confirmOrder = (orderId: string) => {
+    confirmOrderRequest(orderId);
+  };
+
+  const rejectOrder = (orderId: string) => {
+    rejectOrderRequest(orderId);
+  };
+  const canConfirmOrder = (status: string) => {
+    return status.toLowerCase() !== "confirmed"; // Only "New" orders can be confirmed/rejected
+  };
+  const canRejectOrder = (status: string) => {
+    return status.toLowerCase() !== "rejected"; // Only "New" orders can be confirmed/rejected
+  };
 
   const totalPages = Math.ceil(orders.length / ORDERS_PER_PAGE);
   const startIndex = (currentPage - 1) * ORDERS_PER_PAGE;
@@ -110,6 +157,8 @@ const OrdersTab: React.FC = () => {
         const hiddenCount = (order.items?.length || 0) - visibleImages.length;
 
         const statusInfo = ORDER_STATUS_MAP[Number(order.status)];
+        const orderId = String(order.id);
+        const isProcessing = processingOrders.has(orderId);
 
         return (
           <div
@@ -162,17 +211,48 @@ const OrdersTab: React.FC = () => {
                 )}
               </div>
             </div>
+
+            {/* Order Actions */}
+
+            <div className="mt-3 flex gap-2 justify-end">
+              {
+                canConfirmOrder(order.status) && (
+                  <button
+                    onClick={() => confirmOrder(orderId)}
+                    disabled={isProcessing}
+                    className="flex items-center gap-1 px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  >
+                    <FaCheck size={12} />
+                    {isProcessing ? 'Обробка...' : 'Підтвердити'}
+                  </button>
+                )
+              }
+              {
+                canRejectOrder(order.status) && (
+                  <button
+                    onClick={() => rejectOrder(orderId)}
+                    disabled={isProcessing}
+                    className="flex items-center gap-1 px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  >
+                    <FaTimes size={12} />
+                    {isProcessing ? 'Обробка...' : 'Скасувати'}
+                  </button>
+                )
+              }
+            </div>
+
+
             {expandedId === String(order.id) && (
               <div className="mt-3 text-sm text-gray-600">
                 <div>
-                {order.items?.map((item: OrderItemResponse, i: number) => {
-  const total = (item.price ?? 0) * item.quantity;
-  return (
-    <div key={item.id || i}>
-      {item.productName} × {item.quantity} — {formatPrice(total, current, rates)}
-    </div>
-  );
-})}
+                  {order.items?.map((item: OrderItemResponse, i: number) => {
+                    const total = (item.price ?? 0) * item.quantity;
+                    return (
+                      <div key={item.id || i}>
+                        {item.productName} × {item.quantity} — {formatPrice(total, current, rates)}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
