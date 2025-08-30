@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Form, Input, Button, Row, Col, Space, message, Skeleton, Card } from "antd";
+import React, { useEffect, useState } from "react";
+import { Form, Input, Button, Row, Col, Space, message, Skeleton } from "antd";
 import { useAppSelector } from "@store/hooks";
 import { useRequest } from "@shared/request/useRequest";
 
@@ -9,7 +9,7 @@ const BLUR_STYLE: React.CSSProperties = {
   border: "1px solid #3E4826",
 };
 
-type Contact = { type: string; value: string };
+type Contact = { type: string; value: string; };
 
 type SalerInfoDto = {
   id: string;
@@ -31,25 +31,36 @@ const SellerProfilePage: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [info, setInfo] = useState<SalerInfoDto | null>(null);
 
-// useEffect: типизируй как  S A L E R I n f o D t o | null
-useEffect(() => {
-  if (!userId) return;
-  let ignore = false;
-  setLoading(true);
+  // useEffect: типизируй как  S A L E R I n f o D t o | null
+  useEffect(() => {
+    if (!userId) return;
+    let ignore = false;
+    setLoading(true);
 
-  request<SalerInfoDto | null>(`/api/salerinfo/by-user/${userId}`)
-    .then((data) => {
-      if (ignore) return;
+    request<SalerInfoDto | null>(`/api/salerinfo/by-user/${userId}`)
+      .then((data) => {
+        if (ignore) return;
 
-      if (data) {
-        setInfo(data);
-        form.setFieldsValue({
-          companyName: data.companyName ?? "",
-          description: data.description ?? "",
-          schedule: data.schedule ?? "",
-          contacts: data.contacts?.length ? data.contacts : [{ type: "", value: "" }],
-        });
-      } else {
+        if (data) {
+          setInfo(data);
+          form.setFieldsValue({
+            companyName: data.companyName ?? "",
+            description: data.description ?? "",
+            schedule: data.schedule ?? "",
+            contacts: data.contacts?.length ? data.contacts : [{ type: "", value: "" }],
+          });
+        } else {
+          setInfo(null);
+          form.setFieldsValue({
+            companyName: "",
+            description: "",
+            schedule: "",
+            contacts: [{ type: "", value: "" }],
+          });
+        }
+      })
+      .catch(() => {
+        if (ignore) return;
         setInfo(null);
         form.setFieldsValue({
           companyName: "",
@@ -57,101 +68,86 @@ useEffect(() => {
           schedule: "",
           contacts: [{ type: "", value: "" }],
         });
+      })
+      .finally(() => { if (!ignore) setLoading(false); });
+
+    return () => { ignore = true; };
+  }, [userId, form]);
+
+
+  const onFinish = async (values: any) => {
+    if (!userId) return;
+
+    // 1) чистим контакты
+    const contacts: Contact[] = (values.contacts || [])
+      .filter((c: Contact) => c?.type?.trim() && c?.value?.trim())
+      .map((c: Contact) => ({ type: c.type.trim(), value: c.value.trim() }));
+
+    // 2) базовый payload без userId (используем для PUT)
+    const basePayload = {
+      companyName: (values.companyName || "").trim(),
+      description: (values.description || "").trim(),
+      schedule: (values.schedule || "").trim(),
+      contacts,
+    };
+
+    setSaving(true);
+    try {
+      if (info?.id) {
+        // UPDATE (PUT без userId)
+        await request(`/api/salerinfo/${info.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(basePayload),
+        });
+
+        if (info?.id) {
+          await request(`/api/salerinfo/${info.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(basePayload), // без userId
+          });
+
+          // NB: тип указываем как ... | null
+          const fresh = await request<SalerInfoDto | null>(`/api/salerinfo/by-user/${userId}`);
+
+          if (!fresh) {
+            // сервер вернул 404/пусто — просто обновим локально, чтобы не падать
+            setInfo((prev) => prev ? { ...prev, ...basePayload, updatedAt: new Date().toISOString() } as SalerInfoDto : prev);
+            message.success("Профіль продавця оновлено");
+            return;
+          }
+
+          // fresh точно не null — можно безопасно обращаться к полям
+          setInfo(fresh);
+          form.setFieldsValue({
+            companyName: fresh.companyName ?? "",
+            description: fresh.description ?? "",
+            schedule: fresh.schedule ?? "",
+            contacts: fresh.contacts?.length ? fresh.contacts : [{ type: "", value: "" }],
+          });
+
+          message.success("Профіль продавця оновлено");
+        }
+
+      } else {
+        // CREATE (POST с userId)
+        const created = await request<SalerInfoDto>(`/api/salerinfo`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...basePayload, userId }),
+        });
+        setInfo(created);
+        message.success("Профіль продавця створено");
       }
-    })
-    .catch(() => {
-      if (ignore) return;
-      setInfo(null);
-      form.setFieldsValue({
-        companyName: "",
-        description: "",
-        schedule: "",
-        contacts: [{ type: "", value: "" }],
-      });
-    })
-    .finally(() => { if (!ignore) setLoading(false); });
-
-  return () => { ignore = true; };
-}, [userId, form]);
-
-
-const onFinish = async (values: any) => {
-  if (!userId) return;
-
-  // 1) чистим контакты
-  const contacts: Contact[] = (values.contacts || [])
-    .filter((c: Contact) => c?.type?.trim() && c?.value?.trim())
-    .map((c: Contact) => ({ type: c.type.trim(), value: c.value.trim() }));
-
-  // 2) базовый payload без userId (используем для PUT)
-  const basePayload = {
-    companyName: (values.companyName || "").trim(),
-    description: (values.description || "").trim(),
-    schedule: (values.schedule || "").trim(),
-    contacts,
+    } catch (e) {
+      message.error("Не вдалося зберегти дані");
+    } finally {
+      setSaving(false);
+    }
   };
 
-  setSaving(true);
-  try {
-    if (info?.id) {
-      // UPDATE (PUT без userId)
-      await request(`/api/salerinfo/${info.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(basePayload),
-      });
 
-      if (info?.id) {
-  await request(`/api/salerinfo/${info.id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(basePayload), // без userId
-  });
-
-  // NB: тип указываем как ... | null
-  const fresh = await request<SalerInfoDto | null>(`/api/salerinfo/by-user/${userId}`);
-
-  if (!fresh) {
-    // сервер вернул 404/пусто — просто обновим локально, чтобы не падать
-    setInfo((prev) => prev ? { ...prev, ...basePayload, updatedAt: new Date().toISOString() } as SalerInfoDto : prev);
-    message.success("Профіль продавця оновлено");
-    return;
-  }
-
-  // fresh точно не null — можно безопасно обращаться к полям
-  setInfo(fresh);
-  form.setFieldsValue({
-    companyName: fresh.companyName ?? "",
-    description: fresh.description ?? "",
-    schedule: fresh.schedule ?? "",
-    contacts: fresh.contacts?.length ? fresh.contacts : [{ type: "", value: "" }],
-  });
-
-  message.success("Профіль продавця оновлено");
-}
-
-    } else {
-      // CREATE (POST с userId)
-      const created = await request<SalerInfoDto>(`/api/salerinfo`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...basePayload, userId }),
-      });
-      setInfo(created);
-      message.success("Профіль продавця створено");
-    }
-  } catch (e) {
-    message.error("Не вдалося зберегти дані");
-  } finally {
-    setSaving(false);
-  }
-};
-
-
-  const contactItemsPreview = useMemo(() => {
-    const list: Contact[] = form.getFieldValue("contacts") || [];
-    return list.filter((c) => c?.type || c?.value);
-  }, [form]);
 
   return (
     <div className="max-w-[1200px] mx-auto p-6">

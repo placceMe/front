@@ -198,21 +198,6 @@ const OrdersPage: React.FC = () => {
     form.resetFields();
   };
 
-  const quickStatus = async (id: string, s: OrderStatus) => {
-    try {
-      const res = await fetch(`${API_ORDERS}/${id}/status`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: s }),
-      });
-      if (!res.ok) throw new Error();
-      message.success("Статус оновлено");
-      setAllOrders(prev => prev.map(o => (o.id === id ? { ...o, status: s, updatedAt: new Date().toISOString() } : o)));
-    } catch {
-      message.error("Помилка при оновленні статусу");
-    }
-  };
-
   const confirmOrder = async (id: string) => {
     try {
       const res = await fetch(`${API_ORDERS}/${id}/confirm`, {

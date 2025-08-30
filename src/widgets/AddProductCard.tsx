@@ -567,8 +567,8 @@ type FormValues = {
   Quantity?: number;
   Characteristics?: CharacteristicValue[];
   AdditionalImages?: File[];
-  Producer?: string;   
-  IsNew?: boolean;  
+  Producer?: string;
+  IsNew?: boolean;
 };
 
 export const AddProductCard = ({ sellerId }: AddProductCardProps) => {
@@ -585,20 +585,20 @@ export const AddProductCard = ({ sellerId }: AddProductCardProps) => {
     });
   }, []);
 
-const onCategoryChange = async (categoryId: string) => {
-  setCategorySelected(true);
-  const data = await request<CharacteristicDict[]>(`/api/characteristicdict/category/${categoryId}`);
-  if (data) {
-    setCharacteristics(data);
-    const charValues = data.map((c) => ({ characteristicDictId: c.id, value: "" }));
-    form.setFieldsValue({
-      ...form.getFieldsValue(),     // 👈 безопасный мердж
-      Characteristics: charValues,
-    });
-  } else {
-    setCharacteristics([]);
-  }
-};
+  const onCategoryChange = async (categoryId: string) => {
+    setCategorySelected(true);
+    const data = await request<CharacteristicDict[]>(`/api/characteristicdict/category/${categoryId}`);
+    if (data) {
+      setCharacteristics(data);
+      const charValues = data.map((c) => ({ characteristicDictId: c.id, value: "" }));
+      form.setFieldsValue({
+        ...form.getFieldsValue(),     // 👈 безопасный мердж
+        Characteristics: charValues,
+      });
+    } else {
+      setCharacteristics([]);
+    }
+  };
 
 
   const handleMainImageChange = (info: UploadChangeParam<UploadFile>) => {
@@ -622,22 +622,22 @@ const onCategoryChange = async (categoryId: string) => {
     formData.append("Price", String(values.Price));
     formData.append("SellerId", sellerId);
     formData.append("Quantity", String(values.Quantity));
-    
+
 
     if (values.Color) formData.append("Color", values.Color);
     if (values.Weight !== undefined) formData.append("Weight", String(values.Weight));
     if (values.Description) formData.append("Description", values.Description);
     if (values.Producer && values.Producer.trim()) {
-  formData.append("Producer", values.Producer.trim());
-}
+      formData.append("Producer", values.Producer.trim());
+    }
     formData.append("IsNew", String(values.IsNew ?? false));
     if (mainImage) formData.append("MainImage", mainImage);
     if (values.AdditionalImages?.length) {
       values.AdditionalImages.forEach((file) => formData.append("AdditionalImages", file));
     }
-console.log("Producer value from form:", values.Producer);
-console.log("Producer type:", typeof values.Producer);
-console.log("All form values:", values);
+    console.log("Producer value from form:", values.Producer);
+    console.log("Producer type:", typeof values.Producer);
+    console.log("All form values:", values);
     console.log("Final characteristics sent:", values.Characteristics);
 
     const response = await request("/api/products/with-files", {
@@ -647,8 +647,8 @@ console.log("All form values:", values);
 
     if (response) {
       for (let [key, value] of formData.entries()) {
-  console.log(`${key}: ${value}`);
-}
+        console.log(`${key}: ${value}`);
+      }
       message.success("Товар успішно додано");
       form.resetFields();
       setMainImage(null);
@@ -664,12 +664,12 @@ console.log("All form values:", values);
       form={form}
       layout="vertical"
       onFinish={onFinish}
-      initialValues={{ Quantity: 1, IsNew: true, Producer: ""}}
-      onValuesChange={(changed, all) => {
-    if ("Producer" in changed) {
-      console.log("Producer changed →", changed.Producer);
-    }
-  }}
+      initialValues={{ Quantity: 1, IsNew: true, Producer: "" }}
+      onValuesChange={(changed) => {
+        if ("Producer" in changed) {
+          console.log("Producer changed →", changed.Producer);
+        }
+      }}
       className="max-w-[1280px] mx-auto mt-10"
     >
       <Row gutter={32}>
@@ -779,15 +779,15 @@ console.log("All form values:", values);
 
           {categorySelected && (
             <>
-            <Form.Item
-  label="Виробник"
-  name="Producer"
-  normalize={(v) => (typeof v === "string" ? v.trim() : v)}
->
-  <Input placeholder="Напр., Salomon" style={BLUR_STYLE} />
-</Form.Item>
+              <Form.Item
+                label="Виробник"
+                name="Producer"
+                normalize={(v) => (typeof v === "string" ? v.trim() : v)}
+              >
+                <Input placeholder="Напр., Salomon" style={BLUR_STYLE} />
+              </Form.Item>
 
-             
+
               <Form.Item label="Новий товар" name="IsNew" valuePropName="checked">
                 <Switch />
               </Form.Item>
@@ -807,7 +807,7 @@ console.log("All form values:", values);
                   className="rounded-xl font-semibold h-10"
                 />
               </Form.Item>
-                <Form.Item
+              <Form.Item
                 label="Кількість"
                 name="Quantity"
                 rules={[{ required: true, message: "Вкажіть кількість" }]}
@@ -819,8 +819,8 @@ console.log("All form values:", values);
                   className="rounded-xl font-semibold h-10"
                 />
               </Form.Item>
-               
-             
+
+
             </>
           )}
         </Col>

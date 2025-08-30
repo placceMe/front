@@ -41,7 +41,7 @@ const OrdersTab: React.FC = () => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [productImages, setProductImages] = useState<Record<string, string>>({});
-  const [processingOrders, setProcessingOrders] = useState<Set<string>>(new Set());
+  const [processingOrders, _] = useState<Set<string>>(new Set());
   const [reviewModal, setReviewModal] = useState<{
     visible: boolean;
     productId: string;
@@ -129,7 +129,7 @@ const OrdersTab: React.FC = () => {
       });
       if (!res.ok) throw new Error();
       message.success("Замовлення підтверджено");
-      setOrders(prev => prev.map(o => (o.id === id ? { ...o, status: "Confirmed", updatedAt: new Date().toISOString() } : o)));
+      setOrders(prev => prev.map(o => (o.id.toString() === id ? { ...o, status: "Confirmed", updatedAt: new Date().toISOString() } : o)));
     } catch {
       message.error("Помилка при підтвердженні замовлення");
     }
@@ -144,7 +144,7 @@ const OrdersTab: React.FC = () => {
       });
       if (!res.ok) throw new Error();
       message.success("Замовлення відхилено");
-      setOrders(prev => prev.map(o => (o.id === id ? { ...o, status: "Rejected", updatedAt: new Date().toISOString() } : o)));
+      setOrders(prev => prev.map(o => (o.id.toString() === id ? { ...o, status: "Rejected", updatedAt: new Date().toISOString() } : o)));
     } catch {
       message.error("Помилка при відхиленні замовлення");
     }

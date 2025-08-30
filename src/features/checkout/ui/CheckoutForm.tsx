@@ -1,6 +1,6 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { Form, Button, Typography, Radio, Select, Input, Checkbox, Modal } from 'antd';
+import { Form, Button, Typography, Radio, Select, Checkbox, Modal } from 'antd';
 import type { OrderPayload } from '@shared/types/order';
 import { useAppSelector } from '@store/hooks';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +10,7 @@ const API_KEY: string = __NP_API_KEY__;
 
 
 interface CheckoutFormValues {
-//  notes?: string;
+  //  notes?: string;
   cityName: string;
   warehouseName: string;
   cityRef: string;
@@ -33,9 +33,9 @@ export const CheckoutForm = ({ onSubmit }: Props) => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const navigate = useNavigate();
 
-  const [areas, setAreas] = useState<{ label: string; value: string }[]>([]);
-  const [cities, setCities] = useState<{ label: string; value: string }[]>([]);
-  const [warehouses, setWarehouses] = useState<{ label: string; value: string }[]>([]);
+  const [areas, setAreas] = useState<{ label: string; value: string; }[]>([]);
+  const [cities, setCities] = useState<{ label: string; value: string; }[]>([]);
+  const [warehouses, setWarehouses] = useState<{ label: string; value: string; }[]>([]);
 
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
@@ -57,7 +57,7 @@ export const CheckoutForm = ({ onSubmit }: Props) => {
         }),
       });
       const json = await res.json();
-      const data = json.data.map((area: { Description: string; Ref: string }) => ({
+      const data = json.data.map((area: { Description: string; Ref: string; }) => ({
         label: area.Description,
         value: area.Ref,
       }));
@@ -80,7 +80,7 @@ export const CheckoutForm = ({ onSubmit }: Props) => {
     });
 
     const json = await res.json();
-    
+
     // Проверяем успешность запроса
     if (!json.success) {
       console.error('Nova Post API error:', json.errors);
@@ -89,8 +89,8 @@ export const CheckoutForm = ({ onSubmit }: Props) => {
 
     // Фильтруем города по выбранной области на клиенте
     const data = json.data
-      .filter((city: { Area: string }) => city.Area === areaRef)
-      .map((city: { Description: string; Ref: string }) => ({
+      .filter((city: { Area: string; }) => city.Area === areaRef)
+      .map((city: { Description: string; Ref: string; }) => ({
         label: city.Description,
         value: city.Ref,
       }));
@@ -113,7 +113,7 @@ export const CheckoutForm = ({ onSubmit }: Props) => {
     });
 
     const json = await res.json();
-    const data = json.data.map((w:{ Number: string; ShortAddress?: string; Description: string; Ref: string }) => ({
+    const data = json.data.map((w: { Number: string; ShortAddress?: string; Description: string; Ref: string; }) => ({
       label: `№${w.Number}: ${w.ShortAddress || w.Description}`,
       value: w.Ref,
     }));
@@ -134,46 +134,46 @@ export const CheckoutForm = ({ onSubmit }: Props) => {
     fetchCities(areaRef);
   };
 
- const handleCityChange = (cityRef: string, option?: { label: string; value: string } | { label: string; value: string }[]) => {
-  const selectedOption = Array.isArray(option) ? option[0] : option;
-  if (!selectedOption) return;
+  const handleCityChange = (cityRef: string, option?: { label: string; value: string; } | { label: string; value: string; }[]) => {
+    const selectedOption = Array.isArray(option) ? option[0] : option;
+    if (!selectedOption) return;
 
-   form.setFieldsValue({
-    cityName: selectedOption.label,
-    warehouseRef: null,
-    warehouseName: '',
-  });
-     setSelectedCity(cityRef);
-  setWarehouses([]);
-  fetchWarehouses(cityRef);
+    form.setFieldsValue({
+      cityName: selectedOption.label,
+      warehouseRef: null,
+      warehouseName: '',
+    });
+    setSelectedCity(cityRef);
+    setWarehouses([]);
+    fetchWarehouses(cityRef);
   };
 
-const handleWarehouseChange = (_: string, option?: { label: string; value: string } | { label: string; value: string }[]) => {
-  const selectedOption = Array.isArray(option) ? option[0] : option;
-  if (!selectedOption) return;
+  const handleWarehouseChange = (_: string, option?: { label: string; value: string; } | { label: string; value: string; }[]) => {
+    const selectedOption = Array.isArray(option) ? option[0] : option;
+    if (!selectedOption) return;
 
-  form.setFieldsValue({ warehouseName: selectedOption.label });
-};
-  const handleFinish = (values: CheckoutFormValues)  => {
+    form.setFieldsValue({ warehouseName: selectedOption.label });
+  };
+  const handleFinish = (values: CheckoutFormValues) => {
     if (!user) {
       setShowAuthModal(true);
       return;
     }
 
-   
-  const payload: OrderPayload = {
-    UserId: user.id,
-   // Notes: values.notes,
-    DeliveryAddress: `${values.cityName}, ${values.warehouseName}`,
-    Items: items.map((item) => ({
-      ProductId: item.product.id,
-      Quantity: item.quantity,
-    })),
-    CityRef: values.cityRef,
-    WarehouseRef: values.warehouseRef,
-  };
 
-  onSubmit(payload);
+    const payload: OrderPayload = {
+      UserId: user.id,
+      // Notes: values.notes,
+      DeliveryAddress: `${values.cityName}, ${values.warehouseName}`,
+      Items: items.map((item) => ({
+        ProductId: item.product.id,
+        Quantity: item.quantity,
+      })),
+      CityRef: values.cityRef,
+      WarehouseRef: values.warehouseRef,
+    };
+
+    onSubmit(payload);
   };
 
   return (
@@ -233,7 +233,7 @@ const handleWarehouseChange = (_: string, option?: { label: string; value: strin
             />
           </Form.Item>
 
-        {/**   <Form.Item name="promoCode">
+          {/**   <Form.Item name="promoCode">
             <Input placeholder="Промокод" />
           </Form.Item>
 
@@ -252,7 +252,7 @@ const handleWarehouseChange = (_: string, option?: { label: string; value: strin
         >
           <Radio.Group className="flex flex-col gap-2">
             <Radio value="cash">Оплата при отриманні</Radio>
-          {/**      <Radio value="card">Банківський переказ</Radio>*/}
+            {/**      <Radio value="card">Банківський переказ</Radio>*/}
           </Radio.Group>
         </Form.Item>
 

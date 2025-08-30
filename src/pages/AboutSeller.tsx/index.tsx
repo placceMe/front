@@ -266,13 +266,7 @@ function useInjectOnce(id: string, css: string) {
 const formatDateUA = (iso: string) =>
   new Date(iso).toLocaleDateString("uk-UA", { day: "2-digit", month: "long", year: "numeric" });
 
-const Stars: React.FC<{ value: number; }> = ({ value }) => (
-  <span className="inline-flex items-center gap-1">
-    {Array.from({ length: Math.max(0, Math.min(5, Math.round(value || 0))) }).map((_, i) => (
-      <span key={i}>★</span>
-    ))}
-  </span>
-);
+
 
 
 const infoCache = new Map<string, Promise<SellerInfo>>();

@@ -7,7 +7,6 @@ import {
   MinusOutlined, PlusOutlined, HeartOutlined, HeartFilled,
 } from '@ant-design/icons';
 import { GlassCard } from '@shared/ui/GlassCard/GlassCard';
-import { TagBlock } from './TagBlock';
 import { ProductPriceBlock } from './ProductPriceBlock';
 import { PaymentIcons } from '@shared/ui/PaymentIcons';
 import { AddToCartButton } from '@features/addToCart/ui/AddToCartButton';
@@ -32,42 +31,41 @@ interface Props {
 }
 
 export const ProductInfo = ({ product }: Props) => {
-const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
-const cartItems = useAppSelector(state => state.cart.items);
-const existing = cartItems.find(i => i.product.id === product.id);
-const [quantity, setQuantity] = useState(existing?.quantity || 1);
-const { current, rates } = useSelector((state: RootState) => state.currency);
-const formatted = formatPrice(product.price, current, rates);
-const producer = (product as any).producer ?? (product as any).producer ?? '—';
-const isNew = Boolean((product as any).isNew ?? (product as any).isNew);
+  const cartItems = useAppSelector(state => state.cart.items);
+  const existing = cartItems.find(i => i.product.id === product.id);
+  const [quantity, setQuantity] = useState(existing?.quantity || 1);
+  const { current, rates } = useSelector((state: RootState) => state.currency);
+  const formatted = formatPrice(product.price, current, rates);
+  const producer = (product as any).producer ?? (product as any).producer ?? '—';
 
 
-const handleQuantityChange = (value: number | null) => {
-  if (value && value > 0) {
-    setQuantity(value);
-    dispatch(updateQuantity({ productId: product.id, quantity: value }));
-  }
-};
+  const handleQuantityChange = (value: number | null) => {
+    if (value && value > 0) {
+      setQuantity(value);
+      dispatch(updateQuantity({ productId: product.id, quantity: value }));
+    }
+  };
 
-const incrementQuantity = () => {
-  setQuantity(prev => {
-    const newQty = prev + 1;
-    dispatch(updateQuantity({ productId: product.id, quantity: newQty }));
-    return newQty;
-  });
-};
+  const incrementQuantity = () => {
+    setQuantity(prev => {
+      const newQty = prev + 1;
+      dispatch(updateQuantity({ productId: product.id, quantity: newQty }));
+      return newQty;
+    });
+  };
 
-const decrementQuantity = () => {
-  setQuantity(prev => {
-    const newQty = prev > 1 ? prev - 1 : 1;
-    dispatch(updateQuantity({ productId: product.id, quantity: newQty }));
-    return newQty;
-  });
-};
+  const decrementQuantity = () => {
+    setQuantity(prev => {
+      const newQty = prev > 1 ? prev - 1 : 1;
+      dispatch(updateQuantity({ productId: product.id, quantity: newQty }));
+      return newQty;
+    });
+  };
 
   //const [isFavorite, setIsFavorite] = useState(false);
-//  const [isCompared, setIsCompared] = useState(false);
+  //  const [isCompared, setIsCompared] = useState(false);
   const userId = useAppSelector(state => state.user.user?.id) || "guest";
   const [wishlist, setWishlist] = useUserProductIds(userId, "userWishlist"); // массив id-шек!
 
@@ -87,30 +85,26 @@ const toggleFavorite = (prod: any) => {
       setWishlist([product.id, ...wishlist]);
     }
   };
- // const toggleCompare = () => setIsCompared(prev => !prev);
+  // const toggleCompare = () => setIsCompared(prev => !prev);
 
   // oldPrice: если не указан, считаем price * 2
   //const displayOldPrice = product.price * 2;
-const { summary, loading } = useProductFeedbackSummary(product.id);
-const averageRating = summary?.averageRating ?? 0;
-const totalFeedbacks = summary?.totalFeedbacks ?? 0;
+  const { summary, loading } = useProductFeedbackSummary(product.id);
+  const averageRating = summary?.averageRating ?? 0;
+  const totalFeedbacks = summary?.totalFeedbacks ?? 0;
 
 
 
-// тоже на sellerId
-const safeSellerId =
-  (product as any).sellerId ??
-  (product as any).SellerId ??
-  product.sellerId;
 
-function pluralize(count: number, one: string, few: string, many: string): string {
-  const mod10 = count % 10;
-  const mod100 = count % 100;
 
-  if (mod10 === 1 && mod100 !== 11) return one;
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return few;
-  return many;
-}
+  function pluralize(count: number, one: string, few: string, many: string): string {
+    const mod10 = count % 10;
+    const mod100 = count % 100;
+
+    if (mod10 === 1 && mod100 !== 11) return one;
+    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return few;
+    return many;
+  }
 
 
 
@@ -121,9 +115,9 @@ function pluralize(count: number, one: string, few: string, many: string): strin
         <Flex justify="space-between" align="flex-start" className="mb-4">
           <Title
             level={2}
-        className="font-montserrat font-semibold text-color_gradient flex-1 leading-tight"
-  style={{ marginBottom: 0, fontSize: 'clamp(18px, 4vw, 32px)' }}
->
+            className="font-montserrat font-semibold text-color_gradient flex-1 leading-tight"
+            style={{ marginBottom: 0, fontSize: 'clamp(18px, 4vw, 32px)' }}
+          >
             {product.title}
           </Title>
           <div className="hidden sm:flex gap-2 ml-4">
@@ -146,19 +140,19 @@ function pluralize(count: number, one: string, few: string, many: string): strin
           </div>
         </Flex>
         <Space direction="vertical" size="small">
-        <Flex align="center" gap="small">
-  <Rate
-    disabled
-    count={5}
-    character={<StarOrangeIcon width={22} height={22} />}
-    style={{ fontSize: 22 }}
-    allowHalf
-    value={averageRating}
-  />
-  <Text className="font-montserrat font-normal text-[15px] text-color05">
-    {loading ? 'Завантаження…' : `(${totalFeedbacks} ${pluralize(totalFeedbacks, 'відгук', 'відгуки', 'відгуків')})`}
-  </Text>
-</Flex>
+          <Flex align="center" gap="small">
+            <Rate
+              disabled
+              count={5}
+              character={<StarOrangeIcon width={22} height={22} />}
+              style={{ fontSize: 22 }}
+              allowHalf
+              value={averageRating}
+            />
+            <Text className="font-montserrat font-normal text-[15px] text-color05">
+              {loading ? 'Завантаження…' : `(${totalFeedbacks} ${pluralize(totalFeedbacks, 'відгук', 'відгуки', 'відгуків')})`}
+            </Text>
+          </Flex>
 
           <Descriptions
             column={1}
@@ -171,16 +165,16 @@ function pluralize(count: number, one: string, few: string, many: string): strin
 
                 </Text>
               },
-                      {
-            label: <Text strong className="font-montserrat text-color05">Виробник</Text>,
-            children: <Text className="font-montserrat text-color05">{producer}</Text>
-          }
+              {
+                label: <Text strong className="font-montserrat text-color05">Виробник</Text>,
+                children: <Text className="font-montserrat text-color05">{producer}</Text>
+              }
             ]}
           />
         </Space>
       </GlassCard>
       {/* Product Seller Block */}
-      <ProductSellerBlock userId={product.sellerId}/>
+      <ProductSellerBlock userId={product.sellerId} />
 
       {/* Purchase Options Card */}
       <Card
@@ -191,53 +185,53 @@ function pluralize(count: number, one: string, few: string, many: string): strin
         }}
       >
         <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-        {/**  <TagBlock
+          {/**  <TagBlock
             inStock={true}
             isTop={true}
             discount={10}
           />
-          */} 
+          */}
           <ProductPriceBlock
-          
+
             price={formatted}
             oldPrice={formatted}
           />
           {/* Quantity selector */}
-          
-           <Flex gap="middle" className="items-center w-full ">
-          <div className="flex items-center gap-2">
-            <Button
-              type="primary"
-              icon={<MinusOutlined />}
-              onClick={decrementQuantity}
-              disabled={quantity <= 1}
-              size="large"
-              className="bg-green-700 hover:bg-green-600 border-green-700"
-              style={{ minWidth: '40px' }}
-            />
-            <InputNumber
-              value={quantity}
-              onChange={handleQuantityChange}
-              min={1}
-              max={99}
-              size="large"
-              className="w-16 text-center"
-              controls={false}
-            />
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={incrementQuantity}
-              size="large"
-              className="bg-green-700 hover:bg-green-600 border-green-700"
-              style={{ minWidth: '40px' }}
-            />
-          </div>
+
+          <Flex gap="middle" className="items-center w-full ">
+            <div className="flex items-center gap-2">
+              <Button
+                type="primary"
+                icon={<MinusOutlined />}
+                onClick={decrementQuantity}
+                disabled={quantity <= 1}
+                size="large"
+                className="bg-green-700 hover:bg-green-600 border-green-700"
+                style={{ minWidth: '40px' }}
+              />
+              <InputNumber
+                value={quantity}
+                onChange={handleQuantityChange}
+                min={1}
+                max={99}
+                size="large"
+                className="w-16 text-center"
+                controls={false}
+              />
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={incrementQuantity}
+                size="large"
+                className="bg-green-700 hover:bg-green-600 border-green-700"
+                style={{ minWidth: '40px' }}
+              />
+            </div>
             <AddToCartButton product={product} quantity={quantity} className="flex-1" />
           </Flex>
 
 
-          
+
           {/* Mobile action buttons */}
           <div className="flex sm:hidden justify-center gap-4 pt-2">
             {/**

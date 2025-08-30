@@ -119,6 +119,7 @@ export type OrderItemResponse = {
   quantity: number;
   price: number;
   totalPrice: number;
+  product: Product;
 };
 
 export type Status = {
