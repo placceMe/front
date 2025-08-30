@@ -16,7 +16,7 @@ type OrderItem = {
   productId: string;
   quantity: number;
   price: number;
-  product?: { id: string; name?: string; title?: string; price?: number };
+  product?: { id: string; name?: string; title?: string; price?: number; };
 };
 
 type Order = {
@@ -34,16 +34,16 @@ type Order = {
 const API_ORDERS = "http://localhost:8080/api/orders";
 
 // кольори бейджів для статусів
-const STATUS_COLORS: Record<OrderStatus, { color: string; label: string }> = {
-  Pending:   { color: "gold",  label: "Очікує" },
+const STATUS_COLORS: Record<OrderStatus, { color: string; label: string; }> = {
+  Pending: { color: "gold", label: "Очікує" },
   Confirmed: { color: "green", label: "Підтверджено" },
-  Rejected:  { color: "red",   label: "Відхилено" },
-  Shipped:   { color: "blue",  label: "Відправлено" },
-  Delivered: { color: "cyan",  label: "Доставлено" },
+  Rejected: { color: "red", label: "Відхилено" },
+  Shipped: { color: "blue", label: "Відправлено" },
+  Delivered: { color: "cyan", label: "Доставлено" },
   Cancelled: { color: "volcano", label: "Скасовано" },
 };
 
-const statusOptions: { value: OrderStatus; label: string }[] = (Object.keys(STATUS_COLORS) as OrderStatus[])
+const statusOptions: { value: OrderStatus; label: string; }[] = (Object.keys(STATUS_COLORS) as OrderStatus[])
   .map((s) => ({ value: s, label: STATUS_COLORS[s].label }));
 
 const formatMoney = (v: number) => `${(v ?? 0).toLocaleString("uk-UA")} ₴`;
@@ -65,7 +65,7 @@ const OrdersPage: React.FC = () => {
 
   const [openView, setOpenView] = useState(false);
   const [current, setCurrent] = useState<Order | null>(null);
-  const [form] = Form.useForm<{ status: OrderStatus; notes?: string; deliveryAddress?: string }>();
+  const [form] = Form.useForm<{ status: OrderStatus; notes?: string; deliveryAddress?: string; }>();
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -158,7 +158,7 @@ const OrdersPage: React.FC = () => {
           <Button
             icon={<CheckOutlined />}
             type="default"
-            onClick={() => quickStatus(r.id, "Confirmed")}
+            onClick={() => confirmOrder(r.id)}
             disabled={r.status === "Confirmed"}
           >
             Підтвердити
@@ -167,7 +167,7 @@ const OrdersPage: React.FC = () => {
             icon={<CloseOutlined />}
             danger
             type="default"
-            onClick={() => quickStatus(r.id, "Rejected")}
+            onClick={() => rejectOrder(r.id)}
             disabled={r.status === "Rejected"}
           >
             Відхилити
@@ -213,6 +213,36 @@ const OrdersPage: React.FC = () => {
     }
   };
 
+  const confirmOrder = async (id: string) => {
+    try {
+      const res = await fetch(`${API_ORDERS}/${id}/confirm`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "Approved" }),
+      });
+      if (!res.ok) throw new Error();
+      message.success("Замовлення підтверджено");
+      setAllOrders(prev => prev.map(o => (o.id === id ? { ...o, status: "Approved", updatedAt: new Date().toISOString() } : o)));
+    } catch {
+      message.error("Помилка при підтвердженні замовлення");
+    }
+  };
+
+  const rejectOrder = async (id: string) => {
+    try {
+      const res = await fetch(`${API_ORDERS}/${id}/reject`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "Rejected" }),
+      });
+      if (!res.ok) throw new Error();
+      message.success("Замовлення відхилено");
+      setAllOrders(prev => prev.map(o => (o.id === id ? { ...o, status: "Rejected", updatedAt: new Date().toISOString() } : o)));
+    } catch {
+      message.error("Помилка при відхиленні замовлення");
+    }
+  };
+
   const saveFromModal = async () => {
     if (!current) return;
     try {
@@ -238,12 +268,12 @@ const OrdersPage: React.FC = () => {
         prev.map(o =>
           o.id === current.id
             ? {
-                ...o,
-                status: values.status,
-                notes: values.notes ?? null,
-                deliveryAddress: values.deliveryAddress ?? null,
-                updatedAt: new Date().toISOString(),
-              }
+              ...o,
+              status: values.status,
+              notes: values.notes ?? null,
+              deliveryAddress: values.deliveryAddress ?? null,
+              updatedAt: new Date().toISOString(),
+            }
             : o
         )
       );

@@ -176,7 +176,7 @@ export const AboutSeller = () => {
     </BlurBlock>
   );
 };
-*/ {/**   */}    
+*/ {/**   */ }
 
 
 
@@ -199,9 +199,9 @@ import { useAppSelector } from "@store/hooks";
 
 
 const SELLER_TABS = [
-  { key: "about",   label: "Контакна інформація",  icon: <UserIcon className="w-3 h-3" /> },
+  { key: "about", label: "Контакна інформація", icon: <UserIcon className="w-3 h-3" /> },
   { key: "reviews", label: "Відгуки", icon: <FeedbackIcon className="w-4 h-4" /> },
-  { key: "products",label: "Товари продавця",      icon: "📦" },
+  { key: "products", label: "Товари продавця", icon: "📦" },
 ];
 
 const GRID_CSS = `
@@ -235,6 +235,7 @@ interface SellerInfo {
   userId: string;
   createdAt: string;
   updatedAt: string;
+  companyName: string;
 }
 interface FeedbackItem {
   id: string;
@@ -248,7 +249,7 @@ interface FeedbackItem {
   productName: string;
   userId: string;
   createdAt: string;
-  user?: { id: string; name?: string; surname?: string };
+  user?: { id: string; name?: string; surname?: string; };
 }
 
 
@@ -265,7 +266,7 @@ function useInjectOnce(id: string, css: string) {
 const formatDateUA = (iso: string) =>
   new Date(iso).toLocaleDateString("uk-UA", { day: "2-digit", month: "long", year: "numeric" });
 
-const Stars: React.FC<{ value: number }> = ({ value }) => (
+const Stars: React.FC<{ value: number; }> = ({ value }) => (
   <span className="inline-flex items-center gap-1">
     {Array.from({ length: Math.max(0, Math.min(5, Math.round(value || 0))) }).map((_, i) => (
       <span key={i}>★</span>
@@ -312,7 +313,7 @@ export const AboutSeller: React.FC = () => {
   useInjectOnce("seller-products-grid", GRID_CSS);
 
   // Роут: /seller/:sellerId
-  const { sellerId = "" } = useParams<{ sellerId: string }>();
+  const { sellerId = "" } = useParams<{ sellerId: string; }>();
 
   // ⚙️ Текущий пользователь (для проверки владения в products)
   const currentUserId = useAppSelector((s) => s.user.user?.id);
@@ -407,8 +408,8 @@ export const AboutSeller: React.FC = () => {
       totalPagesFromApi && totalPagesFromApi > 0
         ? totalPagesFromApi
         : totalItems > 0
-        ? Math.ceil(totalItems / pageSize)
-        : 1;
+          ? Math.ceil(totalItems / pageSize)
+          : 1;
     setTotalPages(Math.max(1, computed));
   };
 
@@ -418,7 +419,7 @@ export const AboutSeller: React.FC = () => {
       paper={tab !== "about"}
     >
 
-    
+
       <div className="flex gap-2 mb-4">
         {SELLER_TABS.map(({ key, label, icon }) => (
           <button
@@ -433,24 +434,24 @@ export const AboutSeller: React.FC = () => {
         ))}
       </div>
 
-  
+
       {tab === "about" && (
         <div className="flex flex-wrap gap-6 justify-between">
           <div className="flex-1 min-w-[280px]">
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 p-6 ">
               <div className="xl:col-span-12">
-               
-               {/** 
+
+
                 <h2 className="text-[28px] font-bold text-[#2b3924] flex items-center gap-2">
-                  Продавець SAVE
+                  Продавець {seller?.companyName}
                   <span className="text-[#f5b121] text-[20px] font-bold flex items-center gap-1">
                     4.6/5 <FaStar />
                   </span>
-                </h2>*/}
+                </h2>
               </div>
 
               <div className="xl:col-span-12 grid grid-cols-1 md:grid-cols-12 gap-6">
-             
+
                 <div className="md:col-span-5 bg-[#e5e5d8]/70 rounded-[5px] p-4 space-y-4">
                   {loadingInfo && !seller ? (
                     <p className="text-sm text-[#2b3924] leading-relaxed">Завантаження даних...</p>
@@ -464,9 +465,9 @@ export const AboutSeller: React.FC = () => {
                 <div className="md:col-span-3 flex flex-col gap-4">
                   <div className="bg-[#f0f0f0] rounded p-4 text-sm text-gray-800">
                     <p>{seller?.schedule || "Пн-Пт 09:00 - 18:00"}</p>
-                    
+
                   </div>
-                 {/**    <button className="bg-[#3c4e2c] hover:bg-[#2d3a20] text-white px-4 py-2 rounded text-sm font-semibold">
+                  {/**    <button className="bg-[#3c4e2c] hover:bg-[#2d3a20] text-white px-4 py-2 rounded text-sm font-semibold">
                     Діалог з продавцем
                   </button>*/}
                 </div>
@@ -508,10 +509,10 @@ export const AboutSeller: React.FC = () => {
                 </div> */}
               </div>
 
-           
+
               <div className="xl:col-span-12 grid grid-cols-2 md:grid-cols-5 gap-4 mt-4">
                 {[
-                  { label: "На NORSEN", value:'1 день', index: "01" },
+                  { label: "На NORSEN", value: '1 день', index: "01" },
                   { label: "Швидкість відправки", value: "в середньому — 48 годин", index: "02" },
                   { label: "Швидкість доставки", value: "в середньому — 7 днів", index: "03" },
                   { label: "Час відповіді", value: "в середньому — 48 годин", index: "04" },
@@ -534,10 +535,10 @@ export const AboutSeller: React.FC = () => {
         </div>
       )}
 
-    
+
       {tab === "reviews" && (
         <div className="p-6">
-        
+
 
           {loadingReviews ? (
             <div className="text-sm text-[#2b3924]">Завантаження...</div>
@@ -551,7 +552,7 @@ export const AboutSeller: React.FC = () => {
                   className="border border-[#3E4826] rounded-lg p-4"
                   style={{ background: "rgba(229, 229, 216, 0.8)" }}
                 >
-                 
+
                   <div className="flex items-start justify-between gap-4 mb-1">
                     <div>
                       <div className="font-semibold text-[#2b3924]">
@@ -571,7 +572,7 @@ export const AboutSeller: React.FC = () => {
                     </div>
                   </div>
 
-                 
+
                   <div className="text-[#0E120A] text-sm mb-3">
                     {r.content || "Без коментаря"}
                   </div>
@@ -590,12 +591,11 @@ export const AboutSeller: React.FC = () => {
         </div>
       )}
 
-      
+
       {tab === "products" && (
         <div
-          className={`container section seller-page ${
-            isOwnerView ? "own-view" : "force-buy-visible"
-          }`}
+          className={`container section seller-page ${isOwnerView ? "own-view" : "force-buy-visible"
+            }`}
         >
           {loading ? (
             <div>Завантаження...</div>

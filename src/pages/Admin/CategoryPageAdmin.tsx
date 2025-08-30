@@ -48,7 +48,7 @@ const CategoriesPage: React.FC = () => {
   const fetchCategories = async () => {
     setLoading(true);
     try {
-      const res = await fetch(API_CATEGORY);
+      const res = await fetch(API_CATEGORY + "/full-info");
       const list: CategoryDto[] = await res.json();
       setData(list);
     } catch (e) {
