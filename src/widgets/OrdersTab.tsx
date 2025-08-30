@@ -1,16 +1,17 @@
 
 import React, { useState, useEffect } from 'react';
-import { FaChevronUp, FaChevronDown, FaChevronLeft, FaChevronRight, FaCheck, FaTimes } from 'react-icons/fa';
+import { FaChevronUp, FaChevronDown, FaChevronLeft, FaChevronRight, FaCheck, FaTimes, FaStar } from 'react-icons/fa';
 import type { OrderResponse, OrderItemResponse, Product } from '@shared/types/api';
 import { useRequest } from '@shared/request/useRequest';
 import { useAppSelector } from '@store/hooks';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@store/store';
 import { formatPrice } from '@shared/lib/formatPrice';
-import { message } from 'antd';
+import { message, Modal, Input, Rate } from 'antd';
 
 const FILES_BASE_URL = 'http://localhost:5001/api/files/file/';
 const API_ORDERS = "http://localhost:8080/api/orders";
+const API_PRODUCTS = "http://localhost:8080/api/products";
 
 //const FILES_BASE_URL = "http://31.42.190.94:8080/api/files/file/";
 const ORDERS_PER_PAGE = 5;
@@ -23,12 +24,40 @@ const ORDER_STATUS_MAP: Record<number, { label: string; color: string; }> = {
   4: { label: "Скасовано", color: "text-pink-600" },
 };
 
+const { TextArea } = Input;
+
+interface ReviewData {
+  content: string;
+  ratingService: number;
+  ratingSpeed: number;
+  ratingDescription: number;
+  ratingAvailable: number;
+  productId: string;
+  userId: string;
+}
+
 const OrdersTab: React.FC = () => {
   const [orders, setOrders] = useState<OrderResponse[]>([]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [productImages, setProductImages] = useState<Record<string, string>>({});
   const [processingOrders, setProcessingOrders] = useState<Set<string>>(new Set());
+  const [reviewModal, setReviewModal] = useState<{
+    visible: boolean;
+    productId: string;
+    productName: string;
+  }>({
+    visible: false,
+    productId: '',
+    productName: '',
+  });
+  const [reviewForm, setReviewForm] = useState<Omit<ReviewData, 'productId' | 'userId'>>({
+    content: '',
+    ratingService: 0,
+    ratingSpeed: 0,
+    ratingDescription: 0,
+    ratingAvailable: 0,
+  });
 
   const { user, activeRole } = useAppSelector(state => state.user);
 
@@ -141,6 +170,75 @@ const OrdersTab: React.FC = () => {
 
   const toggleExpand = (id: string) => setExpandedId(prev => (prev === id ? null : id));
 
+  const openReviewModal = (productId: string, productName: string) => {
+    setReviewModal({
+      visible: true,
+      productId,
+      productName,
+    });
+  };
+
+  const closeReviewModal = () => {
+    setReviewModal({
+      visible: false,
+      productId: '',
+      productName: '',
+    });
+    setReviewForm({
+      content: '',
+      ratingService: 0,
+      ratingSpeed: 0,
+      ratingDescription: 0,
+      ratingAvailable: 0,
+    });
+  };
+
+  const submitReview = async () => {
+    // if (!reviewForm.content.trim()) {
+    //   message.error('Будь ласка, залиште коментар');
+    //   return;
+    // }
+
+    if (reviewForm.ratingService === 0 || reviewForm.ratingSpeed === 0 ||
+      reviewForm.ratingDescription === 0 || reviewForm.ratingAvailable === 0) {
+      message.error('Будь ласка, поставте всі оцінки');
+      return;
+    }
+
+    try {
+      const reviewData: ReviewData = {
+        ...reviewForm,
+        productId: reviewModal.productId,
+        userId: customerId || '',
+      };
+      console.log('Sending review data:', reviewData);
+
+      const response = await fetch(`${API_PRODUCTS}/feedback`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reviewData),
+      });
+
+      console.log('Response status:', response.status);
+
+      if (response.ok) {
+        message.success('Відгук успішно відправлено');
+        closeReviewModal();
+      } else {
+        const errorText = await response.text();
+        console.error('Server error:', errorText);
+        message.error('Помилка при відправці відгуку');
+      }
+    } catch (error) {
+      console.error('Request error:', error);
+      message.error('Помилка при відправці відгуку');
+    }
+  };
+  console.log(reviewForm);
+  console.log(reviewModal);
+
   return (
     <div className="space-y-4 ">
       <h2 className="text-3xl font-semibold mb-4 text-[#3E4826]">Ваші замовлення</h2>
@@ -243,14 +341,23 @@ const OrdersTab: React.FC = () => {
             </div>
 
 
-            {expandedId === String(order.id) && (
+            {expandedId === String(order.id) && activeRole === "User" && (
               <div className="mt-3 text-sm text-gray-600">
                 <div>
                   {order.items?.map((item: OrderItemResponse, i: number) => {
                     const total = (item.price ?? 0) * item.quantity;
                     return (
-                      <div key={item.id || i}>
-                        {item.productName} × {item.quantity} — {formatPrice(total, current, rates)}
+                      <div key={item.id || i} className="flex justify-between items-center py-2 border-b border-gray-200 last:border-0">
+                        <div className="flex-1">
+                          {item.productName} × {item.quantity} — {formatPrice(total, current, rates)}
+                        </div>
+                        <button
+                          onClick={() => openReviewModal(item.productId, item.product?.title)}
+                          className="flex items-center gap-1 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 ml-3"
+                        >
+                          <FaStar size={12} />
+                          Залишити відгук
+                        </button>
                       </div>
                     );
                   })}
@@ -300,6 +407,63 @@ const OrdersTab: React.FC = () => {
           </button>
         </div>
       )}
+
+      {/* Review Modal */}
+      <Modal
+        title={`Залишити відгук для ${reviewModal.productName}`}
+        open={reviewModal.visible}
+        onOk={submitReview}
+        onCancel={closeReviewModal}
+        okText="Відправити відгук"
+        cancelText="Скасувати"
+        width={600}
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-2">Коментар:</label>
+            <TextArea
+              rows={4}
+              value={reviewForm.content}
+              onChange={(e) => setReviewForm(prev => ({ ...prev, content: e.target.value }))}
+              placeholder="Поділіться своїми враженнями про товар..."
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">Оцінка сервісу:</label>
+              <Rate
+                value={reviewForm.ratingService}
+                onChange={(value) => setReviewForm(prev => ({ ...prev, ratingService: value }))}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Швидкість доставки:</label>
+              <Rate
+                value={reviewForm.ratingSpeed}
+                onChange={(value) => setReviewForm(prev => ({ ...prev, ratingSpeed: value }))}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Відповідність опису:</label>
+              <Rate
+                value={reviewForm.ratingDescription}
+                onChange={(value) => setReviewForm(prev => ({ ...prev, ratingDescription: value }))}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Наявність товару:</label>
+              <Rate
+                value={reviewForm.ratingAvailable}
+                onChange={(value) => setReviewForm(prev => ({ ...prev, ratingAvailable: value }))}
+              />
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };
