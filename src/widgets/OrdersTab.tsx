@@ -9,9 +9,9 @@ import type { RootState } from '@store/store';
 import { formatPrice } from '@shared/lib/formatPrice';
 import { message, Modal, Input, Rate } from 'antd';
 
-const FILES_BASE_URL = 'http://localhost:5001/api/files/file/';
-const API_ORDERS = "http://localhost:8080/api/orders";
-const API_PRODUCTS = "http://localhost:8080/api/products";
+const FILES_BASE_URL = __BASE_URL__ + '/api/files/file/';
+const API_ORDERS = __BASE_URL__ + "/api/orders";
+const API_PRODUCTS = __BASE_URL__ + "/api/products";
 
 //const FILES_BASE_URL = "http://31.42.190.94:8080/api/files/file/";
 const ORDERS_PER_PAGE = 5;

@@ -33,16 +33,16 @@ type FeedbackDto = {
   productName?: string | null;
   userId: string;
   createdAt: string; // ISO
-  user: { id: string; name: string; surname: string };
+  user: { id: string; name: string; surname: string; };
   status: string; // FeedbackStatus.New|Approved|Rejected (або ін.)
 };
 
 type StatusKey = "New" | "Approved" | "Rejected" | string;
 
-const API_FEEDBACK = "http://localhost:8080/api/products/feedback";
+const API_FEEDBACK = __BASE_URL__ + "/api/products/feedback";
 
 /* ===================== Мапінг статусів ===================== */
-const STATUS_META: Record<string, { color: string; label: string }> = {
+const STATUS_META: Record<string, { color: string; label: string; }> = {
   New: { color: "gold", label: "Новий" },
   Approved: { color: "green", label: "Схвалений" },
   Rejected: { color: "red", label: "Відхилений" },

@@ -5,10 +5,10 @@ import {
 } from "antd";
 import { SearchOutlined, PlusOutlined, ReloadOutlined, DatabaseOutlined } from "@ant-design/icons";
 
-const API_CATEGORIES = "http://localhost:8080/api/category";
-const API_DICT = "http://localhost:8080/api/characteristicdict";
+const API_CATEGORIES = __BASE_URL__ + "/api/category";
+const API_DICT = __BASE_URL__ + "/api/characteristicdict";
 
-type Category = { id: string; name?: string; title?: string };
+type Category = { id: string; name?: string; title?: string; };
 type Dict = {
   id: string;
   name: string;
@@ -18,24 +18,24 @@ type Dict = {
   createdAt?: string;
 };
 
-const TYPE_OPTIONS = ["string","number","boolean","select","multiselect","date","range"] as const;
+const TYPE_OPTIONS = ["string", "number", "boolean", "select", "multiselect", "date", "range"] as const;
 
 const typeColor = (t: string) =>
   t === "string" ? "blue" :
-  t === "number" ? "purple" :
-  t === "boolean" ? "green" :
-  t === "select" ? "gold" :
-  t === "multiselect" ? "magenta" :
-  t === "date" ? "cyan" :
-  t === "range" ? "volcano" : "default";
+    t === "number" ? "purple" :
+      t === "boolean" ? "green" :
+        t === "select" ? "gold" :
+          t === "multiselect" ? "magenta" :
+            t === "date" ? "cyan" :
+              t === "range" ? "volcano" : "default";
 
 const fmtDate = (iso?: string) => (iso ? new Date(iso).toLocaleString() : "—");
 
 const slugify = (s: string) =>
   s.toLowerCase()
-   .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-   .replace(/[^a-z0-9]+/g, "-")
-   .replace(/(^-|-$)/g, "");
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 
 /* ------------------ детерміновані кольори для категорій ------------------ */
 const hashCode = (str: string) => {
@@ -100,7 +100,7 @@ const CharacteristicDictAdmin: React.FC = () => {
   };
 
   const categoryColorMap = useMemo(() => {
-    const map = new Map<string, { bg: string; text: string }>();
+    const map = new Map<string, { bg: string; text: string; }>();
     categories.forEach(c => {
       const label = c.name ?? c.title ?? "(без назви)";
       map.set(c.id, colorForCategory(`${c.id}|${label}`));

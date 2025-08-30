@@ -31,7 +31,7 @@ type Order = {
   items: OrderItem[];
 };
 
-const API_ORDERS = "http://localhost:8080/api/orders";
+const API_ORDERS = __BASE_URL__ + "/api/orders";
 
 // кольори бейджів для статусів
 const STATUS_COLORS: Record<OrderStatus, { color: string; label: string; }> = {

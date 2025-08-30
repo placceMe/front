@@ -32,15 +32,15 @@ type Product = {
   quantity: number;
 };
 
-type Category = { id: string; title?: string; name?: string };
+type Category = { id: string; title?: string; name?: string; };
 type SellerUser = {
   id: string; name: string; surname: string; email: string; roles: string[]; state: string;
 };
 
 /* ===================== API ===================== */
-const API_PRODUCTS = "http://localhost:8080/api/products";
-const API_CATEGORIES = "http://localhost:8080/api/category";
-const API_USERS = "http://localhost:8080/api/users";
+const API_PRODUCTS = __BASE_URL__ + "/api/products";
+const API_CATEGORIES = __BASE_URL__ + "/api/category";
+const API_USERS = __BASE_URL__ + "/api/users";
 
 /* ============== Утиліти кольору для тегу категорії ============== */
 const hashCode = (str: string) => {

@@ -31,18 +31,18 @@ type ProductDetails = {
   mainImageUrl?: unknown; // может прийти не строка
   additionalImageUrls?: unknown; // массив/строка/что угодно
   categoryId: string;
-  category?: { id: string; name?: string; title?: string } | null;
+  category?: { id: string; name?: string; title?: string; } | null;
   sellerId?: string;
   quantity: number;
   state?: string;
   characteristics?: Array<{
     characteristicDictId: string;
     value: string;
-    characteristicDict?: { name?: string; code?: string; type?: string };
+    characteristicDict?: { name?: string; code?: string; type?: string; };
   }>;
 };
 
-const API_PRODUCTS = "http://localhost:8080/api/products";
+const API_PRODUCTS = __BASE_URL__ + "/api/products";
 const API_ORIGIN = new URL(API_PRODUCTS).origin;
 
 /** ===== Безопасная нормализация значения в строку пути ===== */
@@ -106,7 +106,7 @@ const statusTag = (s?: string) => {
 };
 
 const OrdersModerationDetailsPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string; }>();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);

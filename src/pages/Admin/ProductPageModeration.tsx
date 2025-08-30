@@ -17,10 +17,10 @@ type Product = {
   state?: string;
 };
 
-type Category = { id: string; name?: string; title?: string };
+type Category = { id: string; name?: string; title?: string; };
 
-const API_PRODUCTS = "http://localhost:8080/api/products";
-const API_CATEGORIES = "http://localhost:8080/api/category";
+const API_PRODUCTS = __BASE_URL__ + "/api/products";
+const API_CATEGORIES = __BASE_URL__ + "/api/category";
 
 /* ---------- Колір тега категорії (детермінований) ---------- */
 const hashCode = (str: string) => {
@@ -39,8 +39,8 @@ const textColorForBg = (r: number, g: number, b: number) =>
   (r * 299 + g * 587 + b * 114) / 1000 >= 140 ? "#000" : "#fff";
 const colorForCategory = (key: string) => {
   const h = hashCode(key) % 360, s = 65, l = 45;
-  const [r,g,b] = hslToRgb(h, s, l);
-  return { bg: `hsl(${h} ${s}% ${l}%)`, text: textColorForBg(r,g,b) };
+  const [r, g, b] = hslToRgb(h, s, l);
+  return { bg: `hsl(${h} ${s}% ${l}%)`, text: textColorForBg(r, g, b) };
 };
 /* ------------------------------------------------------------- */
 

@@ -29,7 +29,7 @@ type User = {
   avatarUrl?: string | null;
 };
 
-const API_URL = "http://localhost:8080/api/users";
+const API_URL = __BASE_URL__ + "/api/users";
 
 // Дозволені значення (як у бекенді)
 const ROLE_OPTIONS = ["Admin", "User", "Saler", "Moderator"] as const;

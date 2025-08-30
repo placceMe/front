@@ -15,7 +15,7 @@ type CategoryDto = {
   characteristicsCount?: number;
 };
 
-const API_CATEGORY = "http://localhost:8080/api/category";
+const API_CATEGORY = __BASE_URL__ + "/api/category";
 
 // Дозволені статуси (синхронно з моделлю CategoryState)
 const STATUS_OPTIONS = ["Active", "Inactive", "Deleted"] as const;
