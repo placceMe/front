@@ -3,15 +3,12 @@ import { useAppDispatch } from "@store/hooks";
 import { logoutAction, setUser } from "../../entities/user/model/userSlice";
 import { useNavigate } from "react-router-dom";
 
-
 export const useAuth = () => {
+  const { request, loading } = useRequest();
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
-const { request,loading } = useRequest();
-const dispatch = useAppDispatch();
-const navigate = useNavigate();
-
-
- const register = async (values: any) => {
+  const register = async (values: any) => {
     const resp = await request("/api/auth/register", {
       method: "POST",
       body: JSON.stringify({
@@ -28,13 +25,14 @@ const navigate = useNavigate();
     if (resp?.success && resp?.user?.id) {
       dispatch(setUser(resp.user));
     } else {
-      window.alert("Ми надіслали лист на вашу пошту в MailHog, для завершення реєстрації перейдіть за посиланням");
+      window.alert(
+        "Ми надіслали лист на вашу пошту в MailHog, для завершення реєстрації перейдіть за посиланням"
+      );
     }
   };
 
-    const login = async (values: { email: string; password: string; }) => {
-
-        try {
+  const login = async (values: { email: string; password: string }) => {
+    try {
       const resp = await request("/api/auth/login", {
         method: "POST",
         body: JSON.stringify(values),
@@ -52,10 +50,8 @@ const navigate = useNavigate();
       console.error("Login error:", error);
       return false;
     }
-
-
   };
-/*
+  /*
     async function logout() {
       await request("/api/auth/logout", {
         method: "POST",
@@ -64,23 +60,24 @@ const navigate = useNavigate();
     }
 */
 
-const logout = async () => {
+  const logout = async () => {
     try {
       await request("/api/auth/logout", { method: "POST" });
     } finally {
-      dispatch(logoutAction());     
+      dispatch(logoutAction());
       navigate("/", { replace: true });
     }
   };
 
-  
-   async function fetchUser() {
-      const user = await request("/api/auth/me");
-      if (user) {
-        dispatch(setUser(user));
-      } else {console.log('err')
-      }
+  async function fetchUser() {
+    const user = await request("/api/auth/me");
+    if (user) {
+      dispatch(setUser(user));
+      return user;
+    } else {
+      console.log("err");
     }
+  }
 
-  return { login, loading, register, fetchUser ,logout};
+  return { login, loading, register, fetchUser, logout };
 };

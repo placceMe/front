@@ -54,21 +54,26 @@ const AdminLayout: React.FC = () => {
   const { fetchUser } = useAuth();
 
   useEffect(() => {
+    checkAccessfunc();
 
-    fetchUser();
 
   }, []);
 
-  useEffect(() => {
-    const currentUser = user.user;
+
+
+
+  const checkAccessfunc = async () => {
+
+    const currentUser = await fetchUser();
+
     const access = checkAccess(["Admin", "Moderator"], currentUser?.roles || []);
     console.log("User access:", access);
 
-    if (!access && currentUser) {
+    if (!access) {
       navigate("/");
     }
 
-  }, [user]);
+  };
 
   const checkAccess = (roles: string[], currentRoles: string[]) => {
     return roles.some(role => currentRoles.map(r => r.toLowerCase()).includes(role.toLowerCase()));
