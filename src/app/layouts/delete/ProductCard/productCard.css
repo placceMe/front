@@ -287,3 +287,8 @@
     height: auto;
   }
 }
+.product-price--desktop { display: block; }
+
+@media (max-width: 1025px) {
+  .product-price--desktop { display: none !important; }
+}

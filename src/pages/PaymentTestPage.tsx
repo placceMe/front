@@ -33,7 +33,7 @@ const PaymentTestPage: React.FC = () => {
       }
 
       // --- РЕАЛЬНЫЙ ЗАПРОС К ТВОЕМУ БЭКУ ---
-      const res = await fetch("http://localhost:5000/api/payments/create", {
+      const res = await fetch(__BASE_URL__ + "/api/payments/create", {
 
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -46,7 +46,7 @@ const PaymentTestPage: React.FC = () => {
       });
 
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = (await res.json()) as { pageUrl: string; invoiceId: string };
+      const data = (await res.json()) as { pageUrl: string; invoiceId: string; };
 
       setPageUrl(data.pageUrl);
       setInvoiceId(data.invoiceId);

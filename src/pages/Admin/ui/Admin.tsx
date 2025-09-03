@@ -1,317 +1,133 @@
-/*import { Layout, Menu } from "antd";
-import { Content } from "antd/es/layout/layout";
-import Sider from "antd/es/layout/Sider";
-import { MdHeight } from "react-icons/md";
-import { NavLink, Outlet } from "react-router-dom";
-
-const contentStyle: React.CSSProperties = {
-    textAlign: 'center',
-    minHeight: 120,
-    lineHeight: '120px',
-    color: '#fff',
-    backgroundColor: '#0958d9',
-};
-
-const siderStyle: React.CSSProperties = {
-    textAlign: 'center',
-    lineHeight: '120px',
-    color: '#fff',
-};
-
-
-const layoutStyle = {
-    borderRadius: 8,
-    overflow: 'hidden',
-    width: '100vw',
-    minHeight: "100vh"
-};
-
-const Admin: React.FC = () => {
-    return (
-        <Layout style={layoutStyle}>
-            <Sider width="240px" style={siderStyle}>
-                <Menu
-                    style={{ height: '100%', borderRight: 0 }}
-
-                    items={[
-                        { key: 'categogories', label: <NavLink to="/admin/categories">Категории</NavLink>, icon: <MdHeight /> },
-                        { key: 'characteristics', label: <NavLink to="/admin/characteristics">Характеристики</NavLink>, icon: <MdHeight /> },
-
-                    ]}
-
-                />
-            </Sider>
-            <Content style={contentStyle}>
-                <Outlet />
-            </Content>
-
-        </Layout>
-
-    );
-};
-
-export default Admin;
-*/
-
-
-
-// pages/Admin/ui/Admin.tsx
-import React, { useMemo, useState } from "react";
-import {
-  Layout,
-  Menu,
-  ConfigProvider,
-  Button,
-  Input,
-  Dropdown,
-  Avatar,
-  Breadcrumb,
-} from "antd";
-import {
-  MdDashboard,
-  MdCategory,
-  MdTune,
-  MdLogout,
-  MdSettings,
-  MdMenu,
-} from "react-icons/md";
+// src/layouts/AdminLayout.tsx
+import React, { useEffect, useMemo, useState } from "react";
+import { Layout, Menu, Tabs } from "antd";
+import type { MenuProps } from "antd";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import {
+  UserOutlined,
+  ShoppingOutlined,
+  AppstoreOutlined,
+  TagsOutlined,
+  ShoppingCartOutlined,
+  AuditOutlined,
+  MessageOutlined
+} from "@ant-design/icons";
+import { useAuth } from "@shared/hooks/useAuth";
+import { useAppSelector } from "@store/hooks";
 
-const { Header, Content, Sider, Footer } = Layout;
+const { Header, Sider, Content } = Layout;
 
-const GREEN = {
-  primary: "#3A5A40",
-  primaryHover: "#2F4B35",
-  bg: "#F1F4F0",
-  cardBg: "#FFFFFF",
-  border: "#DCE3D8",
+type SectionKey = "administrator" | "moderator";
+
+// УСІ поточні пункти — у вкладці Адміністратор
+const ADMINISTRATOR_ITEMS: Required<MenuProps>["items"] = [
+  { key: "users", label: "Користувачі", icon: <UserOutlined /> },             // 👤 логічно
+  { key: "products", label: "Товари", icon: <ShoppingOutlined /> },           // 🛍️ товари
+  { key: "categories", label: "Категорії", icon: <AppstoreOutlined /> },      // 🗂️ категорії
+  { key: "characteristics", label: "Характеристики", icon: <TagsOutlined /> },// 🏷️ характеристики
+  { key: "orders", label: "Замовлення", icon: <ShoppingCartOutlined /> },     // 🛒 замовлення
+];
+
+// Вкладка модератора — не функціональна (disabled placeholder)
+const MODERATOR_ITEMS: Required<MenuProps>["items"] = [
+  { key: "productsmoder", label: "Товари на модерації", icon: <AuditOutlined /> },
+  { key: "feedbacksmoder", label: "Відгуки на модерації", icon: <MessageOutlined /> },
+];
+
+const ALL_SECTIONS: Record<SectionKey, Required<MenuProps>["items"]> = {
+  administrator: ADMINISTRATOR_ITEMS,
+  moderator: MODERATOR_ITEMS,
 };
 
-const HEADER_HEIGHT = 64; // фиксированная высота хедера
-const FOOTER_HEIGHT = 48; // фиксированная высота футера
+const sectionByRouteKey = (routeKey: string): SectionKey => {
+  if (ADMINISTRATOR_ITEMS.some(i => i?.key === routeKey)) return "administrator";
+  if (MODERATOR_ITEMS.some(i => i?.key === routeKey)) return "moderator";
+  return "administrator";
+};
 
-const Admin: React.FC = () => {
-  const [collapsed, setCollapsed] = useState(false);
-  const location = useLocation();
+const AdminLayout: React.FC = () => {
+  const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  // активный пункт меню
-  const selectedKey = useMemo(() => {
-    if (location.pathname.startsWith("/admin/characteristics"))
-      return "characteristics";
-    if (location.pathname.startsWith("/admin/categories"))
-      return "categories";
-    return "dashboard";
-  }, [location.pathname]);
+  const user = useAppSelector(state => state.user);
 
-  const menuItems = [
-    {
-      key: "dashboard",
-      icon: <MdDashboard size={18} />,
-      label: <NavLink to="/admin/categories">Панель</NavLink>,
-    },
-    {
-      key: "categories",
-      icon: <MdCategory size={18} />,
-      label: <NavLink to="/admin/categories">Категорії</NavLink>,
-    },
-    {
-      key: "characteristics",
-      icon: <MdTune size={18} />,
-      label: <NavLink to="/admin/characteristics">Характеристики</NavLink>,
-    },
-    {
-  key: "products",
-  icon: <MdCategory size={18} />,
-  label: <NavLink to="/admin/products">Товари</NavLink>,
-},
-{
-  key: "users",
-  icon: <MdDashboard size={18} />,
-  label: <NavLink to="/admin/users">Користувачі</NavLink>,
-},
-{
-  key: "feedback",
-  icon: <MdTune size={18} />,
-  label: <NavLink to="/admin/feedback">Відгуки</NavLink>,
-},
-  ];
+  const { fetchUser } = useAuth();
 
-  const userMenu = {
-    items: [
-      { key: "settings", icon: <MdSettings size={16} />, label: "Настройки" },
-      { type: "divider" as const },
-      {
-        key: "logout",
-        icon: <MdLogout size={16} />,
-        label: "Выйти",
-        danger: true,
-      },
-    ],
-    onClick: ({ key }: { key: string }) => {
-      if (key === "logout") navigate("/");
-    },
+  useEffect(() => {
+    checkAccessfunc();
+
+
+  }, []);
+
+
+
+
+  const checkAccessfunc = async () => {
+
+    const currentUser = await fetchUser();
+
+    const access = checkAccess(["Admin", "Moderator"], currentUser?.roles || []);
+    console.log("User access:", access);
+
+    if (!access) {
+      navigate("/");
+    }
+
   };
 
+  const checkAccess = (roles: string[], currentRoles: string[]) => {
+    return roles.some(role => currentRoles.map(r => r.toLowerCase()).includes(role.toLowerCase()));
+  };
+
+  // поточний пункт з URL (/admin/<key>)
+  const selectedKey = pathname.split("/")[2] || "categories";
+
+  // активна вкладка визначається за роутом, але міняти сам роут при перемиканні вкладок не будемо
+  const [section, setSection] = useState<SectionKey>(sectionByRouteKey(selectedKey));
+
+  const items = useMemo(() => ALL_SECTIONS[section], [section]);
+
+  // Підсвітку пункту даємо лише якщо він є в поточній вкладці (щоб не було «не того» хайлайта)
+  const keysInSection = (items || []).map(i => i!.key as string);
+  const selectedKeys = keysInSection.includes(selectedKey) ? [selectedKey] : [];
+
   return (
-    <ConfigProvider
-      theme={{
-        token: {
-          colorPrimary: GREEN.primary,
-          colorPrimaryHover: GREEN.primaryHover,
-          colorBgLayout: GREEN.bg,
-          colorBorder: GREEN.border,
-          borderRadius: 12,
-        },
-        components: {
-          Layout: {
-            headerBg: GREEN.cardBg,
-            headerPadding: "0 16px",
-            siderBg: "#223127",
-            bodyBg: GREEN.bg,
-          },
-          Menu: {
-            darkItemColor: "rgba(255,255,255,.85)",
-            darkItemBg: "#223127",
-            darkItemSelectedBg: "#1C2A22",
-            darkItemHoverBg: "#27382D",
-            itemBorderRadius: 10,
-          },
-        },
-      }}
-    >
-      <Layout style={{ minHeight: "100vh" }}>
-        <Sider
+    <Layout style={{ minHeight: "100vh" }}>
+      <Sider width={260} collapsible>
+        <div style={{ color: "white", padding: 16, fontWeight: "bold" }}>Адмін Панель</div>
+
+        <NavLink to="/"><div style={{ color: "white", padding: 16, fontWeight: "bold" }}>На головну</div></NavLink>
+        {/* Дві вкладки завжди показуються. Вимикаємо трикрапку (moreIcon) на всяк випадок. */}
+        <Tabs
+          activeKey={section}
+          onChange={(k) => setSection(k as SectionKey)}
+          items={[
+            { key: "administrator", label: "Адмін", disabled: !checkAccess(["Admin"], user.user?.roles || []) },
+            { key: "moderator", label: "Модер", disabled: !checkAccess(["Moderator", "admin"], user.user?.roles || []) },
+          ]}
+          moreIcon={null}
+        />
+
+        <Menu
           theme="dark"
-          collapsible
-          collapsed={collapsed}
-          onCollapse={setCollapsed}
-          width={240}
-          style={{
-            position: "sticky",
-            left: 0,
-            top: 0,
-            height: "100vh",
-          }}
-        >
-          {/* Лого / заголовок */}
-          <div
-            style={{
-              height: HEADER_HEIGHT,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: collapsed ? "center" : "flex-start",
-              padding: collapsed ? 0 : "0 16px",
-              color: "#fff",
-              fontWeight: 700,
-              fontSize: 16,
-              letterSpacing: 0.4,
-            }}
-          >
-            {!collapsed ? "Admin Console" : "AC"}
-          </div>
+          mode="inline"
+          selectedKeys={selectedKeys}
+          onClick={(info) => navigate(`/admin/${info.key}`)}
+          items={items}
+          style={{ borderRight: 0 }}
+        />
+      </Sider>
 
-          {/* Меню */}
-          <Menu
-            mode="inline"
-            selectedKeys={[selectedKey]}
-            items={menuItems}
-            style={{ borderRight: 0, padding: "8px 8px 16px" }}
-          />
-        </Sider>
-
-        <Layout>
-          {/* Хедер */}
-          <Header
-            style={{
-              position: "sticky",
-              top: 0,
-              zIndex: 10,
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              height: HEADER_HEIGHT,
-              lineHeight: `${HEADER_HEIGHT}px`,
-              boxSizing: "border-box",
-              background: "#fff",
-              borderBottom: `1px solid ${GREEN.border}`,
-            }}
-          >
-            <Button
-              type="text"
-              icon={<MdMenu size={18} />}
-              onClick={() => setCollapsed((c) => !c)}
-            />
-            <Breadcrumb
-              items={[
-                { title: <NavLink to="/admin/categories">Admin</NavLink> },
-                {
-                  title:
-                    selectedKey.charAt(0).toUpperCase() +
-                    selectedKey.slice(1),
-                },
-              ]}
-            />
-            <div
-              style={{
-                marginLeft: "auto",
-                display: "flex",
-                gap: 12,
-                alignItems: "center",
-              }}
-            >
-              <Input.Search
-                placeholder="Поиск по админке…"
-                allowClear
-                onSearch={(v) => console.log("search:", v)}
-                style={{ width: 320 }}
-              />
-              <Dropdown menu={userMenu} trigger={["click"]}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    cursor: "pointer",
-                  }}
-                >
-                  <Avatar size={32}>H</Avatar>
-                </div>
-              </Dropdown>
-            </div>
-          </Header>
-
-          {/* Контент */}
-          <Content style={{ padding: 16, background: GREEN.bg }}>
-            <div
-              style={{
-                background: GREEN.cardBg,
-                border: `1px solid ${GREEN.border}`,
-                borderRadius: 12,
-                padding: 16,
-                minHeight: `calc(100vh - ${HEADER_HEIGHT}px - ${FOOTER_HEIGHT}px)`,
-              }}
-            >
-              <Outlet />
-            </div>
-          </Content>
-
-          {/* Футер */}
-          <Footer
-            style={{
-              height: FOOTER_HEIGHT,
-              lineHeight: `${FOOTER_HEIGHT}px`,
-              textAlign: "center",
-              background: GREEN.bg,
-              color: "#7A857B",
-            }}
-          >
-            © {new Date().getFullYear()} Admin Console
-          </Footer>
-        </Layout>
+      <Layout>
+        <Header style={{ background: "#fff", paddingLeft: 16 }}>
+          Панель адміністратора — {section === "administrator" ? "Адмін" : "Модер"}
+        </Header>
+        <Content style={{ margin: 16, padding: 24, background: "#fff" }}>
+          <Outlet />
+        </Content>
       </Layout>
-    </ConfigProvider>
+    </Layout>
   );
 };
 
-export default Admin;
+export default AdminLayout;

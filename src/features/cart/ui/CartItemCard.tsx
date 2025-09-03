@@ -11,9 +11,9 @@ interface Props {
   onRemove: (productId: string) => void;
 }
 
-//const FILES_BASE_URL = 'http://localhost:5001/api/files/';
+const FILES_BASE_URL = __BASE_URL__ + '/api/files/';
 
-const FILES_BASE_URL = "http://31.42.190.94:8080/api/files/";
+//const FILES_BASE_URL = "http://31.42.190.94:8080/api/files/";
 
 
 
@@ -23,8 +23,8 @@ const FILES_BASE_URL = "http://31.42.190.94:8080/api/files/";
 
 export const CartItemCard = ({ item, onChangeQuantity, onRemove }: Props) => {
   const { product, quantity } = item;
-const { current, rates } = useSelector((state: RootState) => state.currency);
-const formatted = formatPrice(product.price, current, rates);
+  const { current, rates } = useSelector((state: RootState) => state.currency);
+  const formatted = formatPrice(product.price, current, rates);
 
 
   const imgUrl = product.mainImageUrl
@@ -35,7 +35,7 @@ const formatted = formatPrice(product.price, current, rates);
 
   return (
     <div className="flex items-center justify-between border-b py-4 gap-4">
- 
+
       <img
         src={imgSrc}
         alt={product.title || 'Фото товару'}

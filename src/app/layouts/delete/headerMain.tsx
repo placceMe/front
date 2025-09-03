@@ -1,8 +1,5 @@
 import React, { useState } from "react";
-import {
-  FaHeart,
-  FaUser,
-} from "react-icons/fa";
+import { FaHeart, FaUser, FaBalanceScale } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import Logo from "./Logo.png";
 import CategoriesDropdown from "../../../widgets/categoriesDropdown"; // проверь путь!
@@ -19,12 +16,13 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const [showDesktopCategories, setShowDesktopCategories] = useState(false);
   const [showMobileCategories, setShowMobileCategories] = useState(false);
-  const user = useAppSelector(state => state.user.user);
+  //  const [searchTerm, setSearchTerm] = useState('');
+  const user = useAppSelector((state) => state.user.user);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleUserClick = () => {
     if (user?.id) {
-      navigate('/profile');
+      navigate("/profile");
     } else {
       setIsModalOpen(true);
     }
@@ -69,7 +67,7 @@ const Header: React.FC = () => {
               <button
                 className="category-button flex items-center gap-2 bg-yellow-700 text-white px-4 py-2 rounded-md"
                 type="button"
-                onClick={() => setShowDesktopCategories(v => !v)}
+                onClick={() => setShowDesktopCategories((v) => !v)}
               >
                 ☰ Категорії
               </button>
@@ -78,7 +76,6 @@ const Header: React.FC = () => {
                 onClose={() => setShowDesktopCategories(false)}
               />
             </div>
-
             <SearchBox className="search-input" debounceMs={300} minLen={2} />
           </div>
 
@@ -88,7 +85,7 @@ const Header: React.FC = () => {
               <button
                 className="category-button flex items-center gap-2"
                 type="button"
-                onClick={() => setShowMobileCategories(v => !v)}
+                onClick={() => setShowMobileCategories((v) => !v)}
               >
                 ☰
               </button>
@@ -100,7 +97,14 @@ const Header: React.FC = () => {
 
             {/* Иконки для десктопа */}
             <div className="icons flex gap-4 items-center">
-              <FaHeart onClick={() => navigate('/Wishlist')} className="cursor-pointer" />
+              <FaBalanceScale
+                onClick={() => navigate("/comparison")}
+                className="cursor-pointer"
+              />
+              <FaHeart
+                onClick={() => navigate("/Wishlist")}
+                className="cursor-pointer"
+              />
               <button
                 onClick={handleUserClick}
                 className="hover:text-[#5a6b3b] focus:outline-none"
@@ -110,7 +114,7 @@ const Header: React.FC = () => {
               </button>
 
               <button
-                onClick={() => navigate('/cart')}
+                onClick={() => navigate("/cart")}
                 className="hover:text-[#5a6b3b] focus:outline-none"
                 title="Кошик"
               >
@@ -124,19 +128,19 @@ const Header: React.FC = () => {
           open={isModalOpen}
           onCancel={() => setIsModalOpen(false)}
           footer={null}
-          destroyOnClose
+          destroyOnHidden
           centered
           width="auto"
           styles={{
             mask: {
-              backgroundColor: 'rgba(0, 0, 0, 0.6)',
+              backgroundColor: "rgba(0, 0, 0, 0.6)",
             },
             wrapper: {
-              backgroundColor: 'transparent',
+              backgroundColor: "transparent",
             },
             content: {
-              backgroundColor: 'transparent',
-              boxShadow: 'none',
+              backgroundColor: "transparent",
+              boxShadow: "none",
               padding: 0,
             },
           }}
@@ -152,7 +156,10 @@ const Header: React.FC = () => {
           <span>Порівняти</span>
         </div>
          */}
-        <div className="sticky-bottom-item" onClick={() => navigate('/Wishlist')}>
+        <div
+          className="sticky-bottom-item"
+          onClick={() => navigate("/Wishlist")}
+        >
           <FaHeart />
           <span>Збережене</span>
         </div>
@@ -162,7 +169,7 @@ const Header: React.FC = () => {
           <span>Профіль</span>
         </div>
 
-        <div className="sticky-bottom-item" onClick={() => navigate('/cart')}>
+        <div className="sticky-bottom-item" onClick={() => navigate("/cart")}>
           <CartIcon />
           <span>Кошик</span>
         </div>

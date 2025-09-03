@@ -12,14 +12,21 @@ import ViewedProducts from "@pages/ViewedProducts";
 import { useAppSelector } from "@store/hooks";
 
 import AboutUsPage from "@pages/AboutUs/AboutUsPage";
-
+import Comparison from "@pages/ComparsionProductPage/ComparsionProductPage";
 import { FAQ } from "@pages/FAQ/FAQ";
 
 import PrivacyPolicy from "@pages/Policy/Policy";
+
+import UsersAdmin from "@pages/Admin/UsersPageAdmin";
+import ProductAdmin from "@pages/Admin/ProductPageAdmin";
+import CategoryAdmin from "@pages/Admin/CategoryPageAdmin";
+import CharacteristicAdmin from "@pages/Admin/CharacteristicPageAdmin";
+import ProductModer from "@pages/Admin/ProductPageModeration";
+import ProductModerationDetailsPage from "@pages/Admin/ProductPageDetailModer";
+import OrderAdmin from "@pages/Admin/OrderPageAdmin";
+import FeedbackModer from "@pages/Admin/FeedbackPageModer";
+
 import SearchResultsPage from "@features/searchProducts/ui/SearchResultsPage";
-import AdminProducts from "@features/admin/Products/ui/AdminProducts";
-import AdminUsers from "@features/admin/Users/ui/AdminUsers";
-import AdminFeedback from "@features/admin/Feedback/ui/AdminFeedback";
 import DeliveryInfoPage from "@pages/Delivery/DeliveryInfoPage";
 import { AboutSeller } from "@pages/AboutSeller.tsx";
 import EditProductPage from "@pages/EditProductPage/EditProductPage";
@@ -30,9 +37,6 @@ const Home = lazy(() => import("@pages/Home/ui/HomePage"));
 const CartPage = lazy(() => import("@pages/CartPage"));
 const CheckoutPage = lazy(() => import("@pages/CheckoutPage"));
 const AdminPage = lazy(() => import("@pages/Admin/ui/Admin"));
-
-const CategoryAdmin = lazy(() => import("@features/admin/Category/ui/CategoryAdmin"));
-const CharacteristicAdmin = lazy(() => import("@features/admin/Characteristic/ui/CharacteristicAdmin"));
 
 export const AppRouter = () => {
   const user = useAppSelector(state => state.user.user);
@@ -55,6 +59,7 @@ export const AppRouter = () => {
           { path: 'delivery', element: <DeliveryInfoPage /> },
           { path: 'faq', element: <FAQ /> },
           { path: 'policy', element: <PrivacyPolicy /> },
+          {path: 'comparison', element: <Comparison />}, // Assuming compare is similar to wishlist
           { path: 'search', element: <SearchResultsPage /> },
           { path: "products/:productId/edit", element: <EditProductPage /> },
            { path: "pay-test", element: <PaymentTestPage  /> },
@@ -81,9 +86,12 @@ export const AppRouter = () => {
         children: [
           { path: "categories", element: <CategoryAdmin /> },
           { path: "characteristics", element: <CharacteristicAdmin /> },
-          { path: "products", element: <AdminProducts /> },
-          { path: "users", element: <AdminUsers /> },
-          { path: "feedback", element: <AdminFeedback /> },
+          { path: "users", element: <UsersAdmin /> },
+          { path: "products", element: <ProductAdmin /> },
+          { path: "productsmoder", element: <ProductModer /> },
+          { path: "productsmoder/:id", element: <ProductModerationDetailsPage /> },
+          {path: "orders", element: <OrderAdmin /> },
+          {path: "feedbacksmoder", element: <FeedbackModer /> },
         ]
       },
       {

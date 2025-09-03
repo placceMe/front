@@ -1,38 +1,42 @@
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useAppSelector } from "../../app/store/hooks";
+import { useProduct } from "../../entities/product/model/fetchProduct";
+import { Spin } from "antd";
+import { ProductMainBlock } from "../../widgets/ProductMainBlock/ProductMainBlock";
+import { ProductDescriptionBlock } from "../../widgets/ProductDescriptionBlock/ProductDescriptionBlock";
+import { ProductReviewsBlock } from "../../widgets/ProductReviewsBlock/ProductReviewsBlock";
+import { ProductSpecsBlock } from "../../widgets/ProductSpecsBlock/ProductSpecsBlock";
+import productBg from "../../assets/productCard/bg.png";
 
-import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { useAppSelector } from '../../app/store/hooks';
-import { useProduct } from '../../entities/product/model/fetchProduct';
-import { Spin } from 'antd';
-import { ProductMainBlock } from '../../widgets/ProductMainBlock/ProductMainBlock';
-import { ProductDescriptionBlock } from '../../widgets/ProductDescriptionBlock/ProductDescriptionBlock';
-import { ProductReviewsBlock } from '../../widgets/ProductReviewsBlock/ProductReviewsBlock';
-import { ProductSpecsBlock } from '../../widgets/ProductSpecsBlock/ProductSpecsBlock';
-import productBg from '../../assets/productCard/bg.png';
+import { BlurBlock } from "@shared/ui/BlurBlock";
+import { TabNavFrame } from "@shared/ui/TabNavFrame/TabNavFrame";
 
-import { BlurBlock } from '@shared/ui/BlurBlock';
-import { TabNavFrame } from '@shared/ui/TabNavFrame/TabNavFrame';
-
-import ReviewsIcon from '../../assets/icons/star.svg?react';
-import SpecsIcon from '../../assets/icons/setting.svg?react';
-import InfoIcon from '../../assets/icons/info.svg?react';
-
+import ReviewsIcon from "../../assets/icons/star.svg?react";
+import SpecsIcon from "../../assets/icons/setting.svg?react";
+import InfoIcon from "../../assets/icons/info.svg?react";
 
 export const TABS = [
   {
     key: "main",
     label: "Все про товар",
-    icon: (active: boolean) => <InfoIcon fill={active ? "#fff" : "#3E4826"} width={18} height={18} />
+    icon: (active: boolean) => (
+      <InfoIcon fill={active ? "#fff" : "#3E4826"} width={18} height={18} />
+    ),
   },
   {
     key: "specs",
     label: "Характеристики",
-    icon: (active: boolean) => <SpecsIcon fill={active ? "#fff" : "#3E4826"} width={18} height={18} />
+    icon: (active: boolean) => (
+      <SpecsIcon fill={active ? "#fff" : "#3E4826"} width={18} height={18} />
+    ),
   },
   {
     key: "reviews",
     label: "Відгуки",
-    icon: (active: boolean) => <ReviewsIcon fill={active ? "#fff" : "#3E4826"} width={18} height={18} />
+    icon: (active: boolean) => (
+      <ReviewsIcon fill={active ? "#fff" : "#3E4826"} width={18} height={18} />
+    ),
   },
 ];
 export function addProductToLocalList(userId: string, productId: string) {
@@ -61,22 +65,21 @@ export function addProductToWishlist(userId: string, productId: string) {
   }
 }
 
-
 export const ProductPage = () => {
   const { id } = useParams();
   // const { product, loading } = useAppSelector(state => state.product);
   const { product, loading } = useProduct(id!);
-  const userId = useAppSelector(state => state.user.user?.id) || "guest";
+  const userId = useAppSelector((state) => state.user.user?.id) || "guest";
 
   const [tab, setTab] = useState(() => {
     const hash = window.location.hash.replace("#", "");
-    return TABS.find(t => t.key === hash) ? hash : TABS[0].key;
+    return TABS.find((t) => t.key === hash) ? hash : TABS[0].key;
   });
 
   useEffect(() => {
     const onHashChange = () => {
       const hash = window.location.hash.replace("#", "");
-      setTab(TABS.find(t => t.key === hash) ? hash : TABS[0].key);
+      setTab(TABS.find((t) => t.key === hash) ? hash : TABS[0].key);
     };
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
@@ -95,7 +98,6 @@ export const ProductPage = () => {
 
   if (loading || !product) return <Spin size="large" className="mt-10" />;
 
-
   return (
     <div className="py-8">
       <div className="">
@@ -109,8 +111,9 @@ export const ProductPage = () => {
           </div>
           {tab === "main" && <ProductMainBlock product={product} />}
           {tab === "specs" && <ProductSpecsBlock product={product} />}
-          {tab === "reviews" && <ProductReviewsBlock productId={product.id} showAll />
-}
+          {tab === "reviews" && (
+            <ProductReviewsBlock productId={product.id} showAll />
+          )}
         </BlurBlock>
 
         {tab === "main" && (
@@ -119,12 +122,10 @@ export const ProductPage = () => {
               <ProductDescriptionBlock product={product} />
               <ProductSpecsBlock product={product} />
               <ProductReviewsBlock
-  productId={product.id}
-  showAll={false}
-  onShowAllClick={() => handleChangeTab("reviews")}
-/>
-           
-
+                productId={product.id}
+                showAll={false}
+                onShowAllClick={() => handleChangeTab("reviews")}
+              />
             </div>
           </div>
         )}
