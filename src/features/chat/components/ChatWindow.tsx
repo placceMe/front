@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useChatMessages } from '../hooks/useChatMessages_new';
+import { useChatMessages } from '../hooks/useChatMessages';
 import { useChatContext } from '../contexts/ChatContext';
 
 interface ChatWindowProps {
@@ -8,21 +8,84 @@ interface ChatWindowProps {
 }
 
 export const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, onClose }) => {
-    const { connection, isConnected, currentUserId, joinChat, leaveChat, markAsRead } = useChatContext();
+    const {
+        connection,
+        isConnected,
+        currentUserId,
+        joinChat,
+        leaveChat,
+        markAsRead,
+        chats,
+
+        loadUserChats
+    } = useChatContext();
     const { messages, loadMessages, addMessage, clearMessages } = useChatMessages();
     const [isJoined, setIsJoined] = useState(false);
 
-    // Завантажуємо повідомлення при зміні чату
+
+    const currentChat = chats.find(chat => chat.id === chatId);
+
+
+
+
+
+
+
+
     useEffect(() => {
         if (chatId) {
             loadMessages(chatId);
-            markAsRead(chatId); // Позначаємо як прочитане
+            markAsRead(chatId);
         }
 
         return () => clearMessages();
     }, [chatId, loadMessages, markAsRead, clearMessages]);
 
-    // Приєднуємось до чату через SignalR
+
+    useEffect(() => {
+        if (currentUserId && chats.length === 0) {
+            console.log('Loading user chats for:', currentUserId);
+            loadUserChats(currentUserId);
+        }
+    }, [currentUserId, chats.length, loadUserChats]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     useEffect(() => {
         if (chatId && isConnected && !isJoined) {
             joinChat(chatId);
@@ -37,7 +100,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, onClose }) => {
         };
     }, [chatId, isConnected, isJoined, joinChat, leaveChat]);
 
-    // Слухаємо нові повідомлення
+
     useEffect(() => {
         if (!connection) return;
 
@@ -57,7 +120,9 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, onClose }) => {
     return (
         <div className="chat-window">
             <div className="chat-header">
-                <h3>Chat {chatId.substring(0, 8)}...</h3>
+                <div className="chat-info">
+
+                </div>
                 {onClose && (
                     <button onClick={onClose} className="close-btn">×</button>
                 )}
@@ -85,7 +150,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, onClose }) => {
     );
 };
 
-// Компонент для вводу повідомлень
+
 interface MessageInputProps {
     chatId: string;
     disabled?: boolean;
@@ -126,7 +191,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ chatId, disabled }) => {
                 onChange={(e) => setText(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Введіть повідомлення..."
-                //disabled={disabled || sending}
+
                 rows={3}
             />
             <button

@@ -3,6 +3,8 @@ import { ChatProvider, useChatContext } from '../contexts/ChatContext';
 import { ChatWindow } from '../components/ChatWindow';
 import { ChatList } from '../components/ChatList';
 import "./chat.css";
+import { ChatListSaler } from '../components/ChatListSaler';
+import { ChatListBuyer } from '../components/ChatListBuyer';
 
 interface ChatProps {
     roomId: string;
@@ -43,28 +45,31 @@ const ChatContent: React.FC<ChatContentProps> = ({
 }) => {
     const { setCurrentUserId } = useChatContext();
 
-    // Встановлюємо поточного користувача
     useEffect(() => {
         if (currentUserId) {
             setCurrentUserId(currentUserId);
         }
     }, [currentUserId, setCurrentUserId]);
 
-    // Автоматично відкриваємо чат для конкретної кімнати
-    // useEffect(() => {
-    //     if (roomId && !activeChatId) {
-    //         setActiveChatId(roomId);
-    //     }
-    // }, [roomId, activeChatId, setActiveChatId]);
+
 
     return (
         <div className="app">
             <div className="chat-container">
                 <div className="chat-sidebar">
-                    <ChatList
-                        onChatSelect={setActiveChatId}
-                        selectedChatId={activeChatId}
-                    />
+                    {
+                        activeRole.toLowerCase() === "saler" ? (
+                            <ChatListSaler
+                                onChatSelect={setActiveChatId}
+                                selectedChatId={activeChatId}
+                            />
+                        ) : (
+                            <ChatListBuyer
+                                onChatSelect={setActiveChatId}
+                                selectedChatId={activeChatId}
+                            />
+                        )
+                    }
                 </div>
 
                 <div className="chat-main">

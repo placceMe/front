@@ -1,7 +1,8 @@
 import { useState, useCallback } from "react";
 import type { Chat, CreateChatRequest } from "../types/chat.types";
+import { useAppSelector } from "@store/hooks";
 
-const API_BASE_URL = "http://localhost:5015";
+const API_BASE_URL = __BASE_URL__;
 
 export interface UseChatReturn {
   chats: Chat[];
@@ -13,6 +14,8 @@ export interface UseChatReturn {
 }
 
 export const useChat = (currentUserId: string | null): UseChatReturn => {
+  const { activeRole } = useAppSelector((state) => state.user);
+
   const [chats, setChats] = useState<Chat[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -24,6 +27,9 @@ export const useChat = (currentUserId: string | null): UseChatReturn => {
     setError(null);
 
     try {
+      const partPath =
+        activeRole?.toLowerCase() === "saler" ? "sellerId" : "buyerId";
+
       // Завантажуємо чати де користувач як seller та buyer
       const [sellerResponse, buyerResponse] = await Promise.all([
         fetch(`${API_BASE_URL}/api/chats?sellerId=${userId}`),

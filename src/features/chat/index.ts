@@ -10,8 +10,13 @@ export { ChatWindow } from "./components/ChatWindow";
 // Hooks
 export { useSignalR } from "./hooks/useSignalR";
 export { useChat } from "./hooks/useChat";
-export { useChatMessages } from "./hooks/useChatMessages_new";
 export { useNotifications } from "./hooks/useNotifications";
+export { useChatUsers } from "./hooks/useChatUsers";
+export { useChatProducts } from "./hooks/useChatProducts";
+
+// API
+export { useUsersApi } from "./api/usersApi";
+export { useProductsApi } from "./api/productsApi";
 
 // Types
 export type * from "./types/chat.types";

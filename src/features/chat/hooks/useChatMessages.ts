@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import type { ChatMessage, CreateMessageRequest } from "../types/chat.types";
 
-const API_BASE_URL = "http://localhost:5015";
+const API_BASE_URL = __BASE_URL__;
 
 export interface UseChatMessagesReturn {
   messages: ChatMessage[];

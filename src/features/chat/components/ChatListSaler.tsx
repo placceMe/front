@@ -3,6 +3,8 @@ import { useChatContext } from '../contexts/ChatContext';
 import { useChat } from '../hooks/useChat';
 import { useNotifications } from '../hooks/useNotifications';
 import type { ChatWithDetails } from '../types/chat.types';
+import { useChatProducts } from '../hooks/useChatProducts';
+import { useChatUsers } from '../hooks/useChatUsers';
 
 interface ChatListProps {
     onChatSelect: (chatId: string) => void;
@@ -10,7 +12,7 @@ interface ChatListProps {
     className?: string;
 }
 
-export const ChatList: React.FC<ChatListProps> = ({
+export const ChatListSaler: React.FC<ChatListProps> = ({
     onChatSelect,
     selectedChatId,
     className = ''
@@ -18,7 +20,10 @@ export const ChatList: React.FC<ChatListProps> = ({
     const { currentUserId } = useChatContext();
     const { chats, loadUserChats, loading } = useChat(currentUserId);
     const { notifications } = useNotifications();
+    const { users, loadUsersByIds, loading: usersLoading, error: usersError } = useChatUsers();
     const [chatsWithDetails, setChatsWithDetails] = useState<ChatWithDetails[]>([]);
+    const { products, loadProductsByIds, loading: productsLoading, error: productsError } = useChatProducts();
+
 
 
     useEffect(() => {
@@ -26,7 +31,43 @@ export const ChatList: React.FC<ChatListProps> = ({
             loadUserChats(currentUserId);
         }
     }, [currentUserId, loadUserChats]);
-    console.log(currentUserId);
+
+    useEffect(() => {
+        if (chats.length > 0 && currentUserId) {
+
+            const userIds = new Set<string>();
+            chats.forEach(chat => {
+                if (chat.sellerId !== currentUserId) {
+                    userIds.add(chat.sellerId);
+                }
+                if (chat.buyerId !== currentUserId) {
+                    userIds.add(chat.buyerId);
+                }
+            });
+
+
+            if (userIds.size > 0) {
+                loadUsersByIds(Array.from(userIds));
+            }
+        }
+    }, [chats, currentUserId, loadUsersByIds]);
+
+
+    useEffect(() => {
+        if (chats.length > 0) {
+
+            const productIds = new Set<string>();
+            chats.forEach(chat => {
+                productIds.add(chat.productId);
+            });
+
+
+            if (productIds.size > 0) {
+                loadProductsByIds(Array.from(productIds));
+            }
+        }
+    }, [chats, loadProductsByIds]);
+
 
     useEffect(() => {
         const enrichChats = async () => {
@@ -37,11 +78,21 @@ export const ChatList: React.FC<ChatListProps> = ({
 
                 const isUserSeller = chat.sellerId === currentUserId;
                 const otherParticipantId = isUserSeller ? chat.buyerId : chat.sellerId;
+                const otherParticipantUser = users[otherParticipantId];
+
+
+                const product = products[chat.productId];
 
                 return {
                     ...chat,
                     unreadCount: unreadForChat,
-                    otherParticipant: {
+                    productTitle: product?.title,
+                    productImageUrl: product?.mainImageUrl,
+                    otherParticipant: otherParticipantUser ? {
+                        id: otherParticipantUser.id,
+                        name: `${otherParticipantUser.name} ${otherParticipantUser.surname}`,
+                        avatarUrl: otherParticipantUser.avatarUrl
+                    } : {
                         id: otherParticipantId,
                         name: `User ${otherParticipantId.substring(0, 8)}...`,
                         avatarUrl: undefined
@@ -56,9 +107,9 @@ export const ChatList: React.FC<ChatListProps> = ({
         };
 
         enrichChats();
-    }, [chats, notifications, currentUserId]);
+    }, [chats, notifications, currentUserId, users, products]);
 
-    if (loading) {
+    if (loading || usersLoading || productsLoading) {
         return (
             <div className={`chat-list loading ${className}`}>
                 <div className="loading-state">
@@ -80,6 +131,8 @@ export const ChatList: React.FC<ChatListProps> = ({
             </div>
         );
     }
+
+    console.log("Chats loaded:", chatsWithDetails);
 
     return (
         <div className={`chat-list ${className}`}>
@@ -156,7 +209,7 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ chat, isSelected, onClick }
 
                 <div className="chat-preview">
                     <span className="product-info">
-                        Product: {chat.productId.substring(0, 8)}...
+                        Product: {chat.productTitle || chat.productId.substring(0, 8) + '...'}
                     </span>
                     {chat.lastMessage && (
                         <p className="last-message">

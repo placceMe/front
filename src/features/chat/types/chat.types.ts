@@ -42,10 +42,19 @@ export interface ChatUser {
   avatarUrl?: string;
 }
 
+export interface ChatSeller {
+  id: string;
+  companyName: string;
+  description: string;
+  schedule: string;
+  contacts: { type: string; value: string }[];
+}
+
 export interface ChatWithDetails extends Chat {
   productTitle?: string;
   productImageUrl?: string;
   lastMessage?: ChatMessage;
   unreadCount: number;
   otherParticipant?: ChatUser;
+  sellerInfo?: ChatSeller;
 }

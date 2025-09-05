@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useChatContext } from '../contexts/ChatContext';
 import { useChat } from '../hooks/useChat';
 import { useNotifications } from '../hooks/useNotifications';
+import { useChatSalerInfo } from '../hooks/useChatSalerInfo';
 import type { ChatWithDetails } from '../types/chat.types';
+import { useChatProducts } from '../hooks/useChatProducts';
 
 interface ChatListProps {
     onChatSelect: (chatId: string) => void;
@@ -10,7 +12,7 @@ interface ChatListProps {
     className?: string;
 }
 
-export const ChatList: React.FC<ChatListProps> = ({
+export const ChatListBuyer: React.FC<ChatListProps> = ({
     onChatSelect,
     selectedChatId,
     className = ''
@@ -18,6 +20,12 @@ export const ChatList: React.FC<ChatListProps> = ({
     const { currentUserId } = useChatContext();
     const { chats, loadUserChats, loading } = useChat(currentUserId);
     const { notifications } = useNotifications();
+    const { products, loadProductsByIds, loading: productsLoading, error: productsError } = useChatProducts();
+
+
+
+    const { salerInfos, loadSalerInfoByIds, loading: salerInfosLoading } = useChatSalerInfo();
+
     const [chatsWithDetails, setChatsWithDetails] = useState<ChatWithDetails[]>([]);
 
 
@@ -26,7 +34,41 @@ export const ChatList: React.FC<ChatListProps> = ({
             loadUserChats(currentUserId);
         }
     }, [currentUserId, loadUserChats]);
-    console.log(currentUserId);
+
+    useEffect(() => {
+        if (chats.length > 0 && currentUserId) {
+
+            const sellerUserIds = new Set<string>();
+            chats.forEach(chat => {
+
+                if (chat.sellerId !== currentUserId) {
+                    sellerUserIds.add(chat.sellerId);
+                }
+            });
+
+
+            if (sellerUserIds.size > 0) {
+                loadSalerInfoByIds(Array.from(sellerUserIds));
+            }
+        }
+    }, [chats, currentUserId]);
+
+
+    useEffect(() => {
+        if (chats.length > 0) {
+
+            const productIds = new Set<string>();
+            chats.forEach(chat => {
+                productIds.add(chat.productId);
+            });
+
+
+            if (productIds.size > 0) {
+                loadProductsByIds(Array.from(productIds));
+            }
+        }
+    }, [chats, loadProductsByIds]);
+
 
     useEffect(() => {
         const enrichChats = async () => {
@@ -35,15 +77,31 @@ export const ChatList: React.FC<ChatListProps> = ({
                 const unreadForChat = notifications.filter(n => n.chatId === chat.id).length;
 
 
-                const isUserSeller = chat.sellerId === currentUserId;
-                const otherParticipantId = isUserSeller ? chat.buyerId : chat.sellerId;
+                const sellerInfo = salerInfos[chat.sellerId];
+
+
+                const product = products[chat.productId];
 
                 return {
                     ...chat,
                     unreadCount: unreadForChat,
-                    otherParticipant: {
-                        id: otherParticipantId,
-                        name: `User ${otherParticipantId.substring(0, 8)}...`,
+                    productTitle: product?.title,
+                    productImageUrl: product?.mainImageUrl,
+                    sellerInfo: sellerInfo ? {
+                        id: sellerInfo.id,
+                        companyName: sellerInfo.companyName,
+                        description: sellerInfo.description,
+                        schedule: sellerInfo.schedule,
+                        contacts: sellerInfo.contacts
+                    } : undefined,
+
+                    otherParticipant: sellerInfo ? {
+                        id: chat.sellerId,
+                        name: sellerInfo.companyName,
+                        avatarUrl: undefined
+                    } : {
+                        id: chat.sellerId,
+                        name: `Seller ${chat.sellerId.substring(0, 8)}...`,
                         avatarUrl: undefined
                     }
                 } as ChatWithDetails;
@@ -56,9 +114,9 @@ export const ChatList: React.FC<ChatListProps> = ({
         };
 
         enrichChats();
-    }, [chats, notifications, currentUserId]);
+    }, [chats, notifications, currentUserId, salerInfos, products]);
 
-    if (loading) {
+    if (loading || salerInfosLoading || productsLoading) {
         return (
             <div className={`chat-list loading ${className}`}>
                 <div className="loading-state">
@@ -80,6 +138,10 @@ export const ChatList: React.FC<ChatListProps> = ({
             </div>
         );
     }
+
+    console.log("salerInfos:", salerInfos);
+
+    console.log("Chats loaded:", chatsWithDetails);
 
     return (
         <div className={`chat-list ${className}`}>
@@ -147,7 +209,7 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ chat, isSelected, onClick }
             <div className="chat-content">
                 <div className="chat-header">
                     <h4 className="chat-title">
-                        {chat.otherParticipant?.name || 'Unknown User'}
+                        {chat.otherParticipant?.name || 'Unknown Seller'}
                     </h4>
                     <span className="chat-date">
                         {formatDate(chat.createdAt)}
@@ -156,8 +218,23 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ chat, isSelected, onClick }
 
                 <div className="chat-preview">
                     <span className="product-info">
-                        Product: {chat.productId.substring(0, 8)}...
+                        Product: {chat.productTitle || chat.productId.substring(0, 8) + '...'}
                     </span>
+                    {chat.sellerInfo && (
+                        <div className="seller-info">
+                            <p className="seller-description">
+                                {chat.sellerInfo.description.length > 50
+                                    ? chat.sellerInfo.description.substring(0, 50) + '...'
+                                    : chat.sellerInfo.description
+                                }
+                            </p>
+                            {chat.sellerInfo.schedule && (
+                                <p className="seller-schedule">
+                                    Schedule: {chat.sellerInfo.schedule}
+                                </p>
+                            )}
+                        </div>
+                    )}
                     {chat.lastMessage && (
                         <p className="last-message">
                             {chat.lastMessage.body}
