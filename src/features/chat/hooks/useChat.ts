@@ -1,299 +1,96 @@
-import { useCallback, useEffect, useState } from "react";
-import { useReciveChat } from "./useReciveChat";
-import { useRequest } from "@shared/request/useRequest";
+import { useState, useCallback } from "react";
+import type { Chat, CreateChatRequest } from "../types/chat.types";
 
-interface ChatMessage {
-  id: string;
-  chatId: string;
-  senderId: string;
-  content: string;
-  sentAt: Date;
-  isRead: boolean;
-  // Optionally, you can add a 'chat' property if needed for navigation
-  // chat?: ChatInfo;
+const API_BASE_URL = "http://localhost:5015";
+
+export interface UseChatReturn {
+  chats: Chat[];
+  loading: boolean;
+  error: string | null;
+  loadUserChats: (userId: string) => Promise<void>;
+  createChat: (request: CreateChatRequest) => Promise<Chat | null>;
+  refreshChats: () => Promise<void>;
 }
 
-interface ChatInfo {
-  id: string;
-  name: string;
-  description?: string;
-  participantCount?: number;
-  lastActivity?: Date;
-}
+export const useChat = (currentUserId: string | null): UseChatReturn => {
+  const [chats, setChats] = useState<Chat[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-interface ChatData {
-  chatInfo: ChatInfo;
-  messages: ChatMessage[];
-}
+  const loadUserChats = useCallback(async (userId: string) => {
+    if (!userId) return;
 
-interface ChatsState {
-  [chatId: string]: ChatData;
-}
+    setLoading(true);
+    setError(null);
 
-interface UseChatProps {
-  receiver: ReturnType<typeof useReciveChat>;
-  roomId: string;
-}
-
-export const useChat = ({ receiver, roomId }: UseChatProps) => {
-  const { request: sendMessageRequest, loading: isSendingMessage } =
-    useRequest();
-  const { request: startChatRequest, loading: isStartingChat } = useRequest();
-  const { request: getMyChatsRequest, loading: isLoadingMyChats } =
-    useRequest();
-  const { request: getSpecificChatRequest, loading: isLoadingSpecificChat } =
-    useRequest();
-  const { request: getChatMessagesRequest, loading: isLoadingMessages } =
-    useRequest();
-
-  const {
-    isConnected,
-    startConnection,
-    stopConnection,
-    joinRoom,
-    leaveRoom,
-    isJoiningRoom,
-    connection,
-  } = receiver;
-
-  const [chats, setChats] = useState<ChatsState>({});
-
-  // Initialize chat if it doesn't exist
-  const initializeChat = useCallback(
-    (chatId: string, chatInfo: Partial<ChatInfo>) => {
-      setChats((prev) => {
-        if (prev[chatId]) return prev;
-
-        return {
-          ...prev,
-          [chatId]: {
-            chatInfo: {
-              id: chatId,
-              name: chatInfo.name || `Chat ${chatId}`,
-              ...chatInfo,
-            },
-            messages: [],
-          },
-        };
-      });
-    },
-    []
-  );
-
-  const sendMessage = useCallback(
-    async (message: string, chatId?: string) => {
-      const targetChatId = chatId || roomId;
-      if (!targetChatId || !message.trim()) return;
-
-      try {
-        await sendMessageRequest(`/api/chat/${targetChatId}/messages`, {
-          method: "POST",
-          body: JSON.stringify({
-            content: message.trim(),
-          }),
-        });
-      } catch (error) {
-        console.error("Failed to send message:", error);
-      }
-    },
-    [sendMessageRequest, roomId]
-  );
-
-  const startChatWithSeller = useCallback(
-    async (productId: string) => {
-      try {
-        const response = await startChatRequest("/api/chat/start", {
-          method: "POST",
-          body: JSON.stringify({
-            productId,
-          }),
-        });
-        return response;
-      } catch (error) {
-        console.error("Failed to start chat:", error);
-        throw error;
-      }
-    },
-    [startChatRequest]
-  );
-
-  const getMyChats = useCallback(async () => {
     try {
-      const response = await getMyChatsRequest("/api/chat/my-chats");
-      return response;
-    } catch (error) {
-      console.error("Failed to get chats:", error);
-      throw error;
+      // Завантажуємо чати де користувач як seller та buyer
+      const [sellerResponse, buyerResponse] = await Promise.all([
+        fetch(`${API_BASE_URL}/api/chats?sellerId=${userId}`),
+        fetch(`${API_BASE_URL}/api/chats?buyerId=${userId}`),
+      ]);
+
+      const sellerChats = sellerResponse.ok ? await sellerResponse.json() : [];
+      const buyerChats = buyerResponse.ok ? await buyerResponse.json() : [];
+
+      // Об'єднуємо та видаляємо дублікати
+      const allChats = [...sellerChats, ...buyerChats];
+      const uniqueChats = allChats.filter(
+        (chat, index, self) => index === self.findIndex((c) => c.id === chat.id)
+      );
+
+      setChats(uniqueChats);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load chats");
+    } finally {
+      setLoading(false);
     }
-  }, [getMyChatsRequest]);
+  }, []);
 
-  const getSpecificChat = useCallback(
-    async (chatId: string) => {
+  const createChat = useCallback(
+    async (request: CreateChatRequest): Promise<Chat | null> => {
+      setLoading(true);
+      setError(null);
+
       try {
-        const response = await getSpecificChatRequest(`/api/chat/${chatId}`);
-        return response;
-      } catch (error) {
-        console.error("Failed to get chat:", error);
-        throw error;
-      }
-    },
-    [getSpecificChatRequest]
-  );
+        const response = await fetch(`${API_BASE_URL}/api/chats`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(request),
+        });
 
-  const getChatMessages = useCallback(
-    async (chatId: string, page: number = 1, pageSize: number = 50) => {
-      try {
-        const response = await getChatMessagesRequest(
-          `/api/chat/${chatId}/messages?page=${page}&pageSize=${pageSize}`
-        );
-        return response;
-      } catch (error) {
-        console.error("Failed to get chat messages:", error);
-        throw error;
-      }
-    },
-    [getChatMessagesRequest]
-  );
-
-  const loadChatMessages = useCallback(
-    async (chatId: string, page: number = 1, pageSize: number = 50) => {
-      try {
-        const messages = await getChatMessages(chatId, page, pageSize);
-
-        setChats((prev) => ({
-          ...prev,
-          [chatId]: {
-            ...prev[chatId],
-            messages:
-              page === 1
-                ? messages
-                : [...(prev[chatId]?.messages || []), ...messages],
-          },
-        }));
-
-        return messages;
-      } catch (error) {
-        console.error("Failed to load chat messages:", error);
-        throw error;
-      }
-    },
-    [getChatMessages]
-  );
-
-  const addMessageToChat = useCallback(
-    (chatId: string, message: ChatMessage) => {
-      setChats((prev) => {
-        if (!prev[chatId]) {
-          // Initialize chat if it doesn't exist
-          return {
-            ...prev,
-            [chatId]: {
-              chatInfo: {
-                id: chatId,
-                name: `Chat ${chatId}`,
-                lastActivity: message.sentAt,
-              },
-              messages: [message],
-            },
-          };
+        if (!response.ok) {
+          throw new Error(`Failed to create chat: ${response.status}`);
         }
 
-        return {
-          ...prev,
-          [chatId]: {
-            ...prev[chatId],
-            chatInfo: {
-              ...prev[chatId].chatInfo,
-              lastActivity: message.sentAt,
-            },
-            messages: [...prev[chatId].messages, message],
-          },
-        };
-      });
+        const newChat = await response.json();
+
+        // Додаємо до списку чатів
+        setChats((prev) => [newChat, ...prev]);
+
+        return newChat;
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to create chat");
+        return null;
+      } finally {
+        setLoading(false);
+      }
     },
     []
   );
 
-  const updateChatInfo = useCallback(
-    (chatId: string, updates: Partial<ChatInfo>) => {
-      setChats((prev) => {
-        if (!prev[chatId]) return prev;
-
-        return {
-          ...prev,
-          [chatId]: {
-            ...prev[chatId],
-            chatInfo: {
-              ...prev[chatId].chatInfo,
-              ...updates,
-            },
-          },
-        };
-      });
-    },
-    []
-  );
-
-  // Get current chat data
-  const currentChat = roomId ? chats[roomId] : null;
-  const currentMessages = currentChat?.messages || [];
-
-  // Handle incoming messages from SignalR
-  const processIncomingMessage = useCallback(
-    (message: ChatMessage) => {
-      addMessageToChat(message.chatId, message);
-    },
-    [addMessageToChat]
-  );
-
-  useEffect(() => {
-    if (!connection) return;
-
-    connection.on("ReceiveMessage", processIncomingMessage);
-
-    return () => {
-      connection.off("ReceiveMessage", processIncomingMessage);
-    };
-  }, [connection, processIncomingMessage]);
+  const refreshChats = useCallback(async () => {
+    if (currentUserId) {
+      await loadUserChats(currentUserId);
+    }
+  }, [currentUserId, loadUserChats]);
 
   return {
-    // Connection state
-    isConnected,
-    isJoiningRoom,
-    roomId,
-
-    // Loading states
-    isSendingMessage,
-    isStartingChat,
-    isLoadingMyChats,
-    isLoadingSpecificChat,
-    isLoadingMessages,
-
-    // Chat data
     chats,
-    currentChat,
-    currentMessages,
-
-    // Room management
-    joinRoom,
-    leaveRoom,
-    initializeChat,
-
-    // Messaging
-    sendMessage,
-    addMessageToChat,
-    updateChatInfo,
-    // processIncomingMessage,
-
-    // API methods
-    startChatWithSeller,
-    getMyChats,
-    getSpecificChat,
-    getChatMessages,
-    loadChatMessages,
-
-    // Connection management
-    startConnection,
-    stopConnection,
+    loading,
+    error,
+    loadUserChats,
+    createChat,
+    refreshChats,
   };
 };

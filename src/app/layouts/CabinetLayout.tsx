@@ -1,20 +1,14 @@
-import React from "react";
 import { useAppSelector } from "@store/hooks";
-import { TabNavFrame } from "@shared/ui/TabNavFrame/TabNavFrame";
 import { RoleSwitcher } from "@features/role/ui/RoleSwitcher";
 import warriorBg from "../../assets/bg/bg_buyer.png";
 import supplierBg from "../../assets/bg/bg_seller.png";
-import { ViewedProducts } from "@pages/ViewedProducts";
-import { Wishlist } from "@pages/Wishlist";
-import { BlurBlock } from "@shared/ui/BlurBlock";
-import { TABS_SUPPLIER } from "../../widgets/SupplierTabs/ui/SupplierTabs";
-import { TABS_WARRIOR } from "../../widgets/WariorTabs/ui/WariorTabs";
 
-import RegistrationForm from "../../widgets/RegistarationForm";
-import OrdersTab from "../../widgets/OrdersTab";
+import { BlurBlock } from "@shared/ui/BlurBlock";
+
 import { BecomeSellerButton } from "@features/role/ui/BecomeSellerButton";
-import { AddProductCard } from "../../widgets/AddProductCard";
-import SellerProfilePage from "@pages/SellerProfilePage";
+import { UserCabinet } from "@features/cabinet/UserCabinet";
+import { SalerCabinet } from "@features/cabinet/SalerCabinet";
+
 
 const HERO_IMAGES = {
   User: warriorBg,
@@ -23,63 +17,16 @@ const HERO_IMAGES = {
 
 export const CabinetLayout = () => {
   const user = useAppSelector(state => state.user.user);
-  const role = (useAppSelector(state => state.user.activeRole) as "User" | "Saler") || "User";
-  const TABS = role === "Saler" ? TABS_SUPPLIER : TABS_WARRIOR;
+  const activeRole = (useAppSelector(state => state.user.activeRole) as "User" | "Saler") || "User";
+  const isMain = true;
 
-
-  const TAB_CONTENT: Record<string, React.ReactNode> = role === "Saler"
-    ? {
-       home: <SellerProfilePage />,
-        products: user?.id && <AddProductCard sellerId={user.id} />,
-        orders: <OrdersTab />,
-      }
-    : {
-        info: user && <RegistrationForm user={user} />,
-        orders: <OrdersTab />,
-        favourite: <Wishlist />,
-        viewed: <ViewedProducts />,
-      };
-
-
-  const [tab, setTab] = React.useState(() => {
-    const hash = window.location.hash.replace("#", "");
-    return TABS.find(t => t.key === hash) ? hash : TABS[0].key;
-  });
-
-
-  React.useEffect(() => {
-    const onHashChange = () => {
-      const hash = window.location.hash.replace("#", "");
-      setTab(TABS.find(t => t.key === hash) ? hash : TABS[0].key);
-    };
-    window.addEventListener("hashchange", onHashChange);
-    return () => window.removeEventListener("hashchange", onHashChange);
-  }, [TABS]);
-
- 
-  React.useEffect(() => {
-    const hash = window.location.hash.replace("#", "");
-    if (!TABS.find(t => t.key === hash)) {
-      setTab(TABS[0].key);
-      window.location.hash = `#${TABS[0].key}`;
-    }
- 
-  }, [role, TABS]);
-
-
-  const handleChangeTab = (key: string) => {
-    setTab(key);
-    window.location.hash = `#${key}`;
-  };
-
-  const isMain = tab === TABS[0].key;
 
   return (
     <BlurBlock
-      backgroundImage={isMain ? HERO_IMAGES[role] : undefined}
+      backgroundImage={isMain ? HERO_IMAGES[activeRole] : undefined}
       paper={!isMain}
     >
-       <style>{`
+      <style>{`
         .cabinet-head{
           display:flex; align-items:center; justify-content:space-between;
           gap:12px; margin-bottom:16px; flex-wrap:wrap;
@@ -136,15 +83,7 @@ export const CabinetLayout = () => {
           .cabinet-become{ justify-self:end; }
         }
       `}</style>
-         <div className="cabinet-head">
-        {/* Табы: передаём класс для мобильного свайпа */}
-        <TabNavFrame
-          tabs={TABS}
-          value={tab}
-          onChange={handleChangeTab}
-          className="cabinet-tabs"
-        />
-
+      <div className="cabinet-head">
         {/* Переключатель роли + кнопка продавца */}
         <div className="flex items-center gap-2">
           <div className="cabinet-role">
@@ -157,9 +96,12 @@ export const CabinetLayout = () => {
           )}
         </div>
       </div>
+
       <div>
-        {TAB_CONTENT[tab]}
+        {activeRole === "User" && <UserCabinet />}
+        {activeRole === "Saler" && <SalerCabinet />}
       </div>
+
     </BlurBlock>
   );
 };

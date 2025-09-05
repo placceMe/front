@@ -22,57 +22,14 @@ type SalerInfoDto = {
   updatedAt: string;
 };
 
-const SellerProfilePage: React.FC = () => {
+const SellerProfilePage: React.FC<{ info: SalerInfoDto | null; }> = ({ info }) => {
   const userId = useAppSelector((s) => s.user.user?.id);
   const { request } = useRequest();
   const [form] = Form.useForm();
 
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [info, setInfo] = useState<SalerInfoDto | null>(null);
 
-  // useEffect: типизируй как  S A L E R I n f o D t o | null
-  useEffect(() => {
-    if (!userId) return;
-    let ignore = false;
-    setLoading(true);
-
-    request<SalerInfoDto | null>(`/api/salerinfo/by-user/${userId}`)
-      .then((data) => {
-        if (ignore) return;
-
-        if (data) {
-          setInfo(data);
-          form.setFieldsValue({
-            companyName: data.companyName ?? "",
-            description: data.description ?? "",
-            schedule: data.schedule ?? "",
-            contacts: data.contacts?.length ? data.contacts : [{ type: "", value: "" }],
-          });
-        } else {
-          setInfo(null);
-          form.setFieldsValue({
-            companyName: "",
-            description: "",
-            schedule: "",
-            contacts: [{ type: "", value: "" }],
-          });
-        }
-      })
-      .catch(() => {
-        if (ignore) return;
-        setInfo(null);
-        form.setFieldsValue({
-          companyName: "",
-          description: "",
-          schedule: "",
-          contacts: [{ type: "", value: "" }],
-        });
-      })
-      .finally(() => { if (!ignore) setLoading(false); });
-
-    return () => { ignore = true; };
-  }, [userId, form]);
 
 
   const onFinish = async (values: any) => {
@@ -113,13 +70,11 @@ const SellerProfilePage: React.FC = () => {
 
           if (!fresh) {
             // сервер вернул 404/пусто — просто обновим локально, чтобы не падать
-            setInfo((prev) => prev ? { ...prev, ...basePayload, updatedAt: new Date().toISOString() } as SalerInfoDto : prev);
             message.success("Профіль продавця оновлено");
             return;
           }
 
           // fresh точно не null — можно безопасно обращаться к полям
-          setInfo(fresh);
           form.setFieldsValue({
             companyName: fresh.companyName ?? "",
             description: fresh.description ?? "",
@@ -137,7 +92,6 @@ const SellerProfilePage: React.FC = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ ...basePayload, userId }),
         });
-        setInfo(created);
         message.success("Профіль продавця створено");
       }
     } catch (e) {
