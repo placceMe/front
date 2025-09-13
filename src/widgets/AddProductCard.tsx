@@ -581,7 +581,7 @@ export const AddProductCard = ({ sellerId }: AddProductCardProps) => {
 
   useEffect(() => {
     request<Category[]>("/api/category").then((data) => {
-      if (data) setCategories(data.filter((cat) => cat.status === "Active"));
+      if (data) setCategories(data);
     });
   }, []);
 

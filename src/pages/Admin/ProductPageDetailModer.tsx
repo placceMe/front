@@ -19,6 +19,7 @@ import {
   DeleteOutlined,
   ReloadOutlined,
 } from "@ant-design/icons";
+import { ProductGallery } from "../../widgets/ProductGallery/ProductGallery";
 
 /** ===== Типи (узгоджені з беком) ===== */
 type ProductDetails = {
@@ -44,6 +45,8 @@ type ProductDetails = {
 
 const API_PRODUCTS = __BASE_URL__ + "/api/products";
 const API_ORIGIN = new URL(API_PRODUCTS).origin;
+const FILES_BASE_URL = __BASE_URL__ + '/api/files/file/';
+
 
 /** ===== Безопасная нормализация значения в строку пути ===== */
 const coerceToPathString = (v: unknown): string => {
@@ -63,13 +66,13 @@ const resolveImageUrl = (u: unknown) => {
   // уже абсолютный или data/blob
   if (/^(data:|blob:|https?:\/\/)/i.test(s)) return s;
   try {
-    return new URL(s.startsWith("/") ? s : `/${s}`, API_ORIGIN).toString();
+    return new URL(s.startsWith("/") ? '/files/file'+  s : `/${s}`, API_ORIGIN+'/files/file').toString();
   } catch {
     return s;
   }
 };
 
-/** ===== additionalImageUrls может быть чем угодно: делаем список строк ===== */
+/** ===== additionalImageUrls может быть чем угодно: делаем список строк =====
 const splitMaybeCommaList = (val: unknown): string[] => {
   if (!val) return [];
   if (Array.isArray(val)) {
@@ -81,6 +84,24 @@ const splitMaybeCommaList = (val: unknown): string[] => {
   const s = coerceToPathString(val);
   if (!s) return [];
   // если пришла строка с запятыми
+  return s
+    .split(",")
+    .map((x) => x.trim())
+    .filter(Boolean);
+};
+ */
+const splitMaybeCommaList = (val: unknown): string[] => {
+  if (!val) return [];
+  if (Array.isArray(val)) {
+    // Уже массив - просто очищаем и фильтруем
+    return val
+      .map(coerceToPathString)
+      .map((x) => x.trim())
+      .filter(Boolean);
+  }
+  const s = coerceToPathString(val);
+  if (!s) return [];
+  // Строка с запятыми
   return s
     .split(",")
     .map((x) => x.trim())
@@ -165,7 +186,7 @@ const OrdersModerationDetailsPage: React.FC = () => {
     }
   };
 
-  /** ===== Список изображений (устойчиво к любым типам) ===== */
+  /** ===== Список изображений (устойчиво к любым типам) ===== 
   const images = useMemo(() => {
     if (!item) return [] as string[];
     const list: string[] = [];
@@ -180,7 +201,28 @@ const OrdersModerationDetailsPage: React.FC = () => {
     const uniq = Array.from(new Set([...list, ...extras]));
     return uniq;
   }, [item]);
+*/
+const images = useMemo(() => {
+  if (!item) return [] as string[];
+  const list: string[] = [];
 
+  // Главное изображение - добавляем BASE_URL
+  if (item.mainImageUrl) {
+    const mainImg = coerceToPathString(item.mainImageUrl);
+    if (mainImg) {
+      // Если уже полный URL, оставляем как есть, иначе добавляем BASE
+      const fullMainImg = mainImg.startsWith('http') ? mainImg : FILES_BASE_URL + mainImg;
+      list.push(fullMainImg);
+    }
+  }
+
+  // Дополнительные изображения 
+  const extras = splitMaybeCommaList(item.additionalImageUrls)
+    .map(img => img.startsWith('http') ? img : FILES_BASE_URL + img)
+    .filter(Boolean);
+
+  return [...list, ...extras];
+}, [item]);
   return (
     <div>
       {/* Верхня панель навігації */}
@@ -244,7 +286,7 @@ const OrdersModerationDetailsPage: React.FC = () => {
 
       <Divider />
 
-      {/* Фото */}
+  {/* Фото */}
       <Card title="Фотографії" style={{ marginBottom: 16 }}>
         {images.length ? (
           <Image.PreviewGroup>
@@ -265,10 +307,10 @@ const OrdersModerationDetailsPage: React.FC = () => {
               ))}
             </div>
           </Image.PreviewGroup>
-        ) : (
-          <Typography.Text type="secondary">Немає зображень</Typography.Text>
-        )}
-      </Card>
+  ) : (
+    <Typography.Text type="secondary">Немає зображень</Typography.Text>
+  )}
+</Card>
 
       {/* Основні поля */}
       <Card title="Інформація" style={{ marginBottom: 16 }} loading={loading}>
@@ -316,7 +358,7 @@ const OrdersModerationDetailsPage: React.FC = () => {
           <Descriptions column={1} bordered size="small">
             {item.characteristics.map((c, idx) => {
               const label =
-                c.characteristicDict?.name ??
+                c.name ??
                 c.characteristicDict?.code ??
                 c.characteristicDictId ??
                 `#${idx + 1}`;

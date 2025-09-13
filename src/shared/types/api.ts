@@ -71,6 +71,7 @@ export type Characteristic = {
   charesteristicDictId: string;
   characteristicDictId?: string;
   name?: string;
+  characteristicDict: CharacteristicDict;
 };
 
 export type CharacteristicDict = {

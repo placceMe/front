@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useChatMessages } from '../hooks/useChatMessages';
 import { useChatContext } from '../contexts/ChatContext';
+import SendIcon from '../../../assets/icons/send.svg?react'
 
 interface ChatWindowProps {
     chatId: string;
@@ -16,76 +17,52 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, onClose }) => {
         leaveChat,
         markAsRead,
         chats,
-
         loadUserChats
     } = useChatContext();
     const { messages, loadMessages, addMessage, clearMessages } = useChatMessages();
     const [isJoined, setIsJoined] = useState(false);
 
+    // Используем ref для отслеживания последнего загруженного chatId
+    const lastLoadedChatId = useRef<string | null>(null);
+    const hasLoadedUserChats = useRef(false);
 
     const currentChat = chats.find(chat => chat.id === chatId);
 
-
-
-
-
-
-
-
-    useEffect(() => {
-        if (chatId) {
+    // ✅ ИСПРАВЛЕНИЕ 1: Мемоизируем функции, чтобы они не пересоздавались
+    const handleLoadMessages = useCallback(() => {
+        if (chatId && lastLoadedChatId.current !== chatId) {
             loadMessages(chatId);
             markAsRead(chatId);
+            lastLoadedChatId.current = chatId;
         }
+    }, [chatId]); // Убираем функции из зависимостей!
 
-        return () => clearMessages();
-    }, [chatId, loadMessages, markAsRead, clearMessages]);
+    const handleClearMessages = useCallback(() => {
+        clearMessages();
+        lastLoadedChatId.current = null;
+    }, []); // Мемоизируем функцию очистки
 
-
+    // ✅ ИСПРАВЛЕНИЕ 2: Загружаем сообщения только при смене chatId
     useEffect(() => {
-        if (currentUserId && chats.length === 0) {
+        if (chatId) {
+            handleLoadMessages();
+        }
+        
+        return () => {
+            handleClearMessages();
+        };
+    }, [chatId]); // Только chatId в зависимостях!
+
+    // ✅ ИСПРАВЛЕНИЕ 3: Загружаем чаты пользователя только один раз
+    useEffect(() => {
+        if (currentUserId && !hasLoadedUserChats.current) {
             console.log('Loading user chats for:', currentUserId);
             loadUserChats(currentUserId);
+            hasLoadedUserChats.current = true;
         }
-    }, [currentUserId, chats.length, loadUserChats]);
+    }, [currentUserId]); // Убираем chats.length!
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    // ✅ ИСПРАВЛЕНИЕ 4: Улучшаем управление подключением к чату
     useEffect(() => {
         if (chatId && isConnected && !isJoined) {
             joinChat(chatId);
@@ -98,35 +75,28 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, onClose }) => {
                 setIsJoined(false);
             }
         };
-    }, [chatId, isConnected, isJoined, joinChat, leaveChat]);
+    }, [chatId, isConnected]); // Убираем isJoined из зависимостей!
 
+    // ✅ ИСПРАВЛЕНИЕ 5: Мемоизируем обработчик сообщений
+    const handleMessage = useCallback((message: any) => {
+        if (message.chatId === chatId) {
+            addMessage(message);
+        }
+    }, [chatId]); // Только chatId в зависимостях
 
     useEffect(() => {
         if (!connection) return;
-
-        const handleMessage = (message: any) => {
-            if (message.chatId === chatId) {
-                addMessage(message);
-            }
-        };
 
         connection.on('MessageCreated', handleMessage);
 
         return () => {
             connection.off('MessageCreated', handleMessage);
         };
-    }, [connection, chatId, addMessage]);
+    }, [connection, handleMessage]); // Используем мемоизированный обработчик
 
     return (
         <div className="chat-window">
-            <div className="chat-header">
-                <div className="chat-info">
-
-                </div>
-                {onClose && (
-                    <button onClick={onClose} className="close-btn">×</button>
-                )}
-            </div>
+         
 
             <div className="messages-container">
                 {messages.map((message) => (
@@ -150,19 +120,19 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, onClose }) => {
     );
 };
 
-
 interface MessageInputProps {
     chatId: string;
     disabled?: boolean;
 }
 
-const MessageInput: React.FC<MessageInputProps> = ({ chatId, disabled }) => {
+const MessageInput: React.FC<MessageInputProps> = React.memo(({ chatId, disabled }) => {
     const [text, setText] = useState('');
     const [sending, setSending] = useState(false);
     const { sendMessage } = useChatMessages();
     const { currentUserId } = useChatContext();
 
-    const handleSend = async () => {
+    // ✅ ИСПРАВЛЕНИЕ 6: Мемоизируем обработчик отправки
+    const handleSend = useCallback(async () => {
         if (!text.trim() || !currentUserId || sending) return;
 
         setSending(true);
@@ -175,14 +145,14 @@ const MessageInput: React.FC<MessageInputProps> = ({ chatId, disabled }) => {
             setText('');
         }
         setSending(false);
-    };
+    }, [chatId, currentUserId, text, sending, sendMessage]);
 
-    const handleKeyPress = (e: React.KeyboardEvent) => {
+    const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             handleSend();
         }
-    };
+    }, [handleSend]);
 
     return (
         <div className="message-input">
@@ -190,8 +160,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ chatId, disabled }) => {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Введіть повідомлення..."
-
+                placeholder="Напишіть повідомлення..."
                 rows={3}
             />
             <button
@@ -199,8 +168,8 @@ const MessageInput: React.FC<MessageInputProps> = ({ chatId, disabled }) => {
                 disabled={!text.trim() || disabled || sending}
                 className="send-btn"
             >
-                {sending ? '⏳' : '📤'}
+                {sending ? '⏳' : <SendIcon className="icon" />}
             </button>
         </div>
     );
-};
+});

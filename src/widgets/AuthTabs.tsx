@@ -126,7 +126,7 @@ export const AuthTabs: React.FC<AuthTabsProps> = ({ onSuccess }) => {
     if (pendingRedirect && user?.id) {
       setPendingRedirect(false);
       // важно: модалка уже закрылась onSuccess из формы
-      setTimeout(() => navigate("/profile#info"), 0);
+      setTimeout(() => navigate("/profile#u-info"), 0);
     }
   }, [pendingRedirect, user?.id, navigate]);
 

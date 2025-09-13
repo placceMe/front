@@ -19,7 +19,8 @@ export function useCheckout() {
     });
 
     if (response) {
-      navigate(`/order-success/${response.id}`);
+      alert("Замовлення успішно створено! На вашу пошту прийде підтвердження замовлення")
+      navigate(`/profile#u-orders`);
       setTimeout(() => {
         dispatch(setCart([]));
         dispatch(resetForm());

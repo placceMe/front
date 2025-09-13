@@ -1,0 +1,62 @@
+/* локальная обёртка */
+.root {
+  width: 100%;
+}
+
+/* всё внутри неё глобально таргетим к AntD классам */
+.root :global(.ant-tabs-nav) {
+  margin: 0 0 16px;
+}
+.root :global(.ant-tabs-nav)::before {
+  border-bottom: none !important; /* вот это убирает линию */
+  opacity: 0 !important;
+}
+
+.root :global(.ant-tabs-nav-list) {
+  gap: 8px;
+}
+.root :global(.ant-tabs-nav-wrap) {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.root :global(.ant-tabs-nav-wrap::-webkit-scrollbar) {
+  display: none;
+}
+
+.root :global(.ant-tabs-tab) {
+  margin: 0;
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid #cbd5b5;
+  background: #edf1e3;
+  transition: all .18s ease;
+}
+
+.root :global(.ant-tabs-tab:hover) {
+  background: #e3e9d7;
+}
+
+.root :global(.ant-tabs-tab .ant-tabs-tab-btn) {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #2b3924;
+  line-height: 1;
+}
+
+.root :global(.ant-tabs-tab.ant-tabs-tab-active) {
+  background: #2b3924;
+  border-color: #2b3924;
+  box-shadow: 0 6px 14px rgba(43,57,36,.18);
+}
+
+.root :global(.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn) {
+  color: #fff;
+}
+
+.root :global(.ant-tabs-ink-bar) {
+  display: none;
+}

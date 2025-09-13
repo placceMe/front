@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 import { ChatProvider, useChatContext } from '../contexts/ChatContext';
 import { ChatWindow } from '../components/ChatWindow';
 import { ChatList } from '../components/ChatList';
@@ -12,11 +12,12 @@ interface ChatProps {
     currentUserId?: string;
 }
 
-export const Chat: React.FC<ChatProps> = ({ roomId, activeRole, currentUserId }) => {
+// ✅ ИСПРАВЛЕНИЕ 7: Мемоизируем основной компонент
+export const Chat: React.FC<ChatProps> = memo(({ roomId, activeRole, currentUserId }) => {
     const [activeChatId, setActiveChatId] = useState<string | null>(null);
 
     return (
-        <ChatProvider signalRUrl="http://localhost:5015/hubs/chat">
+        <ChatProvider signalRUrl="http://localhost:5005/hubs/chat">
             <ChatContent
                 roomId={roomId}
                 activeRole={activeRole}
@@ -26,7 +27,7 @@ export const Chat: React.FC<ChatProps> = ({ roomId, activeRole, currentUserId })
             />
         </ChatProvider>
     );
-};
+});
 
 interface ChatContentProps {
     roomId: string;
@@ -36,7 +37,8 @@ interface ChatContentProps {
     setActiveChatId: (chatId: string | null) => void;
 }
 
-const ChatContent: React.FC<ChatContentProps> = ({
+// ✅ ИСПРАВЛЕНИЕ 8: Мемоизируем контент и коллбеки
+const ChatContent: React.FC<ChatContentProps> = memo(({
     roomId,
     activeRole,
     currentUserId,
@@ -45,27 +47,49 @@ const ChatContent: React.FC<ChatContentProps> = ({
 }) => {
     const { setCurrentUserId } = useChatContext();
 
+    // ✅ ИСПРАВЛЕНИЕ 9: Мемоизируем коллбеки
+    const handleChatSelect = useCallback((chatId: string | null) => {
+        setActiveChatId(chatId);
+    }, [setActiveChatId]);
+
+    const handleCloseChat = useCallback(() => {
+        setActiveChatId(null);
+    }, [setActiveChatId]);
+
+    // ✅ ИСПРАВЛЕНИЕ 10: Устанавливаем currentUserId только один раз
     useEffect(() => {
         if (currentUserId) {
             setCurrentUserId(currentUserId);
         }
     }, [currentUserId, setCurrentUserId]);
 
-
-
     return (
         <div className="app">
+          <h2
+  style={{
+    color: '#3E4826',
+    fontSize: 'clamp(22px, 2.4vw + 12px, 36px)',
+    fontWeight: 600,
+    margin: '0 0 12px',
+    lineHeight: 1.2,
+    padding:12
+  }}
+>
+  Листування з продавцями
+</h2>
+
             <div className="chat-container">
+           
                 <div className="chat-sidebar">
                     {
                         activeRole.toLowerCase() === "saler" ? (
                             <ChatListSaler
-                                onChatSelect={setActiveChatId}
+                                onChatSelect={handleChatSelect}
                                 selectedChatId={activeChatId}
                             />
                         ) : (
                             <ChatListBuyer
-                                onChatSelect={setActiveChatId}
+                                onChatSelect={handleChatSelect}
                                 selectedChatId={activeChatId}
                             />
                         )
@@ -76,19 +100,15 @@ const ChatContent: React.FC<ChatContentProps> = ({
                     {activeChatId ? (
                         <ChatWindow
                             chatId={activeChatId}
-                            onClose={() => setActiveChatId(null)}
+                            onClose={handleCloseChat}
                         />
                     ) : (
                         <div className="no-chat-selected">
-                            <div className="welcome-message">
-                                <h3>Welcome to Chat</h3>
-                                <p>Select a chat from the list to start messaging</p>
-
-                            </div>
+                            
                         </div>
                     )}
                 </div>
             </div>
         </div>
     );
-};
+});

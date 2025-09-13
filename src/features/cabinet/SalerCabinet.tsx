@@ -1,5 +1,7 @@
 import OrderIcon from '../../assets/icons/order.svg?react';
 import UserIcon from '../../assets/icons/user.svg?react';
+import ProductIcon from '../../assets/icons/item.svg?react';
+import MessageIcon from '../../assets/icons/message.svg?react';
 import { Tabs, type TabsProps } from 'antd';
 import { Chat } from '@features/chat/ui/Chat';
 import OrdersTab from '@widgets/OrdersTab';
@@ -9,8 +11,21 @@ import { AddProductCard } from '../../widgets/AddProductCard';
 import { useRequest } from '@shared/request/useRequest';
 import { useEffect, useState } from 'react';
 import type { SalerInfoDto } from '@shared/types/api';
+import styles from "./CabinetTabs.module.css";
+import { BlurBlock } from '@shared/ui/BlurBlock';
+import supplierBg from "../../assets/bg/bg_seller.png";
+import { SellerOrders } from '@features/order/ui/SellerOrders';
 
-export const SalerCabinet = () => {
+
+const HASH_PREFIX = "s-";
+const DEF = "home";
+
+const getTabFromHash = () => {
+  const raw = window.location.hash.replace("#", "");
+  return raw.startsWith(HASH_PREFIX) ? raw.slice(HASH_PREFIX.length) : DEF;
+};
+
+export const SalerCabinet = ({ onMainChange }: { onMainChange: (val: boolean) => void }) => {
     const { user, activeRole } = useAppSelector(state => state.user);
     const userId = user?.id;
 
@@ -18,9 +33,19 @@ export const SalerCabinet = () => {
 
     const [loading, setLoading] = useState(false);
     const [info, setInfo] = useState<SalerInfoDto | null>(null);
+    const [activeKey, setActiveKey] = useState(getTabFromHash);
+
+     useEffect(() => {
+    if (!window.location.hash.startsWith(`#${HASH_PREFIX}`)) {
+      window.location.hash = `#${HASH_PREFIX}${DEF}`;
+    }
+    const onHashChange = () => setActiveKey(getTabFromHash());
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
 
     // useEffect: типизируй как  S A L E R I n f o D t o | null
-    useEffect(() => {
+    useEffect(() => { 
         if (!userId) return;
         let ignore = false;
         setLoading(true);
@@ -46,6 +71,14 @@ export const SalerCabinet = () => {
 
         return () => { ignore = true; };
     }, [userId]);
+    const onChange = (key: string) => {
+    setActiveKey(key);
+    window.location.hash = `#${HASH_PREFIX}${key}`;
+  };
+    useEffect(() => {
+    onMainChange?.(activeKey === "home");
+  }, [activeKey, onMainChange]);
+
 
     const t: TabsProps["items"] = [
         {
@@ -57,30 +90,32 @@ export const SalerCabinet = () => {
         {
             key: 'products',
             label: 'Товари',
-            icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M16 11V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V11M5 11H19L20 21H4L5 11Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>,
-            children: user?.id ? <AddProductCard sellerId={user.id} /> : null
+            icon: <ProductIcon className="w-4.5 h-4.5"/>,
+            children: info?.id ? <AddProductCard sellerId={info?.id} /> : null
         },
         {
             key: 'orders',
             label: 'Замовлення',
             icon: <OrderIcon className="w-4 h-4" />,
-            children: <OrdersTab />
+            children: info?.id ? <SellerOrders sellerId={String(info.id)} /> : null
+
         },
         {
             key: 'chat',
             label: 'Чат',
-            children: <Chat activeRole={activeRole} roomId={info?.id} currentUserId={info?.id} />,
-            icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 4H20C21.1046 4 22 4.89543 22 6V18C22 19.1046 21.1046 20 20 20H6L4 22V6C4 4.89543 4.89543 4 6 4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            children: <Chat
+      activeRole={activeRole} roomId={info?.id} 
+      currentUserId={info?.id}                 // ← саме user.id
+      initialChatId={new URLSearchParams(location.search).get('chatId') ?? undefined}
+    />,
+            icon: <MessageIcon  className="w-4 h-4" />
         },
     ];
 
+
     return (
-        <div>
-            <Tabs items={t} destroyOnHidden />
-        </div>
+    <div className={styles.root}>
+      <Tabs items={t} activeKey={activeKey} onChange={onChange} destroyOnHidden />
+    </div>
     );
 };

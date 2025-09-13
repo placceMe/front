@@ -4,6 +4,8 @@ export interface Chat {
   sellerId: string;
   buyerId: string;
   createdAt: string;
+  sellerName : string;
+  title : string;
 }
 
 export interface ChatMessage {

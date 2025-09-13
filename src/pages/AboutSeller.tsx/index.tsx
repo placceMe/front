@@ -196,6 +196,7 @@ import ProductCard from "../../app/layouts/delete/ProductCard/ProductCard";
 
 // ✅ возьмём id текущего юзера из стора (подставь свой селектор/путь)
 import { useAppSelector } from "@store/hooks";
+import { ContactSellerButton } from "@features/chat/ui/ContactSellerButton";
 
 
 const SELLER_TABS = [
@@ -276,7 +277,7 @@ function fetchSellerInfo(userId: string) {
   if (!userId) return Promise.reject(new Error("no userId"));
   const c = infoCache.get(userId);
   if (c) return c;
-  const p = fetch(`${__BASE_URL__}/api/salerinfo/by-user/${userId}`, {
+  const p = fetch(`${__BASE_URL__}/api/salerinfo/${userId}`, {
     credentials: "include",
     headers: { Accept: "application/json" },
   }).then(async (r) => {
@@ -461,9 +462,10 @@ export const AboutSeller: React.FC = () => {
                     <p>{seller?.schedule || "Пн-Пт 09:00 - 18:00"}</p>
 
                   </div>
-                  {/**    <button className="bg-[#3c4e2c] hover:bg-[#2d3a20] text-white px-4 py-2 rounded text-sm font-semibold">
-                    Діалог з продавцем
-                  </button>*/}
+                 
+
+
+
                 </div>
 
                 {/**  

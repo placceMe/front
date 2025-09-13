@@ -18,7 +18,7 @@ const categoriesSlice = createSlice({
   reducers: {
     setCategories: (state, action: PayloadAction<Category[]>) => {
       state.all = action.payload;
-      state.active = action.payload.filter(cat => cat.status === 'Active');
+      state.active = action.payload;
     },
   },
 });

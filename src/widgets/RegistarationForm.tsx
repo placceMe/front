@@ -134,7 +134,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ user }) => {
       dispatch(setUser(updatedUser));
       window.alert("Дані оновлено!");
       // ✅ если нужен переход — делай тут:
-      navigate("/profile#info");
+      navigate("/profile#u-info");
     } else {
       window.alert("Помилка оновлення!");
     }

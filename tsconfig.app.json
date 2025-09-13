@@ -24,16 +24,27 @@
     "noUncheckedSideEffectImports": true,
     "baseUrl": "src",
     "paths": {
-      "@pages/*": ["pages/*"],
-      "@store/*": ["app/store/*"],
-      "@shared/*": ["shared/*"],
-       "@features/*": ["features/*"]
+      "@pages/*": [
+        "pages/*"
+      ],
+      "@store/*": [
+        "app/store/*"
+      ],
+      "@shared/*": [
+        "shared/*"
+      ],
+      "@features/*": [
+        "features/*"
+      ],
+      "@widgets/*": [
+        "widgets/*"
+      ],
+          "@entities/*": ["entities/*"],
     }
   },
   "include": [
     "src",
     "vite-env.d.ts",
-    "src/shared/types/**/*.d.ts" 
+    "src/shared/types/**/*.d.ts"
   ],
-   
 }

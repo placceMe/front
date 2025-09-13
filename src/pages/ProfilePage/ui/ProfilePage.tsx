@@ -58,7 +58,7 @@ React.useEffect(() => {
   };
 
   const SUPPLIER_TAB_CONTENT: Record<string, React.ReactNode> = {
-    home: <SellerProfilePage/>,
+    home: <SellerProfilePage info={sellerInfo ?? null}/>,
 products: loading ? (
   <div>Завантаження профілю спорядника…</div>
 ) : notFound ? (

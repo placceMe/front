@@ -30,7 +30,30 @@ const SellerProfilePage: React.FC<{ info: SalerInfoDto | null; }> = ({ info }) =
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
-
+  // ВАЖНО: Заполняем форму когда получаем данные
+  useEffect(() => {
+    console.log('Info received:', info); // Для отладки
+    
+    if (info) {
+      const formData = {
+        companyName: info.companyName || "",
+        description: info.description || "",
+        schedule: info.schedule || "",
+        contacts: info.contacts?.length ? info.contacts : [{ type: "", value: "" }],
+      };
+      
+      console.log('Setting form data:', formData); // Для отладки
+      form.setFieldsValue(formData);
+    } else {
+      // Если нет данных, устанавливаем пустые значения по умолчанию
+      form.setFieldsValue({
+        companyName: "",
+        description: "",
+        schedule: "",
+        contacts: [{ type: "", value: "" }],
+      });
+    }
+  }, [info, form]);
 
   const onFinish = async (values: any) => {
     if (!userId) return;
@@ -58,33 +81,20 @@ const SellerProfilePage: React.FC<{ info: SalerInfoDto | null; }> = ({ info }) =
           body: JSON.stringify(basePayload),
         });
 
-        if (info?.id) {
-          await request(`/api/salerinfo/${info.id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(basePayload), // без userId
-          });
+        // Получаем обновленные данные
+        const fresh = await request<SalerInfoDto | null>(`/api/salerinfo/by-user/${userId}`);
 
-          // NB: тип указываем как ... | null
-          const fresh = await request<SalerInfoDto | null>(`/api/salerinfo/by-user/${userId}`);
-
-          if (!fresh) {
-            // сервер вернул 404/пусто — просто обновим локально, чтобы не падать
-            message.success("Профіль продавця оновлено");
-            return;
-          }
-
-          // fresh точно не null — можно безопасно обращаться к полям
+        if (fresh) {
+          // Обновляем форму с свежими данными
           form.setFieldsValue({
             companyName: fresh.companyName ?? "",
             description: fresh.description ?? "",
             schedule: fresh.schedule ?? "",
             contacts: fresh.contacts?.length ? fresh.contacts : [{ type: "", value: "" }],
           });
-
-          message.success("Профіль продавця оновлено");
         }
 
+        message.success("Профіль продавця оновлено");
       } else {
         // CREATE (POST с userId)
         const created = await request<SalerInfoDto>(`/api/salerinfo`, {
@@ -92,16 +102,24 @@ const SellerProfilePage: React.FC<{ info: SalerInfoDto | null; }> = ({ info }) =
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ ...basePayload, userId }),
         });
+        
+        // Обновляем форму созданными данными
+        form.setFieldsValue({
+          companyName: created.companyName ?? "",
+          description: created.description ?? "",
+          schedule: created.schedule ?? "",
+          contacts: created.contacts?.length ? created.contacts : [{ type: "", value: "" }],
+        });
+        
         message.success("Профіль продавця створено");
       }
     } catch (e) {
+      console.error('Ошибка сохранения профиля продавца:', e);
       message.error("Не вдалося зберегти дані");
     } finally {
       setSaving(false);
     }
   };
-
-
 
   return (
     <div className="max-w-[1200px] mx-auto p-6">
@@ -222,51 +240,6 @@ const SellerProfilePage: React.FC<{ info: SalerInfoDto | null; }> = ({ info }) =
               </div>
             </Form>
           </Col>
-
-          {/* Правая колонка — прев’ю 
-          <Col xs={24} md={10}>
-            <Card
-              title="Контактна інформація компанії"
-              bordered
-              style={BLUR_STYLE}
-              className="rounded-2xl"
-            >
-              <div className="space-y-2">
-                <div>
-                  <span className="font-semibold">Назва:</span>{" "}
-                  {form.getFieldValue("companyName") ||
-                    info?.companyName ||
-                    "—"}
-                </div>
-                <div>
-                  <span className="font-semibold">Опис:</span>{" "}
-                  {form.getFieldValue("description") ||
-                    info?.description ||
-                    "—"}
-                </div>
-                <div>
-                  <span className="font-semibold">Графік:</span>{" "}
-                  {form.getFieldValue("schedule") || info?.schedule || "—"}
-                </div>
-                <div>
-                  <span className="font-semibold">Контакти:</span>
-                  <ul className="list-disc ml-5 mt-1">
-                    {(contactItemsPreview.length
-                      ? contactItemsPreview
-                      : info?.contacts || []
-                    ).map((c, i) => (
-                      <li key={i}>
-                        <span className="uppercase">{c.type}</span>: {c.value}
-                      </li>
-                    ))}
-                    {!contactItemsPreview.length && !(info?.contacts?.length) && (
-                      <li>—</li>
-                    )}
-                  </ul>
-                </div>
-              </div>
-            </Card>
-          </Col>*/}
         </Row>
       )}
     </div>

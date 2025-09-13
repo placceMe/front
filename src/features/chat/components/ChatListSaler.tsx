@@ -50,7 +50,7 @@ export const ChatListSaler: React.FC<ChatListProps> = ({
                 loadUsersByIds(Array.from(userIds));
             }
         }
-    }, [chats, currentUserId, loadUsersByIds]);
+    }, []);
 
 
     useEffect(() => {
@@ -121,24 +121,30 @@ export const ChatListSaler: React.FC<ChatListProps> = ({
     }
 
     if (chats.length === 0) {
-        return (
-            <div className={`chat-list empty ${className}`}>
-                <div className="empty-state">
-                    <div className="empty-icon">💬</div>
-                    <h3>No chats yet</h3>
-                    <p>Start a conversation with a seller</p>
-                </div>
-            </div>
-        );
-    }
+  return (
+    <div className={`chat-list ${className}`}>
+      {/* заголовок слева можно не показывать — по желанию */}
+      {/* <div className="chat-list-header"><h2>Chats (0)</h2></div> */}
+
+      <div className="chat-list-items">
+        <div className="chat-empty-card" role="status" aria-live="polite">
+          <div className="empty-icon" aria-hidden></div>
+          <div className="empty-texts">
+            <h3 className="empty-title">Немає чатів</h3>
+            <p className="empty-subtitle">Почніть переписку з продавцем</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
     console.log("Chats loaded:", chatsWithDetails);
 
     return (
         <div className={`chat-list ${className}`}>
-            <div className="chat-list-header">
-                <h2>Chats ({chats.length})</h2>
-            </div>
+            
 
             <div className="chat-list-items">
                 {chatsWithDetails.map((chat) => (

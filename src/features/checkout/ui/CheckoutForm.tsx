@@ -186,8 +186,8 @@ export const CheckoutForm = ({ onSubmit }: Props) => {
         >
           <Radio.Group className="flex flex-col gap-2">
             <Radio value="np-branch">Доставка Новою Поштою</Radio>
-            <Radio value="np-courier">Кур'єр Нової Пошти</Radio>
-            <Radio value="self-pickup">Самовивіз</Radio>
+          
+   
           </Radio.Group>
         </Form.Item>
 

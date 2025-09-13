@@ -174,7 +174,7 @@ const toggleFavorite = (prod: any) => {
         </Space>
       </GlassCard>
       {/* Product Seller Block */}
-      <ProductSellerBlock userId={product.sellerId} />
+      <ProductSellerBlock sellerId={product.sellerId} productId={product.id}/>
 
       {/* Purchase Options Card */}
       <Card

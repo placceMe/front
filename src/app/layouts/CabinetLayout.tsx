@@ -8,6 +8,7 @@ import { BlurBlock } from "@shared/ui/BlurBlock";
 import { BecomeSellerButton } from "@features/role/ui/BecomeSellerButton";
 import { UserCabinet } from "@features/cabinet/UserCabinet";
 import { SalerCabinet } from "@features/cabinet/SalerCabinet";
+import { useEffect, useState } from "react";
 
 
 const HERO_IMAGES = {
@@ -18,14 +19,14 @@ const HERO_IMAGES = {
 export const CabinetLayout = () => {
   const user = useAppSelector(state => state.user.user);
   const activeRole = (useAppSelector(state => state.user.activeRole) as "User" | "Saler") || "User";
-  const isMain = true;
+  const [isMain, setIsMain] = useState(true);
 
+    useEffect(() => {
+    setIsMain(true);
+  }, [activeRole]);
 
   return (
-    <BlurBlock
-      backgroundImage={isMain ? HERO_IMAGES[activeRole] : undefined}
-      paper={!isMain}
-    >
+      <BlurBlock backgroundImage={isMain ? HERO_IMAGES[activeRole] : undefined} paper={!isMain}>
       <style>{`
         .cabinet-head{
           display:flex; align-items:center; justify-content:space-between;
@@ -84,24 +85,24 @@ export const CabinetLayout = () => {
         }
       `}</style>
       <div className="cabinet-head">
-        {/* Переключатель роли + кнопка продавца */}
-        <div className="flex items-center gap-2">
-          <div className="cabinet-role">
-            <RoleSwitcher />
-          </div>
-          {!user?.roles.includes("Saler") && (
-            <div className="cabinet-become">
-              <BecomeSellerButton />
-            </div>
-          )}
-        </div>
+  <div className="flex items-center gap-2 ml-auto">
+    <div className="cabinet-role">
+      <RoleSwitcher />
+    </div>
+    {!user?.roles.includes("Saler") && (
+      <div className="cabinet-become">
+        <BecomeSellerButton />
       </div>
+    )}
+  </div>
+</div>
+
 
       <div>
-        {activeRole === "User" && <UserCabinet />}
-        {activeRole === "Saler" && <SalerCabinet />}
+         {activeRole === "User" && <UserCabinet onMainChange={setIsMain} />}
+        {activeRole === "Saler" && <SalerCabinet onMainChange={setIsMain} />}
       </div>
-
-    </BlurBlock>
+</BlurBlock>
+   
   );
 };
