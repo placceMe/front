@@ -17,7 +17,7 @@ import { FAQ } from "@pages/FAQ/FAQ";
 
 import PrivacyPolicy from "@pages/Policy/Policy";
 
-import UsersAdmin from "@pages/Admin/UsersPageAdmin";
+import UsersPage from "@pages/Admin/UsersPageAdmin";
 import ProductAdmin from "@pages/Admin/ProductPageAdmin";
 import CategoryAdmin from "@pages/Admin/CategoryPageAdmin";
 import CharacteristicAdmin from "@pages/Admin/CharacteristicPageAdmin";
@@ -59,13 +59,13 @@ export const AppRouter = () => {
           { path: 'delivery', element: <DeliveryInfoPage /> },
           { path: 'faq', element: <FAQ /> },
           { path: 'policy', element: <PrivacyPolicy /> },
-          {path: 'comparison', element: <Comparison />}, // Assuming compare is similar to wishlist
+          { path: 'comparison', element: <Comparison /> }, // Assuming compare is similar to wishlist
           { path: 'search', element: <SearchResultsPage /> },
           { path: "products/:productId/edit", element: <EditProductPage /> },
-           { path: "pay-test", element: <PaymentTestPage  /> },
-          
-           
-          
+          { path: "pay-test", element: <PaymentTestPage /> },
+
+
+
 
           ...(user?.id ? [{
             path: "/profile",
@@ -86,12 +86,12 @@ export const AppRouter = () => {
         children: [
           { path: "categories", element: <CategoryAdmin /> },
           { path: "characteristics", element: <CharacteristicAdmin /> },
-          { path: "users", element: <UsersAdmin /> },
+          { path: "users", element: <UsersPage /> },
           { path: "products", element: <ProductAdmin /> },
           { path: "productsmoder", element: <ProductModer /> },
           { path: "productsmoder/:id", element: <ProductModerationDetailsPage /> },
-          {path: "orders", element: <OrderAdmin /> },
-          {path: "feedbacksmoder", element: <FeedbackModer /> },
+          { path: "orders", element: <OrderAdmin /> },
+          { path: "feedbacksmoder", element: <FeedbackModer /> },
         ]
       },
       {

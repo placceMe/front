@@ -13,10 +13,37 @@ import {
   Tag,
   Upload,
   Select,
+  Card,
+  Row,
+  Col,
+  Statistic,
+  Typography,
+  Divider,
+  Tooltip,
+  Image,
+  Badge,
 } from "antd";
+import {
+  SearchOutlined,
+  InboxOutlined,
+  ReloadOutlined,
+  UserSwitchOutlined,
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  ShoppingOutlined,
+  FilterOutlined,
+  ClearOutlined,
+  EyeOutlined,
+  PictureOutlined,
+  DollarOutlined,
+  ShopOutlined,
+  TagOutlined,
+} from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import type { UploadFile } from "antd/es/upload/interface";
-import { SearchOutlined, InboxOutlined, ReloadOutlined, UserSwitchOutlined } from "@ant-design/icons";
+
+const { Title, Text } = Typography;
 
 /* ===================== Типи ===================== */
 type Product = {
@@ -169,6 +196,17 @@ const ProductsPage: React.FC = () => {
     });
   }, [all, q, categoryId, sellerId, minPrice, maxPrice, minQty, maxQty, colorLike]);
 
+  // Statistics calculations
+  const stats = useMemo(() => {
+    const totalProducts = all.length;
+    const inStock = all.filter(p => p.quantity > 0).length;
+    const lowStock = all.filter(p => p.quantity > 0 && p.quantity <= 10).length;
+    const outOfStock = all.filter(p => p.quantity === 0).length;
+    const totalValue = all.reduce((sum, p) => sum + (p.price * p.quantity), 0);
+
+    return { totalProducts, inStock, lowStock, outOfStock, totalValue };
+  }, [all]);
+
   const pagedData = useMemo(() => {
     const start = (page - 1) * pageSize;
     return filtered.slice(start, start + pageSize);
@@ -249,11 +287,90 @@ const ProductsPage: React.FC = () => {
   };
 
   const columns: ColumnsType<Product> = [
-    { title: "Назва", dataIndex: "title", sorter: (a, b) => a.title.localeCompare(b.title) },
-    { title: "Ціна", dataIndex: "price", sorter: (a, b) => a.price - b.price, render: (v: number) => `${v} ₴` },
-    { title: "Кількість", dataIndex: "quantity", sorter: (a, b) => a.quantity - b.quantity },
-    { title: "Колір", dataIndex: "color" },
-    { title: "Вага", dataIndex: "weight" },
+    {
+      title: "Товар",
+      dataIndex: "title",
+      render: (title: string, record: Product) => (
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          {record.mainImageUrl ? (
+            <Image
+              src={record.mainImageUrl}
+              width={50}
+              height={50}
+              style={{ borderRadius: 8, objectFit: "cover" }}
+              preview={{
+                mask: <EyeOutlined />
+              }}
+            />
+          ) : (
+            <div style={{
+              width: 50,
+              height: 50,
+              borderRadius: 8,
+              backgroundColor: "#f0f0f0",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center"
+            }}>
+              <PictureOutlined style={{ color: "#bfbfbf" }} />
+            </div>
+          )}
+          <div>
+            <div style={{ fontWeight: 500, color: "#262626", fontSize: 14 }}>
+              {title}
+            </div>
+            {record.description && (
+              <div style={{
+                fontSize: 12,
+                color: "#8c8c8c",
+                maxWidth: 200,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap"
+              }}>
+                {record.description}
+              </div>
+            )}
+            {record.color && (
+              <div style={{ fontSize: 12, color: "#595959", marginTop: 2 }}>
+                <span style={{ color: "#8c8c8c" }}>Колір:</span> {record.color}
+              </div>
+            )}
+          </div>
+        </div>
+      ),
+      width: 300,
+      sorter: (a, b) => a.title.localeCompare(b.title),
+    },
+    {
+      title: "Ціна / Кількість",
+      dataIndex: "price",
+      render: (price: number, record: Product) => (
+        <div>
+          <div style={{
+            fontSize: 16,
+            fontWeight: 600,
+            color: "#52c41a",
+            display: "flex",
+            alignItems: "center",
+            gap: 4
+          }}>
+            <DollarOutlined style={{ fontSize: 14 }} />
+            {price} ₴
+          </div>
+          <div style={{
+            fontSize: 12,
+            color: record.quantity > 10 ? "#52c41a" : record.quantity > 0 ? "#fa8c16" : "#f5222d",
+            marginTop: 2
+          }}>
+            На складі: {record.quantity}
+            {record.weight && ` • ${record.weight}г`}
+          </div>
+        </div>
+      ),
+      sorter: (a, b) => a.price - b.price,
+      width: 140,
+    },
     {
       title: "Категорія",
       dataIndex: "categoryId",
@@ -261,25 +378,67 @@ const ProductsPage: React.FC = () => {
         const cat = categories.find((x) => x.id === id);
         const label = cat ? (cat.title ?? cat.name ?? "(без назви)") : id || "—";
         const { bg, text } = colorForCategory(cat ? `${cat.id}|${label}` : id || label);
-        return <Tag style={{ backgroundColor: bg, color: text, border: "none" }}>{label}</Tag>;
+        return (
+          <Tag
+            icon={<TagOutlined />}
+            style={{
+              backgroundColor: bg,
+              color: text,
+              border: "none",
+              borderRadius: 16,
+              paddingInline: 12
+            }}
+          >
+            {label}
+          </Tag>
+        );
       },
+      width: 150,
     },
     {
       title: "Продавець",
       dataIndex: "sellerId",
-      render: (id?: string) => getSellerLabel(id),
+      render: (id?: string) => (
+        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          <ShopOutlined style={{ color: "#1890ff", fontSize: 12 }} />
+          <Text style={{ fontSize: 12 }}>
+            {getSellerLabel(id)}
+          </Text>
+        </div>
+      ),
+      width: 180,
     },
     {
       title: "Дії",
       fixed: "right",
-      render: (_, r) => (
-        <Space>
-          <Button type="link" onClick={() => openModal(r)}>Редагувати</Button>
-          <Popconfirm title="Видалити товар?" onConfirm={() => handleDelete(r.id)}>
-            <Button danger type="link">Видалити</Button>
+      render: (_, record) => (
+        <Space size="small">
+          <Tooltip title="Редагувати">
+            <Button
+              type="text"
+              icon={<EditOutlined />}
+              onClick={() => openModal(record)}
+              style={{ color: "#1890ff" }}
+            />
+          </Tooltip>
+          <Popconfirm
+            title="Видалити товар?"
+            description="Ця дія незворотна. Ви впевнені?"
+            onConfirm={() => handleDelete(record.id)}
+            okText="Так"
+            cancelText="Ні"
+          >
+            <Tooltip title="Видалити">
+              <Button
+                type="text"
+                danger
+                icon={<DeleteOutlined />}
+              />
+            </Tooltip>
           </Popconfirm>
         </Space>
       ),
+      width: 80,
     },
   ];
 
@@ -294,7 +453,239 @@ const ProductsPage: React.FC = () => {
   })), [sellers]);
 
   return (
-    <div>
+    <div style={{ padding: "0 24px", backgroundColor: "#f5f5f5", minHeight: "100vh" }}>
+      {/* Header */}
+      <div style={{ paddingTop: 24, paddingBottom: 16 }}>
+        <Title level={2} style={{ margin: 0, color: "#262626" }}>
+          <ShoppingOutlined style={{ marginRight: 12 }} />
+          Управління товарами
+        </Title>
+        <Text type="secondary" style={{ fontSize: 14 }}>
+          Керуйте товарами, їх категоріями, цінами та наявністю на складі
+        </Text>
+      </div>
+
+      {/* Statistics Cards */}
+      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+        <Col xs={24} sm={12} md={6}>
+          <Card>
+            <Statistic
+              title="Всього товарів"
+              value={stats.totalProducts}
+              prefix={<ShoppingOutlined />}
+              valueStyle={{ color: '#1890ff' }}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Card>
+            <Statistic
+              title="В наявності"
+              value={stats.inStock}
+              prefix={<Badge status="success" />}
+              valueStyle={{ color: '#52c41a' }}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Card>
+            <Statistic
+              title="Мало на складі"
+              value={stats.lowStock}
+              prefix={<Badge status="warning" />}
+              valueStyle={{ color: '#fa8c16' }}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Card>
+            <Statistic
+              title="Немає в наявності"
+              value={stats.outOfStock}
+              prefix={<Badge status="error" />}
+              valueStyle={{ color: '#f5222d' }}
+            />
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Main Content */}
+      <Card style={{ borderRadius: 8 }}>
+        {/* Action Bar */}
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 16,
+          flexWrap: "wrap",
+          gap: 12
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => openModal()}
+              size="middle"
+            >
+              Додати товар
+            </Button>
+            <Button
+              icon={<ReloadOutlined />}
+              onClick={() => fetchAll()}
+              size="middle"
+            >
+              Оновити
+            </Button>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <Text type="secondary" style={{ fontSize: 13 }}>
+              Знайдено: {filtered.length} з {all.length}
+            </Text>
+          </div>
+        </div>
+
+        {/* Filters */}
+        <Card
+          size="small"
+          style={{ marginBottom: 16, backgroundColor: "#fafafa" }}
+          title={
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <FilterOutlined />
+              <Text style={{ fontWeight: 500 }}>Фільтри</Text>
+            </div>
+          }
+          extra={
+            <Button
+              size="small"
+              icon={<ClearOutlined />}
+              onClick={resetFilters}
+              type="text"
+            >
+              Очистити
+            </Button>
+          }
+        >
+          <Row gutter={[12, 12]}>
+            <Col xs={24} sm={12} md={8} lg={6}>
+              <Input
+                allowClear
+                prefix={<SearchOutlined />}
+                placeholder="Пошук за назвою, описом, кольором"
+                value={q}
+                onChange={(e) => { setQ(e.target.value); setPage(1); }}
+              />
+            </Col>
+            <Col xs={24} sm={12} md={8} lg={6}>
+              <Select
+                allowClear
+                placeholder="Фільтр по категоріях"
+                style={{ width: "100%" }}
+                value={categoryId}
+                onChange={(v) => { setCategoryId(v); setPage(1); }}
+                options={categoryOptions}
+                loading={catLoading}
+              />
+            </Col>
+            <Col xs={24} sm={12} md={8} lg={6}>
+              <Select
+                allowClear
+                placeholder="Фільтр по продавцях"
+                style={{ width: "100%" }}
+                value={sellerId}
+                onChange={(v) => { setSellerId(v); setPage(1); }}
+                options={sellerOptions}
+                loading={sellersLoading}
+              />
+            </Col>
+            <Col xs={24} sm={12} md={8} lg={6}>
+              <Input
+                allowClear
+                placeholder="Колір"
+                value={colorLike}
+                onChange={(e) => { setColorLike(e.target.value); setPage(1); }}
+              />
+            </Col>
+          </Row>
+
+          <Divider style={{ margin: "12px 0" }} />
+
+          <Row gutter={[12, 8]}>
+            <Col xs={12} sm={6} md={4}>
+              <Text style={{ fontSize: 12, color: "#8c8c8c", display: "block", marginBottom: 4 }}>
+                Ціна від:
+              </Text>
+              <InputNumber
+                min={0}
+                placeholder="Від"
+                style={{ width: "100%" }}
+                value={minPrice}
+                onChange={(v) => { setMinPrice(v ?? undefined); setPage(1); }}
+              />
+            </Col>
+            <Col xs={12} sm={6} md={4}>
+              <Text style={{ fontSize: 12, color: "#8c8c8c", display: "block", marginBottom: 4 }}>
+                Ціна до:
+              </Text>
+              <InputNumber
+                min={0}
+                placeholder="До"
+                style={{ width: "100%" }}
+                value={maxPrice}
+                onChange={(v) => { setMaxPrice(v ?? undefined); setPage(1); }}
+              />
+            </Col>
+            <Col xs={12} sm={6} md={4}>
+              <Text style={{ fontSize: 12, color: "#8c8c8c", display: "block", marginBottom: 4 }}>
+                Кількість від:
+              </Text>
+              <InputNumber
+                min={0}
+                placeholder="Від"
+                style={{ width: "100%" }}
+                value={minQty}
+                onChange={(v) => { setMinQty(v ?? undefined); setPage(1); }}
+              />
+            </Col>
+            <Col xs={12} sm={6} md={4}>
+              <Text style={{ fontSize: 12, color: "#8c8c8c", display: "block", marginBottom: 4 }}>
+                Кількість до:
+              </Text>
+              <InputNumber
+                min={0}
+                placeholder="До"
+                style={{ width: "100%" }}
+                value={maxQty}
+                onChange={(v) => { setMaxQty(v ?? undefined); setPage(1); }}
+              />
+            </Col>
+          </Row>
+        </Card>
+
+        {/* Table */}
+        <Table<Product>
+          rowKey="id"
+          dataSource={pagedData}
+          loading={loading}
+          columns={columns}
+          pagination={{
+            current: page,
+            pageSize,
+            total: filtered.length,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total, range) =>
+              `${range[0]}-${range[1]} з ${total} записів`,
+            onChange: (p, s) => { setPage(p); setPageSize(s || 10); },
+            pageSizeOptions: ['10', '20', '50', '100'],
+          }}
+          scroll={{ x: 1200 }}
+          size="middle"
+          style={{ backgroundColor: "#fff" }}
+          rowClassName={(_, index) =>
+            index % 2 === 0 ? 'table-row-light' : 'table-row-dark'
+          }
+        />
+      </Card>
       <Space style={{ marginBottom: 16, flexWrap: "wrap" }}>
         <Input
           allowClear
