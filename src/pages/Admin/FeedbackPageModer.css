@@ -1,0 +1,348 @@
+/* Сучасні стилі для покращеної сторінки модерації фідбеків */
+.feedback-table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.feedback-table .ant-table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.feedback-table .ant-table-thead > tr > th {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-bottom: 2px solid #e2e8f0;
+  font-weight: 600;
+  font-size: 14px;
+  color: #475569;
+  padding: 16px 12px;
+}
+
+.feedback-table .ant-table-tbody > tr {
+  transition: all 0.2s ease;
+}
+
+.feedback-table .ant-table-tbody > tr:hover {
+  background: #f8fafc !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.feedback-table .ant-table-tbody > tr.ant-table-row-selected {
+  background: #eff6ff !important;
+  border-left: 4px solid #3b82f6;
+}
+
+.feedback-table .ant-table-tbody > tr.ant-table-row-selected:hover {
+  background: #dbeafe !important;
+}
+
+.feedback-table .ant-table-tbody > tr > td {
+  padding: 16px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.feedback-table .ant-table-tbody > tr:last-child > td {
+  border-bottom: none;
+}
+
+/* Покращені статус теги */
+.status-new {
+  animation: pulse 2s infinite;
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.ant-tag {
+  border-radius: 8px;
+  padding: 4px 12px;
+  font-weight: 500;
+  border: none;
+}
+
+/* Покращені кнопки */
+.ant-btn {
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.ant-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.ant-btn-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border: none;
+}
+
+.ant-btn-primary:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+}
+
+.ant-btn-dangerous {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border: none;
+}
+
+.ant-btn-dangerous:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+}
+
+/* Покращені рейтинги */
+.ant-rate {
+  font-size: 14px;
+}
+
+.ant-rate-star {
+  margin-right: 2px !important;
+}
+
+.ant-rate-star-full .ant-rate-star-second {
+  color: #fbbf24;
+}
+
+/* Покращені input'и */
+.ant-input,
+.ant-select-selector,
+.ant-picker {
+  border-radius: 8px !important;
+  border: 1px solid #d1d5db !important;
+  transition: all 0.2s ease !important;
+}
+
+.ant-input:hover,
+.ant-select-selector:hover,
+.ant-picker:hover {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+}
+
+.ant-input:focus,
+.ant-select-focused .ant-select-selector,
+.ant-picker-focused {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* Покращені card'и */
+.ant-card {
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.ant-card-head {
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 12px 12px 0 0;
+  background: #f9fafb;
+}
+
+.ant-card-head-title {
+  color: #374151;
+  font-weight: 600;
+}
+
+/* Покращена пагінація */
+.ant-pagination {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.ant-pagination-item {
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-weight: 500;
+}
+
+.ant-pagination-item-active {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border-color: #3b82f6;
+}
+
+.ant-pagination-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Анімації */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Responsive дизайн */
+@media (max-width: 768px) {
+  .feedback-table .ant-table-tbody > tr > td {
+    padding: 12px 8px;
+  }
+  
+  .ant-space {
+    flex-wrap: wrap;
+  }
+  
+  .ant-btn {
+    margin-bottom: 8px;
+  }
+}
+
+/* Покращені dropdown меню */
+.ant-dropdown-menu {
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+.ant-dropdown-menu-item {
+  border-radius: 6px;
+  margin: 4px;
+  transition: all 0.2s ease;
+}
+
+.ant-dropdown-menu-item:hover {
+  background: #f3f4f6;
+}
+
+/* Покращені modal'и */
+.ant-modal {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.ant-modal-header {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 12px 12px 0 0;
+}
+
+.ant-modal-title {
+  font-weight: 600;
+  color: #374151;
+}
+
+/* Покращені alert'и */
+.ant-alert {
+  border-radius: 8px;
+  border: none;
+}
+
+.ant-alert-info {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border-left: 4px solid #3b82f6;
+}
+
+/* Покращені badge'і */
+.ant-badge {
+  font-weight: 600;
+}
+
+.ant-badge-count {
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  line-height: 16px;
+}
+
+/* Покращені switch'і */
+.ant-switch {
+  border-radius: 12px;
+}
+
+.ant-switch-checked {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+/* Покращені loading spinner'и */
+.ant-spin-dot-item {
+  background: #3b82f6;
+}
+
+/* Кастомні класи */
+.glass-effect {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.gradient-border {
+  border: 2px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+              linear-gradient(135deg, #3b82f6, #8b5cf6) border-box;
+  border-radius: 8px;
+}
+
+.user-info-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+.rating-breakdown {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.rating-breakdown span {
+  padding: 2px 6px;
+  background: #f3f4f6;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.content-preview {
+  max-width: 300px;
+  line-height: 1.4;
+}
+
+.content-preview .text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}

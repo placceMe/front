@@ -6,7 +6,7 @@ import { FeedbackModerationPage } from '../../features/admin/feedbackModeration'
  * Цей компонент залишається для зворотної сумісності
  */
 const FeedbackPageModer: React.FC = () => {
-  return <FeedbackModerationPage />;
+    return <FeedbackModerationPage />;
 };
 
 export default FeedbackPageModer;
