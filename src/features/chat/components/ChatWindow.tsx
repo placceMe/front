@@ -94,7 +94,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chatId, onClose }) => {
         };
     }, [connection, handleMessage]); // Используем мемоизированный обработчик
 
-    const currentId = connection.
+    
 
     return (
         <div className="chat-window">

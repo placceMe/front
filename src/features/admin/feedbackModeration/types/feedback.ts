@@ -13,7 +13,7 @@ export type FeedbackDto = {
     avatar?: string;
   };
   content: string;
-  status: "pending" | "approved" | "rejected";
+  status: StatusKey;
   createdAt: string;
   updatedAt?: string;
   ratingService: number;
@@ -23,7 +23,7 @@ export type FeedbackDto = {
   ratingAverage?: number;
 };
 
-export type StatusKey = "pending" | "approved" | "rejected";
+export type StatusKey = "New" | "Approved" | "Rejected";
 
 export interface StatusMeta {
   label: string;

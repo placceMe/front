@@ -294,7 +294,7 @@ const ProductsPage: React.FC = () => {
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           {record.mainImageUrl ? (
             <Image
-              src={record.mainImageUrl}
+              src={__BASE_URL__+"/api/files/"+record.mainImageUrl}
               width={50}
               height={50}
               style={{ borderRadius: 8, objectFit: "cover" }}
@@ -521,14 +521,14 @@ const ProductsPage: React.FC = () => {
           gap: 12
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <Button
+        {  /*  <Button
               type="primary"
               icon={<PlusOutlined />}
               onClick={() => openModal()}
               size="middle"
             >
               Додати товар
-            </Button>
+            </Button>*/}
             <Button
               icon={<ReloadOutlined />}
               onClick={() => fetchAll()}
@@ -686,80 +686,7 @@ const ProductsPage: React.FC = () => {
           }
         />
       </Card>
-      <Space style={{ marginBottom: 16, flexWrap: "wrap" }}>
-        <Input
-          allowClear
-          prefix={<SearchOutlined />}
-          placeholder="Пошук за назвою/описом/кольором"
-          value={q}
-          onChange={(e) => { setQ(e.target.value); setPage(1); }}
-          style={{ width: 300 }}
-        />
-
-        <Select
-          allowClear
-          placeholder="Категорія"
-          style={{ minWidth: 220 }}
-          value={categoryId}
-          onChange={(v) => { setCategoryId(v); setPage(1); }}
-          options={categoryOptions}
-          loading={catLoading}
-        />
-
-        <Select
-          allowClear
-          placeholder="Продавець"
-          style={{ minWidth: 260 }}
-          value={sellerId}
-          onChange={(v) => { setSellerId(v); setPage(1); }}
-          options={sellerOptions}
-          loading={sellersLoading}
-        />
-
-        <InputNumber placeholder="Мін. ціна" min={0} value={minPrice} onChange={(v) => setMinPrice(v ?? undefined)} />
-        <InputNumber placeholder="Макс. ціна" min={0} value={maxPrice} onChange={(v) => setMaxPrice(v ?? undefined)} />
-
-        <InputNumber placeholder="Мін. кількість" min={0} value={minQty} onChange={(v) => setMinQty(v ?? undefined)} />
-        <InputNumber placeholder="Макс. кількість" min={0} value={maxQty} onChange={(v) => setMaxQty(v ?? undefined)} />
-
-        <Input
-          allowClear
-          placeholder="Колір містить…"
-          value={colorLike}
-          onChange={(e) => { setColorLike(e.target.value); setPage(1); }}
-          style={{ width: 180 }}
-        />
-
-        <Button icon={<ReloadOutlined />} onClick={() => fetchAll()}>
-          Оновити
-        </Button>
-
-        <Button size="small" loading={catLoading} onClick={fetchCategories}>
-          Оновити категорії
-        </Button>
-        <Button size="small" icon={<UserSwitchOutlined />} loading={sellersLoading} onClick={fetchSellers}>
-          Оновити продавців
-        </Button>
-
-        <Button onClick={resetFilters}>Скинути фільтри</Button>
-
-        <Button type="primary" onClick={() => openModal()}>Створити товар</Button>
-      </Space>
-
-      <Table<Product>
-        rowKey="id"
-        dataSource={pagedData}
-        loading={loading}
-        columns={columns}
-        scroll={{ x: 1100 }}
-        pagination={{
-          current: page,
-          pageSize,
-          total: filtered.length,
-          showSizeChanger: true,
-          onChange: (p, s) => { setPage(p); setPageSize(s); },
-        }}
-      />
+   
 
       <Modal
         open={isOpen}

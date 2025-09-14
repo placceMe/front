@@ -6,6 +6,7 @@ import {
 import type { ColumnsType } from "antd/es/table";
 import { ReloadOutlined, SearchOutlined, CheckOutlined, CloseOutlined, EyeOutlined } from "@ant-design/icons";
 import dayjs, { Dayjs } from "dayjs";
+import { useRequest } from "@shared/request/useRequest";
 
 const { RangePicker } = DatePicker;
 
@@ -31,7 +32,7 @@ type Order = {
   items: OrderItem[];
 };
 
-const API_ORDERS = __BASE_URL__ + "/api/orders";
+const API_ORDERS =  "/api/orders";
 
 // кольори бейджів для статусів
 const STATUS_COLORS: Record<OrderStatus, { color: string; label: string; }> = {
@@ -66,14 +67,13 @@ const OrdersPage: React.FC = () => {
   const [openView, setOpenView] = useState(false);
   const [current, setCurrent] = useState<Order | null>(null);
   const [form] = Form.useForm<{ status: OrderStatus; notes?: string; deliveryAddress?: string; }>();
-
+  const { request } = useRequest()
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const res = await fetch(API_ORDERS);
-      if (!res.ok) throw new Error();
-      const list: Order[] = await res.json();
-      setAllOrders(Array.isArray(list) ? list : []);
+      const res = await request(API_ORDERS);
+      
+      setAllOrders(Array.isArray(res) ? res : []);
     } catch {
       message.error("Не вдалося завантажити замовлення");
     } finally {
@@ -200,12 +200,12 @@ const OrdersPage: React.FC = () => {
 
   const confirmOrder = async (id: string) => {
     try {
-      const res = await fetch(`${API_ORDERS}/${id}/confirm`, {
+      const res = await request(`${API_ORDERS}/${id}/confirm`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "Approved" }),
       });
-      if (!res.ok) throw new Error();
+      
       message.success("Замовлення підтверджено");
       setAllOrders(prev => prev.map(o => (o.id === id ? { ...o, status: "Approved", updatedAt: new Date().toISOString() } : o)));
     } catch {
@@ -215,12 +215,12 @@ const OrdersPage: React.FC = () => {
 
   const rejectOrder = async (id: string) => {
     try {
-      const res = await fetch(`${API_ORDERS}/${id}/reject`, {
+      const res = await request(`${API_ORDERS}/${id}/reject`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "Rejected" }),
       });
-      if (!res.ok) throw new Error();
+      
       message.success("Замовлення відхилено");
       setAllOrders(prev => prev.map(o => (o.id === id ? { ...o, status: "Rejected", updatedAt: new Date().toISOString() } : o)));
     } catch {
@@ -232,14 +232,14 @@ const OrdersPage: React.FC = () => {
     if (!current) return;
     try {
       const values = await form.validateFields();
-      const res1 = await fetch(`${API_ORDERS}/${current.id}/status`, {
+      const res1 = await request(`${API_ORDERS}/${current.id}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: values.status }),
       });
       if (!res1.ok) throw new Error();
 
-      const res2 = await fetch(`${API_ORDERS}/${current.id}`, {
+      const res2 = await request(`${API_ORDERS}/${current.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -272,8 +272,8 @@ const OrdersPage: React.FC = () => {
 
   const removeOrder = async (id: string) => {
     try {
-      const res = await fetch(`${API_ORDERS}/${id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error();
+      const res = await request(`${API_ORDERS}/${id}`, { method: "DELETE" });
+      
       setAllOrders(prev => prev.filter(o => o.id !== id));
       message.success("Замовлення видалено");
     } catch {
