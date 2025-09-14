@@ -136,7 +136,14 @@ export const UserOrders: React.FC = () => {
 
   return (
     <div>
+      
       <h2 className="text-3xl font-semibold mb-4 text-[#3E4826]">Ваші замовлення</h2>
+        {orders.length === 0 ? (
+      <div className="mx-auto max-w-3xl py-20 text-center text-gray-400 text-lg">
+        Тут з'являться ваші замовлення.
+      </div>
+    ) : (
+      <>
       {visibleOrders.map(order => (
         <div key={order.id} className="border p-4 rounded bg-white mb-4">
           <div className="flex justify-between">
@@ -170,6 +177,8 @@ export const UserOrders: React.FC = () => {
           ))}
           <button onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))} disabled={currentPage === totalPages}><FaChevronRight /></button>
         </div>
+            )}
+      </>
       )}
 
       <Modal

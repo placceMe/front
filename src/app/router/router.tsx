@@ -61,7 +61,7 @@ export const AppRouter = () => {
           { path: 'policy', element: <PrivacyPolicy /> },
           {path: 'comparison', element: <Comparison />}, // Assuming compare is similar to wishlist
           { path: 'search', element: <SearchResultsPage /> },
-          { path: "products/:productId/edit", element: <EditProductPage /> },
+           { path: "edit-product/:productId", element: <EditProductPage /> },
            { path: "pay-test", element: <PaymentTestPage  /> },
           
            
@@ -75,6 +75,7 @@ export const AppRouter = () => {
               { path: "orders", element: <OrdersTab /> },
               { path: "favourite", element: <Wishlist /> },
               { path: "viewed", element: <ViewedProducts /> },
+               
             ],
           }] : []),
         ],

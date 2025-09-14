@@ -75,7 +75,7 @@ const ChatContent: React.FC<ChatContentProps> = memo(({
     padding:12
   }}
 >
-  Листування з продавцями
+  Листування
 </h2>
 
             <div className="chat-container">

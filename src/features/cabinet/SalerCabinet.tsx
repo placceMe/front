@@ -15,6 +15,7 @@ import styles from "./CabinetTabs.module.css";
 import { BlurBlock } from '@shared/ui/BlurBlock';
 import supplierBg from "../../assets/bg/bg_seller.png";
 import { SellerOrders } from '@features/order/ui/SellerOrders';
+import { SellerProductsTab } from '@features/seller/ui/SellerProductsTab';
 
 
 const HASH_PREFIX = "s-";
@@ -91,7 +92,7 @@ export const SalerCabinet = ({ onMainChange }: { onMainChange: (val: boolean) =>
             key: 'products',
             label: 'Товари',
             icon: <ProductIcon className="w-4.5 h-4.5"/>,
-            children: info?.id ? <AddProductCard sellerId={info?.id} /> : null
+            children: info?.id ? <SellerProductsTab sellerId={info.id} /> : null
         },
         {
             key: 'orders',
