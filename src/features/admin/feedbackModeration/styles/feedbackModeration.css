@@ -1,0 +1,350 @@
+/* Сучасні стилі для модерації фідбеків 
+ * 
+ * ВАЖЛИВО: Цей файл не змінює існуючі класи Ant Design бібліотеки.
+ * Натомість створюються нові кастомні класи з префіксом "feedback-"
+ * які можна застосовувати через className або додаткові класи.
+ * 
+ * Приклад використання:
+ * <Button className="feedback-btn feedback-btn-primary">
+ * <Tag className="feedback-status-tag">
+ * <Input className="feedback-input">
+ */
+
+.feedback-moderation {
+  background: #f8fafc;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.feedback-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  color: white;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+}
+
+.feedback-filters {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+}
+
+.feedback-table-container {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+}
+
+.feedback-table .ant-table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.feedback-table .ant-table-thead > tr > th {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-bottom: 2px solid #e2e8f0;
+  font-weight: 600;
+  font-size: 14px;
+  color: #475569;
+  padding: 16px 12px;
+}
+
+.feedback-table .ant-table-tbody > tr {
+  transition: all 0.2s ease;
+}
+
+.feedback-table .ant-table-tbody > tr:hover {
+  background: #f8fafc !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.feedback-table .ant-table-tbody > tr.ant-table-row-selected {
+  background: #eff6ff !important;
+  border-left: 4px solid #3b82f6;
+}
+
+.feedback-table .ant-table-tbody > tr.ant-table-row-selected:hover {
+  background: #dbeafe !important;
+}
+
+.feedback-table .ant-table-tbody > tr > td {
+  padding: 16px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.feedback-table .ant-table-tbody > tr:last-child > td {
+  border-bottom: none;
+}
+
+/* Покращені статус теги */
+.status-new {
+  animation: pulse 2s infinite;
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Кастомні теги статусів */
+.feedback-status-tag {
+  border-radius: 8px;
+  padding: 4px 12px;
+  font-weight: 500;
+  border: none;
+}
+
+/* Кастомні кнопки для фідбеків */
+.feedback-btn {
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.feedback-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.feedback-btn-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border: none;
+}
+
+.feedback-btn-primary:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+}
+
+.feedback-btn-danger {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border: none;
+}
+
+.feedback-btn-danger:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+}
+
+/* Кастомні рейтинги */
+.feedback-rating {
+  font-size: 14px;
+}
+
+.feedback-rating .ant-rate-star {
+  margin-right: 2px !important;
+}
+
+.feedback-rating .ant-rate-star-full .ant-rate-star-second {
+  color: #fbbf24;
+}
+
+/* Кастомні поля вводу */
+.feedback-input {
+  border-radius: 8px !important;
+  border: 1px solid #d1d5db !important;
+  transition: all 0.2s ease !important;
+}
+
+.feedback-input:hover {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+}
+
+.feedback-input:focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.feedback-select .ant-select-selector {
+  border-radius: 8px !important;
+  border: 1px solid #d1d5db !important;
+  transition: all 0.2s ease !important;
+}
+
+.feedback-select:hover .ant-select-selector {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+}
+
+.feedback-select.ant-select-focused .ant-select-selector {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.feedback-picker {
+  border-radius: 8px !important;
+  border: 1px solid #d1d5db !important;
+  transition: all 0.2s ease !important;
+}
+
+.feedback-picker:hover {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+}
+
+.feedback-picker.ant-picker-focused {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* Кастомні карточки */
+.feedback-card {
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.feedback-card .ant-card-head {
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 12px 12px 0 0;
+  background: #f9fafb;
+}
+
+.feedback-card .ant-card-head-title {
+  color: #374151;
+  font-weight: 600;
+}
+
+/* Кастомна пагінація */
+.feedback-pagination {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.feedback-pagination .ant-pagination-item {
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-weight: 500;
+}
+
+.feedback-pagination .ant-pagination-item-active {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border-color: #3b82f6;
+}
+
+.feedback-pagination .ant-pagination-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Анімації */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Responsive дизайн */
+@media (max-width: 768px) {
+  .feedback-moderation {
+    padding: 16px;
+  }
+  
+  .feedback-table .ant-table-tbody > tr > td {
+    padding: 12px 8px;
+  }
+  
+  .ant-space {
+    flex-wrap: wrap;
+  }
+  
+  .ant-btn {
+    margin-bottom: 8px;
+  }
+}
+
+/* Кастомні класи */
+.glass-effect {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.gradient-border {
+  border: 2px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+              linear-gradient(135deg, #3b82f6, #8b5cf6) border-box;
+  border-radius: 8px;
+}
+
+.bulk-actions-bar {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border: 1px solid #93c5fd;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+}
+
+.content-preview {
+  max-width: 300px;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rating-breakdown {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.rating-breakdown span {
+  padding: 2px 6px;
+  background: #f3f4f6;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.user-info-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
